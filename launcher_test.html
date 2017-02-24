@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Projectile for Paper Ball Take 001</title>
-	<script type="text/javascript" src="js/phaser.min.js"></script>
+	<script type="text/javascript" src="phaser.min.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -15,9 +15,9 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 
 function preload() {
 
-    game.load.image('analog', 'images/fusia.png');
-    game.load.image('arrow', 'images/longarrow.png');
-    game.load.image('ball', 'images/paperBall.png');    
+    game.load.image('analog', 'fusia.png');
+    game.load.image('arrow', 'longarrow.png');
+    game.load.image('ball', 'paperBall.png');    
 
 }
 
@@ -63,6 +63,7 @@ function create() {
     ball.anchor.setTo(0.5, 0.5);
     ball.body.collideWorldBounds = true;
     ball.body.bounce.setTo(0.9, 0.9);
+    ball.scale.setTo(0.15,0.15)
     
     // Enable input.
     ball.inputEnabled = true;
