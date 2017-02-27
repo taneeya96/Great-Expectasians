@@ -19,9 +19,14 @@ function preload() {
     game.load.image('arrow', 'images/longarrow2.png');
     game.load.image('ball', 'images/paperBall.png'); 
     game.load.image('slingshot', 'images/CatapultSprite.png')   
+    game.load.image('student', 'images/donald.png'); 
+
 
 }
 
+var text;
+var student;
+var counter = 0;
 var slingshotX = 300;
 var slingshotY = 300
 var slingshotHeight = 340
@@ -41,6 +46,19 @@ function create() {
     game.physics.arcade.gravity.y = 100;
 
     //game.stage.backgroundColor = '#0072bc';
+
+    text = game.add.text(450, 16, '', { fill: '#ffffff' });
+
+
+    //  This creates a simple sprite that is using our loaded image and
+    //  displays it on-screen and assign it to a variable
+       student = game.add.sprite(game.world.centerX + 150 , game.world.centerY - 100, 'student');
+    game.physics.enable(student, Phaser.Physics.ARCADE);
+
+    student.body.allowGravity = false;
+
+    student.body.collideWorldBounds = true;
+    student.body.immovable = true;
 
     arrowExtension = game.add.sprite(slingshotX+100, slingshotY+50, 'arrowExtension');
 
@@ -104,7 +122,11 @@ function launchBall() {
 function update() {
 
     arrow.rotation = game.physics.arcade.angleBetween(arrow, ball);
-    //arrow.rotation = game.physics.arcade.angleToPointer(ball);
+    if (game.physics.arcade.collide(student, ball)){
+        counter++;
+        text.text = "You hit the student " + counter + " times!";
+    }
+
     
     if (ballHeld == true)
     {
