@@ -19,13 +19,13 @@ function preload() {
     game.load.image('arrow', 'images/longarrow2.png');
     game.load.image('ball', 'images/paperBall.png'); 
     game.load.image('slingshot', 'images/CatapultSprite.png')   
-    game.load.image('star', 'images/star.png'); 
+    game.load.image('student', 'images/donald.png'); 
 
 
 }
 
 var text;
-var star;
+var student;
 var counter = 0;
 var slingshotX = 300;
 var slingshotY = 300
@@ -52,13 +52,13 @@ function create() {
 
     //  This creates a simple sprite that is using our loaded image and
     //  displays it on-screen and assign it to a variable
-       star = game.add.sprite(game.world.centerX - 150 , game.world.centerY - 100, 'star');
-    game.physics.enable(star, Phaser.Physics.ARCADE);
+       student = game.add.sprite(game.world.centerX + 150 , game.world.centerY - 100, 'student');
+    game.physics.enable(student, Phaser.Physics.ARCADE);
 
-    star.body.allowGravity = false;
+    student.body.allowGravity = false;
 
-    star.body.collideWorldBounds = true;
-    star.body.immovable = true;
+    student.body.collideWorldBounds = true;
+    student.body.immovable = true;
 
     arrowExtension = game.add.sprite(slingshotX+100, slingshotY+50, 'arrowExtension');
 
@@ -122,9 +122,9 @@ function launchBall() {
 function update() {
 
     arrow.rotation = game.physics.arcade.angleBetween(arrow, ball);
-    if (game.physics.arcade.collide(star, ball)){
+    if (game.physics.arcade.collide(student, ball)){
         counter++;
-        text.text = "You clicked" + counter + " times!";
+        text.text = "You hit the student " + counter + " times!";
     }
 
     
