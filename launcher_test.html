@@ -39,7 +39,7 @@ function create() {
     graphics.beginFill(0x049e0c);
     //graphics.drawRect(395, 350, 10, 350);
 
-    analog = game.add.sprite(400, 350, 'analog');
+    //analog = game.add.sprite(400, 350, 'analog');
 
     game.physics.enable(analog, Phaser.Physics.ARCADE);
 
@@ -64,6 +64,7 @@ function create() {
     ball.scale.setTo(0.2,0.2);
     ball.body.collideWorldBounds = true;
     ball.body.bounce.setTo(0.2, 0.2);
+
     
     // Enable input.
     ball.inputEnabled = true;
