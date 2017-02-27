@@ -14,82 +14,86 @@
 var game = new Phaser.Game(1200, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
-
-    game.load.image('analog', 'images/fusia.png');
+    game.load.image('background','images/Background.png');
+    game.load.image('arrowExtension', 'images/green.png');
     game.load.image('arrow', 'images/longarrow2.png');
-    game.load.image('ball', 'images/paperBall.png');    
+    game.load.image('ball', 'images/paperBall.png'); 
+    game.load.image('slingshot', 'images/CatapultSprite.png')   
 
 }
 
+var slingshotX = 300;
+var slingshotY = 300
+var slingshotHeight = 340
 var arrow;
 var ball;
-var catchFlag = false;
-var launchVelocity = 0;
+var ballHeld = false; //checks if the ball is held or not
+var ballSpeed = 0; // speed of the ball
+arrowExtensionWidth = 8;
 
 function create() {
 
+    bground = game.add.sprite(0,0,'background')
+    bground.alpha = 0.75; //transparency of background
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     // set global gravity
     game.physics.arcade.gravity.y = 100;
 
-    game.stage.backgroundColor = '#0072bc';
+    //game.stage.backgroundColor = '#0072bc';
+
+    arrowExtension = game.add.sprite(slingshotX+100, slingshotY+50, 'arrowExtension');
+
+    game.physics.enable(arrowExtension, Phaser.Physics.ARCADE);
+
+    arrowExtension.body.allowGravity = false;
+    arrowExtension.width = arrowExtensionWidth;
+    arrowExtension.rotation = 220;
+    arrowExtension.alpha = 0; //arrowExtension hidden
+    arrowExtension.anchor.setTo(0.5, 0.0);
     
-    var graphics = game.add.graphics(0,0);
-    graphics.beginFill(0x049e0c);
-    //graphics.drawRect(395, 350, 10, 350);
-
-    //analog = game.add.sprite(400, 350, 'analog');
-
-    game.physics.enable(analog, Phaser.Physics.ARCADE);
-
-    analog.body.allowGravity = false;
-    analog.width = 8;
-    analog.rotation = 220;
-    analog.alpha = 0;
-    analog.anchor.setTo(0.5, 0.0);
-    
-    arrow = game.add.sprite(400, 350, 'arrow');
+    arrow = game.add.sprite(slingshotX + 100, slingshotY + 50, 'arrow');
 
     game.physics.enable(arrow, Phaser.Physics.ARCADE);
 
     arrow.anchor.setTo(0.1, 0.5);
     arrow.body.moves = false;
     arrow.body.allowGravity = false;
-    arrow.alpha = 0;
+    arrow.alpha = 0; //arrow hidden
     
-    ball = game.add.sprite(200, 100, 'ball');
+    ball = game.add.sprite(slingshotX+100, slingshotY + 65, 'ball');
+    ball.scale.setTo(0.15,0.15);
     game.physics.enable(ball, Phaser.Physics.ARCADE);
     ball.anchor.setTo(0.5, 0.5);
-    ball.scale.setTo(0.2,0.2);
-    ball.body.collideWorldBounds = true;
-    ball.body.bounce.setTo(0.2, 0.2);
-
+    ball.body.collideWorldBounds = true; //bounces against walls
+    ball.body.allowGravity = false;
+    
     
     // Enable input.
-    ball.inputEnabled = true;
-    ball.input.start(0, true);
-    ball.events.onInputDown.add(set);
-    ball.events.onInputUp.add(launch);
+    ball.inputEnabled = true; //allows ball to be influenced by mouse input
+    ball.events.onInputDown.add(holdBall); //when mouse is clicked
+    ball.events.onInputUp.add(launchBall); //when mouse is released
 
+     slingshot = game.add.sprite(slingshotX,slingshotY,'slingshot');
+    slingshot.height = slingshotHeight
 }
 
-function set(ball, pointer) {
+function holdBall(ball, pointer) {
 
     ball.body.moves = false;
     ball.body.velocity.setTo(0, 0);
     ball.body.allowGravity = false;
-    catchFlag = true;
+    ballHeld = true;
 
 }
 
-function launch() {
+function launchBall() {
 
-    catchFlag = false;
-    
+    ballHeld = false;
+    ball.body.bounce.setTo(0.9, 0.9);
     ball.body.moves = true;
     arrow.alpha = 0;
-    analog.alpha = 0;
+    arrowExtension.alpha = 0;
     Xvector = (arrow.x - ball.x) * 3;
     Yvector = (arrow.y - ball.y) * 3;
     ball.body.allowGravity = true;  
@@ -102,17 +106,17 @@ function update() {
     arrow.rotation = game.physics.arcade.angleBetween(arrow, ball);
     //arrow.rotation = game.physics.arcade.angleToPointer(ball);
     
-    if (catchFlag == true)
+    if (ballHeld == true)
     {
         //  Track the ball sprite to the mouse  
         ball.x = game.input.activePointer.worldX;   
         ball.y = game.input.activePointer.worldY;
         
         arrow.alpha = 1;    
-        analog.alpha = 0.5;
-        analog.rotation = arrow.rotation - 3.14 / 2;
-        analog.height = game.physics.arcade.distanceToPointer(arrow);  
-        launchVelocity = analog.height;
+        arrowExtension.alpha = 1.5;
+        arrowExtension.rotation = arrow.rotation- 3.14 / 2;
+        arrowExtension.height = game.physics.arcade.distanceToPointer(arrow);  
+        ballSpeed = arrowExtension.height;
     }   
 
 }
@@ -120,11 +124,6 @@ function update() {
 function render() {
 
     game.debug.text("Drag the ball and release to launch", 32, 32);
-
-    //game.debug.bodyInfo(ball, 32, 64);
-
-    // game.debug.spriteInfo(ball, 32, 64);
-    // game.debug.text("Launch Velocity: " + parseInt(launchVelocity), 32, 250);
 
 }
 
