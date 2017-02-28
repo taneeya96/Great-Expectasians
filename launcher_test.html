@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Projectile for Paper Ball Take 001</title>
-	<script type="text/javascript" src="js/phaser.min.js"></script>
+    <title>Projectile for Paper Ball Take 001</title>
+    <script type="text/javascript" src="js/phaser.min.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -10,7 +10,7 @@
     </style>
 </head>
 <body>
-	<script type="text/javascript">
+    <script type="text/javascript">
 var game = new Phaser.Game(1200, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
@@ -23,7 +23,8 @@ function preload() {
 
 
 }
-
+var screenwidth=1200;
+var screenheight=600;
 var text;
 var student;
 var counter = 0;
@@ -34,7 +35,9 @@ var arrow;
 var ball;
 var ballHeld = false; //checks if the ball is held or not
 var ballSpeed = 0; // speed of the ball
-arrowExtensionWidth = 8;
+var arrowExtensionWidth = 8;
+var ballinitx=slingshotX+100;
+var ballinity=slingshotY+65;
 
 function create() {
 
@@ -79,11 +82,11 @@ function create() {
     arrow.body.allowGravity = false;
     arrow.alpha = 0; //arrow hidden
     
-    ball = game.add.sprite(slingshotX+100, slingshotY + 65, 'ball');
+    ball = game.add.sprite(ballinitx, ballinity, 'ball');
     ball.scale.setTo(0.15,0.15);
     game.physics.enable(ball, Phaser.Physics.ARCADE);
     ball.anchor.setTo(0.5, 0.5);
-    ball.body.collideWorldBounds = true; //bounces against walls
+    ball.body.collideWorldBounds = false; //bounces against walls
     ball.body.allowGravity = false;
     
     
@@ -140,7 +143,16 @@ function update() {
         arrowExtension.height = game.physics.arcade.distanceToPointer(arrow);  
         ballSpeed = arrowExtension.height;
     }   
+    
+    if (ball.x < 0 || ball.x> screenwidth || ball.y > screenheight || ball.y < 0){
+     restart();   
+    }
 
+}
+function restart(){
+    ballSpeed=0;
+        ball.reset(ballinitx,ballinity);
+        ball.body.allowGravity = false;
 }
 
 function render() {
