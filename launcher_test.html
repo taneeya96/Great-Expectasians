@@ -11,7 +11,13 @@
 </head>
 <body>
     <script type="text/javascript">
-var game = new Phaser.Game(1200, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+
+
+var screenwidth=1200;
+var screenheight=600;
+
+
+var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
     game.load.image('background','images/Background.png');
@@ -23,8 +29,8 @@ function preload() {
 
 
 }
-var screenwidth=1200;
-var screenheight=600;
+
+
 var text;
 var student;
 var counter = 0;
