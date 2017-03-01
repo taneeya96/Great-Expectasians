@@ -57,7 +57,7 @@ function create() {
 
     text = game.add.text(450, 16, '', { fill: '#ffffff' });
 
-    initStudents(2,2);
+    initStudents(3,3);
 
     //  This creates a simple sprite that is using our loaded image and
     //  displays it on-screen and assign it to a variable
@@ -129,8 +129,8 @@ students = game.add.group();
 
 for(c=0; c<columns; c++) {
 for(r=0; r<rows; r++) {
-    var studentX = r*150+100;
-    var studentY = c*150+100;
+    var studentX = r * (screenwidth/columns) + ((screenwidth/columns)/2);
+    var studentY = c * (screenheight/rows) + ((screenheight/rows)/2);
     newstudent = game.add.sprite(studentX, studentY, 'student');
     game.physics.enable(newstudent, Phaser.Physics.ARCADE);
     newstudent.body.immovable = true;
