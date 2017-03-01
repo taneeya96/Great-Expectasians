@@ -21,12 +21,14 @@ var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-exa
 
 function preload() {
     game.load.image('background','images/Background.png');
-    game.load.image('arrowExtension', 'images/green.png');
-    game.load.image('arrow', 'images/longarrow2.png');
     game.load.image('ball', 'images/paperBall.png');
     game.load.image('slingshot', 'images/CatapultSprite.png')
     game.load.image('student', 'images/donald.png');
 
+    game.load.image('arrow', 'images/blackarrow.png');
+    game.load.image('tail', 'images/black.png');
+    game.load.image('origin', 'images/blackdot.png');
+    game.load.image('analog','images/grey.png');
 
 }
 
@@ -36,13 +38,18 @@ var counter = 0;
 var slingshotX = 300;
 var slingshotY = 300
 var slingshotHeight = 340
-var arrow;
 var ball;
 var ballHeld = false; //checks if the ball is held or not
 var ballSpeed = 0; // speed of the ball
-var arrowExtensionWidth = 8;
 var ballinitx=slingshotX+100;
 var ballinity=slingshotY+65;
+
+var analog;
+var tail;
+var arrow;
+var origin;
+var background;
+const tailWidth = 10;
 
 function create() {
 
@@ -53,34 +60,12 @@ function create() {
     // set global gravity
     game.physics.arcade.gravity.y = 100;
 
-    //game.stage.backgroundColor = '#0072bc';
-
     text = game.add.text(450, 16, '', { fill: '#ffffff' });
 
     initStudents(3,3);
 
     //  This creates a simple sprite that is using our loaded image and
     //  displays it on-screen and assign it to a variable
-
-
-    arrowExtension = game.add.sprite(slingshotX+100, slingshotY+50, 'arrowExtension');
-
-    game.physics.enable(arrowExtension, Phaser.Physics.ARCADE);
-
-    arrowExtension.body.allowGravity = false;
-    arrowExtension.width = arrowExtensionWidth;
-    arrowExtension.rotation = 220;
-    arrowExtension.alpha = 0; //arrowExtension hidden
-    arrowExtension.anchor.setTo(0.5, 0.0);
-
-    arrow = game.add.sprite(slingshotX + 100, slingshotY + 50, 'arrow');
-
-    game.physics.enable(arrow, Phaser.Physics.ARCADE);
-
-    arrow.anchor.setTo(0.1, 0.5);
-    arrow.body.moves = false;
-    arrow.body.allowGravity = false;
-    arrow.alpha = 0; //arrow hidden
 
     ball = game.add.sprite(ballinitx, ballinity, 'ball');
     ball.scale.setTo(0.15,0.15);
@@ -90,39 +75,88 @@ function create() {
     ball.body.allowGravity = false;
 
 
-    // Enable input.
-    ball.inputEnabled = true; //allows ball to be influenced by mouse input
-    ball.events.onInputDown.add(holdBall); //when mouse is clicked
-    ball.events.onInputUp.add(launchBall); //when mouse is released
-
     slingshot = game.add.sprite(slingshotX,slingshotY,'slingshot');
     slingshot.height = slingshotHeight;
 
     //initStudents(4,3);
+
+    //the control arrow
+    analog = game.add.sprite(300, 300, 'analog');
+    analog.width = tailWidth;
+    analog.anchor.setTo(0.5,0);
+    analog.rotation = 3.14/2;
+    analog.alpha =0; //hide sprite
+
+    tail = game.add.sprite(300, 300, 'tail');
+    tail.width = tailWidth;
+    tail.anchor.setTo(0.5,1)
+    tail.rotation = 3.14/2;
+    tail.alpha = 0;
+
+    arrow = game.add.sprite(300, 300, 'arrow');
+    arrow.scale.setTo(0.1,0.1);
+    arrow.anchor.setTo(0,0.5);
+    arrow.alpha = 0;
+
+    origin = game.add.sprite(300,300,'origin');
+    origin.scale.setTo(0.02,0.02);
+    origin.anchor.setTo(0.5,0.5);
+    origin.alpha = 0;
+
+    bground.inputEnabled = true;
+    bground.events.onInputDown.add(holdBall);
+    bground.events.onInputUp.add(launchBall);
 }
 
-function holdBall(ball, pointer) {
 
+function holdBall() {
+
+    showArrow();
     ball.body.moves = false;
     ball.body.velocity.setTo(0, 0);
     ball.body.allowGravity = false;
-    ballHeld = true;
 
 }
 
 function launchBall() {
 
-    ballHeld = false;
+    hideArrow();
     ball.body.bounce.setTo(0.9, 0.9);
     ball.body.moves = true;
-    arrow.alpha = 0;
-    arrowExtension.alpha = 0;
-    Xvector = (arrow.x - ball.x) * 3;
-    Yvector = (arrow.y - ball.y) * 3;
+    Xvector = (arrow.x - origin.x) * 5;
+    Yvector = (arrow.y - origin.y) * 5;
     ball.body.allowGravity = true;
     ball.body.velocity.setTo(Xvector, Yvector);
 
+
 }
+
+function showArrow() {
+    //create arrow where the pointer is
+    console.log("called showArrow")
+    origin.alpha = 1;
+    arrow.alpha = 1;
+    tail.alpha = 1;
+    analog.alpha = 0.5;
+    var originX = game.input.activePointer.worldX;
+    var originY = game.input.activePointer.worldY;
+    origin.x = originX;
+    origin.y = originY;
+    arrow.x = originX;
+    arrow.y = originY;
+    tail.x = originX;
+    tail.y = originY;
+    analog.x = originX;
+    analog.y = originY;
+}
+
+function hideArrow(){
+    origin.alpha = 0;
+    arrow.alpha = 0;
+    tail.alpha = 0;
+    analog.alpha = 0;
+}
+
 
 function initStudents(rows,columns){
 students = game.add.group();
@@ -139,7 +173,6 @@ for(r=0; r<rows; r++) {
     newstudent.body.collideWorldBounds = true;
     newstudent.body.immovable = true;
     students.add(newstudent);
-
 }
 }
 }
@@ -148,35 +181,38 @@ for(r=0; r<rows; r++) {
 
 function update() {
 
-    arrow.rotation = game.physics.arcade.angleBetween(arrow, ball);
+    //arrow.rotation = game.physics.arcade.angleBetween(arrow, ball);
 
     if (game.physics.arcade.collide(students, ball)){
         counter++;
         text.text = "You hit the student " + counter + " times!";
     }
 
-
-    if (ballHeld == true)
-    {
-        //  Track the ball sprite to the mouse
-        ball.x = game.input.activePointer.worldX;
-        ball.y = game.input.activePointer.worldY;
-
-        arrow.alpha = 1;
-        arrowExtension.alpha = 1.5;
-        arrowExtension.rotation = arrow.rotation- 3.14 / 2;
-        arrowExtension.height = game.physics.arcade.distanceToPointer(arrow);
-        ballSpeed = arrowExtension.height;
-    }
-
     if (ball.x < 0 || ball.x> screenwidth || ball.y > screenheight || ball.y < 0){
      restart();
     }
 
+    // update the control arrow
+    if (game.input.activePointer.isDown){
+        var dist = game.physics.arcade.distanceToPointer(origin);
+        var angle = game.physics.arcade.angleToPointer(origin);
 
+        if (Math.abs(angle) <= 0.05){
+            arrow.rotation = 0;
+        } else{
+            arrow.rotation =  angle + 3.14;
+        }
+        tail.rotation = angle - 3.14/2;
+        analog.rotation = angle - 3.14/2;
 
-
+        tail.height = 0.5*dist;
+        analog.height = dist;
+        arrow.x = origin.x -  0.5*dist*Math.cos(angle);
+        arrow.y = origin.y - 0.5*dist*Math.sin(angle);
+    }
 }
+
+
 function restart(){
     	ballSpeed=0;
         ball.reset(ballinitx,ballinity);
