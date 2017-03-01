@@ -191,7 +191,6 @@ function update() {
         counter++;
         text.text = "You hit the student " + counter + " times!";
         restart();
-        ballFlying = false;
     }
 
     if (ball.x < 0 || ball.x> screenwidth || ball.y > screenheight || ball.y < 0){
@@ -229,6 +228,7 @@ function restart(){
     	ballSpeed=0;
         ball.reset(ballinitx,ballinity);
         ball.body.allowGravity = false;
+        ballFlying = false;
 }
 
 function render() {
