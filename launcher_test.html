@@ -50,6 +50,7 @@ var arrow;
 var origin;
 var background;
 const tailWidth = 10;
+var ballFlying = false;
 
 function create() {
 
@@ -110,11 +111,12 @@ function create() {
 
 
 function holdBall() {
-
-    showArrow();
-    ball.body.moves = false;
-    ball.body.velocity.setTo(0, 0);
-    ball.body.allowGravity = false;
+    if(!ballFlying){
+        showArrow();
+        ball.body.moves = false;
+        ball.body.velocity.setTo(0, 0);
+        ball.body.allowGravity = false;
+    }
 
 }
 
@@ -127,6 +129,8 @@ function launchBall() {
     Yvector = (arrow.y - origin.y) * 5;
     ball.body.allowGravity = true;
     ball.body.velocity.setTo(Xvector, Yvector);
+    ballFlying = true;
+
 
 
 }
@@ -186,14 +190,22 @@ function update() {
     if (game.physics.arcade.collide(students, ball)){
         counter++;
         text.text = "You hit the student " + counter + " times!";
+        restart();
+        ballFlying = false;
     }
 
     if (ball.x < 0 || ball.x> screenwidth || ball.y > screenheight || ball.y < 0){
      restart();
     }
 
+    if (ballFlying){
+        bground.inputEnabled = false;
+    } else {
+        bground.inputEnabled = true;
+    }
+
     // update the control arrow
-    if (game.input.activePointer.isDown){
+    if (game.input.activePointer.isDown && !ballFlying){
         var dist = game.physics.arcade.distanceToPointer(origin);
         var angle = game.physics.arcade.angleToPointer(origin);
 
