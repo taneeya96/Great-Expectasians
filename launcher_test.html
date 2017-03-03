@@ -23,7 +23,11 @@ function preload() {
     game.load.image('background','images/Background.png');
     game.load.image('ball', 'images/paperBall.png');
     game.load.image('slingshot', 'images/CatapultSprite.png')
-    game.load.image('student', 'images/donald.png');
+    game.load.image('student1', 'images/student1.png');
+    game.load.image('student2', 'images/student2.png');
+    game.load.image('student3', 'images/student1.png');
+    game.load.image('student4', 'images/student4.png');
+    game.load.image('student5', 'images/student5.png');
 
     game.load.image('arrow', 'images/blackarrow.png');
     game.load.image('tail', 'images/black.png');
@@ -35,7 +39,7 @@ function preload() {
 
 var text;
 var counter = 0;
-var slingshotX = 300;
+var slingshotX = 450;
 var slingshotY = 300
 var slingshotHeight = 340
 var ball;
@@ -63,7 +67,45 @@ function create() {
 
     text = game.add.text(450, 16, '', { fill: '#ffffff' });
 
-    initStudents(3,3);
+    student1 = game.add.sprite(320, 150, 'student1');
+    game.physics.enable(student1, Phaser.Physics.ARCADE);
+    student1.body.immovanewstudentble = true;
+    student1.anchor.set(0.5,0.5);
+    student1.body.allowGravity = false;
+    student1.body.collideWorldBounds = true;
+    student1.body.immovable = true;
+
+    student2 = game.add.sprite(600, 150, 'student2');
+    game.physics.enable(student2, Phaser.Physics.ARCADE);
+    student2.body.immovanewstudentble = true;
+    student2.anchor.set(0.5,0.5);
+    student2.body.allowGravity = false;
+    student2.body.collideWorldBounds = true;
+    student2.body.immovable = true;
+
+    student3 = game.add.sprite(870, 150, 'student3');
+    game.physics.enable(student3, Phaser.Physics.ARCADE);
+    student3.body.immovanewstudentble = true;
+    student3.anchor.set(0.5,0.5);
+    student3.body.allowGravity = false;
+    student3.body.collideWorldBounds = true;
+    student3.body.immovable = true;
+
+    student4 = game.add.sprite(200, 500, 'student4');
+    game.physics.enable(student4, Phaser.Physics.ARCADE);
+    student4.body.immovanewstudentble = true;
+    student4.anchor.set(0.5,0.5);
+    student4.body.allowGravity = false;
+    student4.body.collideWorldBounds = true;
+    student4.body.immovable = true;
+
+    student5 = game.add.sprite(1000, 500, 'student5');
+    game.physics.enable(student5, Phaser.Physics.ARCADE);
+    student5.body.immovanewstudentble = true;
+    student5.anchor.set(0.5,0.5);
+    student5.body.allowGravity = false;
+    student5.body.collideWorldBounds = true;
+    student5.body.immovable = true;
 
     //  This creates a simple sprite that is using our loaded image and
     //  displays it on-screen and assign it to a variable
@@ -162,32 +204,27 @@ function hideArrow(){
 }
 
 
-function initStudents(rows,columns){
-students = game.add.group();
-
-for(c=0; c<columns; c++) {
-for(r=0; r<rows; r++) {
-    var studentX = r * (screenwidth/columns) + ((screenwidth/columns)/2);
-    var studentY = c * (screenheight/rows) + ((screenheight/rows)/2);
-    newstudent = game.add.sprite(studentX, studentY, 'student');
-    game.physics.enable(newstudent, Phaser.Physics.ARCADE);
-    newstudent.body.immovable = true;
-    newstudent.anchor.set(0.5,0.5);
-    newstudent.body.allowGravity = false;
-    newstudent.body.collideWorldBounds = true;
-    newstudent.body.immovable = true;
-    students.add(newstudent);
-}
-}
-}
-
-
-
 function update() {
 
     //arrow.rotation = game.physics.arcade.angleBetween(arrow, ball);
 
-    if (game.physics.arcade.collide(students, ball)){
+    if (game.physics.arcade.collide(student1, ball)){
+        counter++;
+        text.text = "You hit the student " + counter + " times!";
+        restart();
+    } if (game.physics.arcade.collide(student2, ball)){
+        counter++;
+        text.text = "You hit the student " + counter + " times!";
+        restart();
+    } if (game.physics.arcade.collide(student3, ball)){
+        counter++;
+        text.text = "You hit the student " + counter + " times!";
+        restart();
+    } if (game.physics.arcade.collide(student4, ball)){
+        counter++;
+        text.text = "You hit the student " + counter + " times!";
+        restart();
+    } if (game.physics.arcade.collide(student5, ball)){
         counter++;
         text.text = "You hit the student " + counter + " times!";
         restart();
