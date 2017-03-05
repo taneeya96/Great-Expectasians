@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,19 +35,30 @@ function preload() {
     game.load.image('origin', 'images/blackdot.png');
     game.load.image('analog','images/grey.png');
 
+    game.load.image('pauseButton','images/PauseButton2.png');
+    game.load.image('resetButton','images/ResetButton.png')
+    game.load.image('playButton', 'images/PlayButton.png');
+
+
 }
 
 
 var text;
 var counter = 0;
+//<<<<<<< Updated upstream
 var slingshotX = 450;
 var slingshotY = 300
 var slingshotHeight = 340
+//=======
+//const slingshotX = 300;
+//const slingshotY = 300
+//const slingshotHeight = 340
+//>>>>>>> Stashed changes
 var ball;
 var ballHeld = false; //checks if the ball is held or not
 var ballSpeed = 0; // speed of the ball
-var ballinitx=slingshotX+100;
-var ballinity=slingshotY+65;
+const ballinitx=slingshotX+100;
+const ballinity=slingshotY+65;
 
 var analog;
 var tail;
@@ -55,6 +67,17 @@ var origin;
 var background;
 const tailWidth = 10;
 var ballFlying = false;
+var ballDragged = false;
+
+var resetButton;
+var pauseButton;
+var playButton;
+const buttonXPos = 1100;
+const buttonYPos = 50;
+const pauseButtonHeight = 60;
+
+
+
 
 function create() {
 
@@ -149,7 +172,27 @@ function create() {
     bground.inputEnabled = true;
     bground.events.onInputDown.add(holdBall);
     bground.events.onInputUp.add(launchBall);
+
+    //buttons
+    pauseButton = game.add.sprite(buttonXPos, buttonYPos, 'pauseButton' );
+   	resetButton = game.add.sprite(buttonXPos, buttonYPos+60, 'resetButton');
+   	playButton = game.add.sprite(buttonXPos, buttonYPos+120,'playButton');
+
+   	pauseButton.scale.setTo(0.015,0.015);
+   	resetButton.scale.setTo(0.15,0.15);
+   	playButton.scale.setTo(0.054,0.054);
+
+   	pauseButton.inputEnabled = true;
+   	resetButton.inputEnabled = true;
+   	playButton.inputEnabled = true;
+
+   	pauseButton.events.onInputDown.add(pause, this);
+   	resetButton.events.onInputDown.add(reset,this);
+   	playButton.events.onInputDown.add(play,this);
+
 }
+
+
 
 
 function holdBall() {
@@ -260,12 +303,30 @@ function update() {
     }
 }
 
+function reset(){
+	restart();
+	counter =0;
+	text.text = "";
+}
+
+function pause(){
+	ball.body.moves = false;
+	ball.body.allowGravity = false;
+}
 
 function restart(){
     	ballSpeed=0;
         ball.reset(ballinitx,ballinity);
         ball.body.allowGravity = false;
         ballFlying = false;
+}
+function play()
+{
+    if(ballFlying)
+    {
+        ball.body.moves = true;
+        ball.body.allowGravity = true;
+    }
 }
 
 function render() {
