@@ -2,7 +2,7 @@ var screenwidth=1200;
 var screenheight=600;
 
 
-var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example');
+var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
     game.load.image('background','images/Background.png');
