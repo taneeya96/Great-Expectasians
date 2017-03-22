@@ -1,8 +1,6 @@
 var screenwidth=1200;
 var screenheight=600;
 var randomStudent;
-
-
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
@@ -24,7 +22,7 @@ function preload() {
     game.load.image('resetButton','images/ResetButton.png')
     game.load.image('playButton', 'images/PlayButton.png');
 
-
+    game.load.image('gradeF','images/gradeF.png');
 
 }
 
@@ -65,6 +63,7 @@ const pauseButtonHeight = 60;
 var arrayStudents;
 var lives=3;
 
+var gradeF;
 
 function create() {
 
@@ -189,6 +188,8 @@ function create() {
     }
     randomStudent.alpha = 1;
 
+    gradeF = game.add.sprite(250,-200,'gradeF');
+    gradeF.alpha = 0;
 
 
 }
@@ -305,6 +306,7 @@ function update() {
 }
 
 function reset(){
+  gradeF.alpha = 0;
 	restart();
   randomStudent.alpha = 0.5;
   chooseStudent();
@@ -356,11 +358,11 @@ function checkLife(){
   {
     livesDisplay.text = "GAME OVER";
     text.text = "Click the reset button to play again!"
+    randomStudent.alpha = 0.5;
+    gradeF.alpha =1;
     restart();
   }
 }
-
-
 
 function render() {
 
