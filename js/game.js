@@ -1,5 +1,6 @@
 var screenwidth=1200;
 var screenheight=600;
+var randomStudent;
 
 
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
@@ -22,6 +23,7 @@ function preload() {
     game.load.image('pauseButton','images/PauseButton2.png');
     game.load.image('resetButton','images/ResetButton.png')
     game.load.image('playButton', 'images/PlayButton.png');
+
 
 
 }
@@ -60,7 +62,8 @@ const buttonXPos = 1100;
 const buttonYPos = 50;
 const pauseButtonHeight = 60;
 
-
+var arrayStudents;
+var lives=3;
 
 
 function create() {
@@ -73,6 +76,8 @@ function create() {
     game.physics.arcade.gravity.y = 100;
 
     text = game.add.text(450, 16, '', { fill: '#ffffff' });
+    livesDisplay = game.add.text(1000,16,'',{fill: '#ffffff' });
+    livesDisplay.text = "Lives : "+lives;
 
     student1 = game.add.sprite(320, 150, 'student1');
     game.physics.enable(student1, Phaser.Physics.ARCADE);
@@ -174,10 +179,19 @@ function create() {
    	resetButton.events.onInputDown.add(reset,this);
    	playButton.events.onInputDown.add(play,this);
 
+    arrayStudents = [student1, student2, student3, student4, student5];
+    randomIndex = Math.floor((Math.random() * 5))
+    randomStudent = arrayStudents[randomIndex];
+    var i;
+    for(i=0; i<5; i++)
+    {
+      arrayStudents[i].alpha = 0.50;
+    }
+    randomStudent.alpha = 1;
+
+
+
 }
-
-
-
 
 function holdBall() {
     if(!ballFlying){
@@ -233,29 +247,29 @@ function hideArrow(){
 
 function update() {
 
-    //arrow.rotation = game.physics.arcade.angleBetween(arrow, ball);
+    arrow.rotation = game.physics.arcade.angleBetween(arrow, ball);
 
-    if (game.physics.arcade.collide(student1, ball)){
-        counter++;
-        text.text = "You hit the student " + counter + " times!";
+    //Randomized selection of student
+
+      if(game.physics.arcade.collide(randomStudent,ball))
+      {
+        studentHit();
+        chooseStudent();
         restart();
-    } if (game.physics.arcade.collide(student2, ball)){
-        counter++;
-        text.text = "You hit the student " + counter + " times!";
-        restart();
-    } if (game.physics.arcade.collide(student3, ball)){
-        counter++;
-        text.text = "You hit the student " + counter + " times!";
-        restart();
-    } if (game.physics.arcade.collide(student4, ball)){
-        counter++;
-        text.text = "You hit the student " + counter + " times!";
-        restart();
-    } if (game.physics.arcade.collide(student5, ball)){
-        counter++;
-        text.text = "You hit the student " + counter + " times!";
-        restart();
-    }
+      }
+        else{
+          for(i=0; i<5; i++)
+          {
+            if(arrayStudents[i]!=randomStudent && game.physics.arcade.collide(arrayStudents[i],ball))
+            {
+            lives--;
+            livesDisplay.text = "Lives : "+lives;
+            restart();
+          }
+        }
+        }
+        checkLife();
+
 
     if (ball.x < 0 || ball.x> screenwidth || ball.y > screenheight || ball.y < 0){
      restart();
@@ -284,13 +298,21 @@ function update() {
         analog.height = dist;
         arrow.x = origin.x -  0.5*dist*Math.cos(angle);
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
-    }
+
+
+        }
+
 }
 
 function reset(){
 	restart();
+  randomStudent.alpha = 0.5;
+  chooseStudent();
+  lives = 3;
 	counter =0;
 	text.text = "";
+  livesDisplay.text ="Lives : "+lives;
+
 }
 
 function pause(){
@@ -299,10 +321,10 @@ function pause(){
 }
 
 function restart(){
-    	ballSpeed=0;
-        ball.reset(ballinitx,ballinity);
-        ball.body.allowGravity = false;
-        ballFlying = false;
+  ballSpeed=0;
+  ball.reset(ballinitx,ballinity);
+  ball.body.allowGravity = false;
+  ballFlying = false;
 }
 function play()
 {
@@ -312,6 +334,33 @@ function play()
         ball.body.allowGravity = true;
     }
 }
+function chooseStudent(){
+  num = Math.floor((Math.random() * 5));
+  while(num==randomIndex)
+  {
+    num = Math.floor((Math.random() * 5));
+  }
+  randomIndex=num;
+  randomStudent = arrayStudents[randomIndex];
+  randomStudent.alpha = 1;
+}
+function studentHit()
+{
+    counter++;
+    text.text ="Score : " + counter;
+    randomStudent.alpha = 0.5;
+}
+
+function checkLife(){
+  if (lives<=0)
+  {
+    livesDisplay.text = "GAME OVER";
+    text.text = "Click the reset button to play again!"
+    restart();
+  }
+}
+
+
 
 function render() {
 
