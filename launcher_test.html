@@ -25,10 +25,10 @@ function preload() {
     game.load.image('ball', 'images/paperBall.png');
     game.load.image('slingshot', 'images/CatapultSprite.png')
     game.load.image('student1', 'images/student1.png');
-    game.load.image('student2', 'images/student2.png');
-    game.load.image('student3', 'images/student1.png');
-    game.load.image('student4', 'images/student4.png');
-    game.load.image('student5', 'images/student5.png');
+    // game.load.image('student2', 'images/student2.png');
+    // game.load.image('student3', 'images/student1.png');
+    // game.load.image('student4', 'images/student4.png');
+    // game.load.image('student5', 'images/student5.png');
 
     game.load.image('arrow', 'images/blackarrow.png');
     game.load.image('tail', 'images/black.png');
@@ -38,6 +38,8 @@ function preload() {
     game.load.image('pauseButton','images/PauseButton2.png');
     game.load.image('resetButton','images/ResetButton.png')
     game.load.image('playButton', 'images/PlayButton.png');
+
+    game.load.physics('physicsData', 'assets/physics/student1.json');
 
 
 }
@@ -59,6 +61,7 @@ var ballHeld = false; //checks if the ball is held or not
 var ballSpeed = 0; // speed of the ball
 const ballinitx=slingshotX+100;
 const ballinity=slingshotY+65;
+var student;
 
 var analog;
 var tail;
@@ -68,7 +71,9 @@ var background;
 const tailWidth = 10;
 var ballFlying = false;
 var ballDragged = false;
+var ballCollided = false;
 
+var currentVel = 0;
 var resetButton;
 var pauseButton;
 var playButton;
@@ -76,73 +81,87 @@ const buttonXPos = 1100;
 const buttonYPos = 50;
 const pauseButtonHeight = 60;
 
-
+var sz = 0.15;
 
 
 function create() {
 
     bground = game.add.sprite(0,0,'background');
     bground.alpha = 0.75; //transparency of background
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-
-    // set global gravity
-    game.physics.arcade.gravity.y = 100;
-
     text = game.add.text(450, 16, '', { fill: '#ffffff' });
+    slingshot = game.add.sprite(slingshotX,slingshotY,'slingshot');
+    slingshot.height = slingshotHeight;
 
-    student1 = game.add.sprite(320, 150, 'student1');
-    game.physics.enable(student1, Phaser.Physics.ARCADE);
-    student1.body.immovanewstudentble = true;
-    student1.anchor.set(0.5,0.5);
-    student1.body.allowGravity = false;
-    student1.body.collideWorldBounds = true;
-    student1.body.immovable = true;
-
-    student2 = game.add.sprite(600, 150, 'student2');
-    game.physics.enable(student2, Phaser.Physics.ARCADE);
-    student2.body.immovanewstudentble = true;
-    student2.anchor.set(0.5,0.5);
-    student2.body.allowGravity = false;
-    student2.body.collideWorldBounds = true;
-    student2.body.immovable = true;
-
-    student3 = game.add.sprite(870, 150, 'student3');
-    game.physics.enable(student3, Phaser.Physics.ARCADE);
-    student3.body.immovanewstudentble = true;
-    student3.anchor.set(0.5,0.5);
-    student3.body.allowGravity = false;
-    student3.body.collideWorldBounds = true;
-    student3.body.immovable = true;
-
-    student4 = game.add.sprite(200, 500, 'student4');
-    game.physics.enable(student4, Phaser.Physics.ARCADE);
-    student4.body.immovanewstudentble = true;
-    student4.anchor.set(0.5,0.5);
-    student4.body.allowGravity = false;
-    student4.body.collideWorldBounds = true;
-    student4.body.immovable = true;
-
-    student5 = game.add.sprite(1000, 500, 'student5');
-    game.physics.enable(student5, Phaser.Physics.ARCADE);
-    student5.body.immovanewstudentble = true;
-    student5.anchor.set(0.5,0.5);
-    student5.body.allowGravity = false;
-    student5.body.collideWorldBounds = true;
-    student5.body.immovable = true;
-
-    //  This creates a simple sprite that is using our loaded image and
-    //  displays it on-screen and assign it to a variable
+    //ENABLE P2 PHYSICS INSTEAd
+    game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.gravity.y = 500; //larger y gravity the narrower the parabol.
+    game.physics.p2.restitution = 0.1; //bounciness of the world
 
     ball = game.add.sprite(ballinitx, ballinity, 'ball');
     ball.scale.setTo(0.15,0.15);
-    game.physics.enable(ball, Phaser.Physics.ARCADE);
+    game.physics.p2.enable(ball);
     ball.anchor.setTo(0.5, 0.5);
-    ball.body.collideWorldBounds = false; //bounces against walls
-    ball.body.allowGravity = false;
 
 
-    slingshot = game.add.sprite(slingshotX,slingshotY,'slingshot');
-    slingshot.height = slingshotHeight;
+    //ball.body.collideWorldBounds = false;
+    //ball.body.allowGravity = false;
+    //ball.body.data.gravityScale = 0; DELETE
+    //ball.body.moves = false;
+    ball.body.static = true;
+
+    // set global gravity
+    //game.physics.arcade.gravity.y = 100;
+
+    
+
+    student = game.add.sprite(220, 350, 'student1');
+    game.physics.p2.enable(student, false);
+    student.body.static = true;
+    student.body.clearShapes();
+    student.body.loadPolygon('physicsData','student1');
+
+    ball.body.onBeginContact.add(ballHit, this);
+    // game.physics.enable(student1, Phaser.Physics.ARCADE);
+    // student1.body.immovanewstudentble = true;
+    // student1.anchor.set(0.5,0.5);
+    // student1.body.allowGravity = false;
+    // student1.body.collideWorldBounds = true;
+    // student1.body.immovable = true;
+
+    // //student2 = game.add.sprite(600, 150, 'student2');
+    // game.physics.enable(student2, Phaser.Physics.ARCADE);
+    // student2.body.immovanewstudentble = true;
+    // student2.anchor.set(0.5,0.5);
+    // student2.body.allowGravity = false;
+    // student2.body.collideWorldBounds = true;
+    // student2.body.immovable = true;
+
+    // student3 = game.add.sprite(870, 150, 'student3');
+    // game.physics.enable(student3, Phaser.Physics.ARCADE);
+    // student3.body.immovanewstudentble = true;
+    // student3.anchor.set(0.5,0.5);
+    // student3.body.allowGravity = false;
+    // student3.body.collideWorldBounds = true;
+    // student3.body.immovable = true;
+
+    // student4 = game.add.sprite(200, 500, 'student4');
+    // game.physics.enable(student4, Phaser.Physics.ARCADE);
+    // student4.body.immovanewstudentble = true;
+    // student4.anchor.set(0.5,0.5);
+    // student4.body.allowGravity = false;
+    // student4.body.collideWorldBounds = true;
+    // student4.body.immovable = true;
+
+    // student5 = game.add.sprite(1000, 500, 'student5');
+    // game.physics.enable(student5, Phaser.Physics.ARCADE);
+    // student5.body.immovanewstudentble = true;
+    // student5.anchor.set(0.5,0.5);
+    // student5.body.allowGravity = false;
+    // student5.body.collideWorldBounds = true;
+    // student5.body.immovable = true;
+
+    //  This creates a simple sprite that is using our loaded image and
+    //  displays it on-screen and assign it to a variable
 
     //initStudents(4,3);
 
@@ -169,60 +188,95 @@ function create() {
     origin.anchor.setTo(0.5,0.5);
     origin.alpha = 0;
 
-    bground.inputEnabled = true;
-    bground.events.onInputDown.add(holdBall);
-    bground.events.onInputUp.add(launchBall);
+    //CHANGE ACTIVEPOINTER : tutorial here: https://phaser.io/examples/v2/input/down-duration
+
+    // bground.inputEnabled = true;
+    // bground.events.onInputDown.add(holdBall);
+    // bground.events.onInputUp.add(launchBall);
+
+
+    game.input.onDown.add(holdBall);
+    game.input.onUp.add(launchBall);
+    //CHANGE ACTIVEPOINTER TODO LATER
+
+  
 
     //buttons
-    pauseButton = game.add.sprite(buttonXPos, buttonYPos, 'pauseButton' );
-   	resetButton = game.add.sprite(buttonXPos, buttonYPos+60, 'resetButton');
-   	playButton = game.add.sprite(buttonXPos, buttonYPos+120,'playButton');
+    pauseButton = game.add.button(buttonXPos, buttonYPos, 'pauseButton', pause , this, 2, 1, 0);
+   	resetButton = game.add.button(buttonXPos, buttonYPos+60, 'resetButton', reset , this, 2, 1, 0 );
+   	playButton = game.add.button(buttonXPos, buttonYPos+120,'playButton', play , this, 2, 1, 0);
 
    	pauseButton.scale.setTo(0.015,0.015);
    	resetButton.scale.setTo(0.15,0.15);
    	playButton.scale.setTo(0.054,0.054);
 
-   	pauseButton.inputEnabled = true;
-   	resetButton.inputEnabled = true;
-   	playButton.inputEnabled = true;
+   	// pauseButton.inputEnabled = true;
+   	// resetButton.inputEnabled = true;
+   	// playButton.inputEnabled = true;
 
-   	pauseButton.events.onInputDown.add(pause, this);
-   	resetButton.events.onInputDown.add(reset,this);
-   	playButton.events.onInputDown.add(play,this);
+   	// pauseButton.events.onInputDown.add(pause, this);
+   	// resetButton.events.onInputDown.add(reset,this);
+   	// playButton.events.onInputDown.add(play,this);
+
+
 
 }
 
-
-
+function ballHit(body, bodyB, shapeA, shapeB, equation) {
+    ballCollided = true;
+    //restart();
+    if (body){
+        console.log('You hit a student!');
+    }
+    else{
+        console.log('You hit a wall :)');
+    }
+}
 
 function holdBall() {
     if(!ballFlying){
         showArrow();
-        ball.body.moves = false;
-        ball.body.velocity.setTo(0, 0);
-        ball.body.allowGravity = false;
+        //ball.body.moves = false;
+        ball.body.static = true;
+        //ball.body.velocity.setTo(0, 0);
+        //ball.body.allowGravity = false;
+        //ball.body.data.gravityScale = 0; DELETE
     }
 
 }
 
 function launchBall() {
+    if(!ballFlying){
+        hideArrow();
+        ball.body.static = false;
+        // ball.body.bounce.setTo(0.9, 0.9);
+        // ball.body.moves = true;
+        Xvector = (arrow.x - origin.x)*6;
+        Yvector = (arrow.y - origin.y) *15;
+        // ball.body.allowGravity = true;
+        // ball.body.velocity.setTo(Xvector, Yvector);
+        //NEW WAY TO SET INIT VELOCITY
+        ball.body.velocity.x = Xvector;
+        ball.body.velocity.y = Yvector;
+        currentVel = Yvector;
+        ballFlying = true;
 
-    hideArrow();
-    ball.body.bounce.setTo(0.9, 0.9);
-    ball.body.moves = true;
-    Xvector = (arrow.x - origin.x) * 5;
-    Yvector = (arrow.y - origin.y) * 5;
-    ball.body.allowGravity = true;
-    ball.body.velocity.setTo(Xvector, Yvector);
-    ballFlying = true;
+          //CREATE A TIMER EVENT TO REDUCE SIZE OF BALL
+        text = game.add.text(game.world.centerX, game.world.centerY, 'Size')
+        timerEvent = game.time.events.loop(100, updateSize, this);
+        //END TIMER
+    }
+}
 
-
-
+function updateSize() {
+    sz = sz*0.96;
+    text.setText('Size ' + sz );
+    ball.scale.setTo(sz,sz);
 }
 
 function showArrow() {
     //create arrow where the pointer is
-    console.log("called showArrow")
+    //console.log("called showArrow")
     origin.alpha = 1;
     arrow.alpha = 1;
     tail.alpha = 1;
@@ -251,40 +305,40 @@ function update() {
 
     //arrow.rotation = game.physics.arcade.angleBetween(arrow, ball);
 
-    if (game.physics.arcade.collide(student1, ball)){
-        counter++;
-        text.text = "You hit the student " + counter + " times!";
-        restart();
-    } if (game.physics.arcade.collide(student2, ball)){
-        counter++;
-        text.text = "You hit the student " + counter + " times!";
-        restart();
-    } if (game.physics.arcade.collide(student3, ball)){
-        counter++;
-        text.text = "You hit the student " + counter + " times!";
-        restart();
-    } if (game.physics.arcade.collide(student4, ball)){
-        counter++;
-        text.text = "You hit the student " + counter + " times!";
-        restart();
-    } if (game.physics.arcade.collide(student5, ball)){
-        counter++;
-        text.text = "You hit the student " + counter + " times!";
-        restart();
-    }
+    // if (game.physics.arcade.collide(student1, ball)){
+    //     counter++;
+    //     text.text = "You hit the student " + counter + " times!";
+    //     restart();
+    // } if (game.physics.arcade.collide(student2, ball)){
+    //     counter++;
+    //     text.text = "You hit the student " + counter + " times!";
+    //     restart();
+    // } if (game.physics.arcade.collide(student3, ball)){
+    //     counter++;
+    //     text.text = "You hit the student " + counter + " times!";
+    //     restart();
+    // } if (game.physics.arcade.collide(student4, ball)){
+    //     counter++;
+    //     text.text = "You hit the student " + counter + " times!";
+    //     restart();
+    // } if (game.physics.arcade.collide(student5, ball)){
+    //     counter++;
+    //     text.text = "You hit the student " + counter + " times!";
+    //     restart();
+    // }
 
     if (ball.x < 0 || ball.x> screenwidth || ball.y > screenheight || ball.y < 0){
-     restart();
+        restart();
     }
 
-    if (ballFlying){
-        bground.inputEnabled = false;
-    } else {
-        bground.inputEnabled = true;
-    }
+    // if (ballFlying){
+    //     bground.inputEnabled = false;
+    // } else {
+    //     bground.inputEnabled = true;
+    // }
 
     // update the control arrow
-    if (game.input.activePointer.isDown && !ballFlying){
+    if (game.input.activePointer.isDown && !ballFlying && !ballCollided){
         var dist = game.physics.arcade.distanceToPointer(origin);
         var angle = game.physics.arcade.angleToPointer(origin);
 
@@ -301,6 +355,22 @@ function update() {
         arrow.x = origin.x -  0.5*dist*Math.cos(angle);
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
     }
+
+    if (ballFlying){
+        dirChange = directionChanged(ball.body.velocity.y);
+    }
+
+}
+
+function directionChanged( newVel){
+    if (newVel * currentVel < 0){
+        currentVel = newVel;
+        console.log('ball falling')
+        return true;
+    } else{
+        currentVel = newVel;
+        return false;
+    }
 }
 
 function reset(){
@@ -310,22 +380,40 @@ function reset(){
 }
 
 function pause(){
-	ball.body.moves = false;
-	ball.body.allowGravity = false;
+	//ball.body.moves = false;
+    //ball.body.static = true;
+	//ball.body.allowGravity = false;
+    //ball.body.data.gravityScale = 0;
+    game.physics.p2.pause();
+    //pause timer event
+    game.time.events.pause(timerEvent);
 }
 
 function restart(){
     	ballSpeed=0;
-        ball.reset(ballinitx,ballinity);
-        ball.body.allowGravity = false;
         ballFlying = false;
+        ballCollided = false;
+        ball.reset(ballinitx,ballinity);
+        ball.body.static = true;
+        //ball.body.allowGravity = false;
+        ballFlying = false;
+        //delete timer event
+        game.time.events.remove(timerEvent);
+        ball.scale.setTo(0.15,0.15);
+        sz = 0.15;
 }
-function play()
-{
-    if(ballFlying)
-    {
-        ball.body.moves = true;
-        ball.body.allowGravity = true;
+
+function play(){
+    if(ballFlying){
+        //ball.body.moves = true;
+        //ball.body.static = false;
+        //ball.body.allowGravity = true;
+        //resume timer event
+        game.time.events.resume(timerEvent);
+        game.physics.p2.resume();
+        //ball.body.data.gravityScale = 1;
+    } else{
+        pass
     }
 }
 
