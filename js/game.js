@@ -24,12 +24,9 @@ function preload() {
     game.load.image('resetButton','images/ResetButton.png')
     game.load.image('playButton', 'images/PlayButton.png');
 
-//<<<<<<< HEAD
     //COLLISION NOT WORKING YET
     game.load.physics('physicsData', 'assets/physics/student1.json');
-///=======
     game.load.image('gradeF','images/gradeF.png');
-//>>>>>>> origin/master
 
 }
 
@@ -38,7 +35,7 @@ var text;
 var counter = 0;
 //<<<<<<< Updated upstream
 var slingshotX = 450;
-var slingshotY = 300
+var slingshotY = 500
 var slingshotHeight = 340
 //=======
 //const slingshotX = 300;
@@ -107,25 +104,18 @@ function create() {
 
     var studentCollisionGroup = game.physics.p2.createCollisionGroup();
     var ballCollisionGroup = game.physics.p2.createCollisionGroup();
-    var studentXs = [320,600,870,200,1000];
-    var studentYs = [150,150,150,500,500];
+    var studentXs = [320,1000,870,200,600];
+    var studentYs = [250,500,250,500,250];
     arrayStudents = [];
 
-    for (var i=0; i<1; i++){
+    for (var i=0; i<3; i++){
         var student = addStudent('student1', studentXs[i], studentYs[i]);
         arrayStudents.push(student);
-        student.body.setRectangle(40,40); //for collision, box-shaped
+        //student.body.setRectangle(80,80); //for collision, box-shaped
+        student.body.loadPolygon('physicsData', 'student1');
         student.body.setCollisionGroup(studentCollisionGroup);
         student.body.collides([studentCollisionGroup, ballCollisionGroup]);
     }
-
-    //TRYING THIS COLLISION OTU
-    // student1 = addStudent('student1', 320, 150 );
-    // student2 = addStudent('student2', 600, 150);
-    // student3 = addStudent('student3', 870, 150);
-    // student4 = addStudent('student4', 200, 500);
-    // student5 = addStudent('student5', 1000, 500);
-
     //  This creates a simple sprite that is using our loaded image and
     //  displays it on-screen and assign it to a variable
     slingshot = game.add.sprite(slingshotX,slingshotY,'slingshot');
@@ -182,15 +172,14 @@ function create() {
    	resetButton.scale.setTo(0.15,0.15);
    	playButton.scale.setTo(0.054,0.054);
 
-    // randomIndex = Math.floor((Math.random() * 5))
-    randomIndex = 0;
+    randomIndex = Math.floor((Math.random() * 3))
+    //randomIndex = 0;
     randomStudent = arrayStudents[randomIndex];
-    // var i;
-    // for(i=0; i<5; i++)
-    // {
-    //   arrayStudents[i].alpha = 0.50;
-    // }
-    // randomStudent.alpha = 1;
+    for( var i=0; i< arrayStudents.length; i++)
+    {
+      arrayStudents[i].alpha = 0.50;
+    }
+    randomStudent.alpha = 1;
 
 
     gradeF = game.add.sprite(250,-100,'gradeF');
@@ -366,18 +355,11 @@ function directionChanged( newVel){
 
 
 function reset(){
-//<<<<<<< HEAD
-    restart();
-    randomStudent.alpha = 0.5;
-    chooseStudent();
-    lives = 3;
-//=======
   gradeF.alpha = 0;
 	restart();
   randomStudent.alpha = 0.5;
   chooseStudent();
   lives = 3;
-//>>>>>>> origin/master
 	counter =0;
 	text.text = "";
     livesDisplay.text ="Lives : "+lives;
@@ -422,13 +404,13 @@ function removeMenu()
 }
 //>>>>>>> Stashed changes
 function chooseStudent(){
-  num = Math.floor((Math.random() * 5));
+  num = Math.floor((Math.random() * 3));
   while(num==randomIndex)
   {
-    num = Math.floor((Math.random() * 5));
+    num = Math.floor((Math.random() * 3));
   }
   randomIndex=num;
-  randomIndex = 0;
+  //randomIndex = 0;
   randomStudent = arrayStudents[randomIndex];
   randomStudent.alpha = 1;
 }
