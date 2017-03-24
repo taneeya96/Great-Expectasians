@@ -4,6 +4,8 @@ var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
+    game.load.image('Menu','images/MainMenu.png');
+    game.load.image('MenuButton','images/MenuPlay.png');
     game.load.image('background','images/Background.png');
     game.load.image('ball', 'images/paperBall.png');
     game.load.image('slingshot', 'images/CatapultSprite.png')
@@ -22,12 +24,12 @@ function preload() {
     game.load.image('resetButton','images/ResetButton.png')
     game.load.image('playButton', 'images/PlayButton.png');
 
-<<<<<<< HEAD
+//<<<<<<< HEAD
     //COLLISION NOT WORKING YET
     game.load.physics('physicsData', 'assets/physics/student1.json');
-=======
+///=======
     game.load.image('gradeF','images/gradeF.png');
->>>>>>> origin/master
+//>>>>>>> origin/master
 
 }
 
@@ -72,8 +74,24 @@ var arrayStudents;
 var lives=3;
 
 var gradeF;
+var oldball;
+var numBalls;
 
 function create() {
+
+    // game.add.tileSprite(0, 0, screenwidth, screenheight, 'menu');
+    //
+    // var menu = game.add.sprite(game.world.centerX, game.world.centerY, 'menu');
+    //
+    // menu.anchor.setTo(0.5, 0.5);
+    // menu.alpha = 0;
+    //
+    // //  Create our tween. This will fade the sprite to alpha 1 over the duration of 2 seconds
+    // var tween = game.add.tween(menu).to( { alpha: 1 }, 5000, "Linear", true);
+    //
+    // //  And this tells it to repeat, i.e. fade in again 10 times.
+    // //  The 1000 tells it to wait for 1 second before restarting the fade.
+    // //tween.repeat(10, 1000);
 
     bground = game.add.sprite(0,0,'background');
     bground.alpha = 0.75; //transparency of background
@@ -153,7 +171,7 @@ function create() {
     bground.inputEnabled = true;
     bground.events.onInputDown.add(holdBall);
     bground.events.onInputUp.add(launchBall);
-    
+
 
     //buttons
     pauseButton = game.add.button(buttonXPos, buttonYPos, 'pauseButton', pause , this, 2, 1, 0);
@@ -175,9 +193,19 @@ function create() {
     // randomStudent.alpha = 1;
 
 
-    gradeF = game.add.sprite(250,-200,'gradeF');
+    gradeF = game.add.sprite(250,-100,'gradeF');
     gradeF.alpha = 0;
 
+    menu = game.add.sprite(-100,-100,'Menu');
+    menu.alpha = 1;
+
+    menuButton = game.add.sprite(500,50,'MenuButton');
+    menuButton.alpha = 1;
+    menuButton.scale.setTo(0.1,0.1);
+    menuButton.inputEnabled  = true;
+    menuButton.events.onInputDown.add(removeMenu,this);
+
+//<<<<<<< Updated upstream
 }
 
 function addStudent(image, x, y){
@@ -189,6 +217,9 @@ function addStudent(image, x, y){
     // student.body.clearShapes();
     //     student.body.loadPolygon('physicsData', 'student1');
     return(student)
+//=======
+
+//>>>>>>> Stashed changes
 }
 
 
@@ -335,18 +366,18 @@ function directionChanged( newVel){
 
 
 function reset(){
-<<<<<<< HEAD
+//<<<<<<< HEAD
     restart();
     randomStudent.alpha = 0.5;
     chooseStudent();
     lives = 3;
-=======
+//=======
   gradeF.alpha = 0;
 	restart();
   randomStudent.alpha = 0.5;
   chooseStudent();
   lives = 3;
->>>>>>> origin/master
+//>>>>>>> origin/master
 	counter =0;
 	text.text = "";
     livesDisplay.text ="Lives : "+lives;
@@ -381,6 +412,15 @@ function play()
     }
 }
 
+//<<<<<<< Updated upstream
+//=======
+function removeMenu()
+{
+  menu.alpha=0;
+  menuButton.alpha = 0;
+  menuButton.inputEnabled = false;
+}
+//>>>>>>> Stashed changes
 function chooseStudent(){
   num = Math.floor((Math.random() * 5));
   while(num==randomIndex)
@@ -407,9 +447,11 @@ function checkLife(){
     text.text = "Click the reset button to play again!"
     randomStudent.alpha = 0.5;
     gradeF.alpha =1;
+    gradeF.scale.setTo(0.8,0.8);
     restart();
   }
 }
+
 
 function render() {
     game.debug.text("Drag the ball and release to launch", 32, 32);
