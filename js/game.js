@@ -1,5 +1,5 @@
-var screenwidth=1200;
-var screenheight=600;
+var screenwidth=window.innerWidth;
+var screenheight=window.innerHeight;
 var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
@@ -27,13 +27,17 @@ function preload() {
     //COLLISION NOT WORKING YET
     game.load.physics('physicsData', 'assets/physics/student1.json');
     game.load.image('gradeF','images/gradeF.png');
+    
+
+   
 
 }
 
+  
 
+    
 var text;
 var counter = 0;
-//<<<<<<< Updated upstream
 var slingshotX = 450;
 var slingshotY = 500
 var slingshotHeight = 340
@@ -74,6 +78,9 @@ var gradeF;
 var oldball;
 var numBalls;
 
+
+
+
 function create() {
 
     // game.add.tileSprite(0, 0, screenwidth, screenheight, 'menu');
@@ -89,7 +96,9 @@ function create() {
     // //  And this tells it to repeat, i.e. fade in again 10 times.
     // //  The 1000 tells it to wait for 1 second before restarting the fade.
     // //tween.repeat(10, 1000);
+    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
+    
     bground = game.add.sprite(0,0,'background');
     bground.alpha = 0.75; //transparency of background
 
@@ -194,7 +203,6 @@ function create() {
     menuButton.inputEnabled  = true;
     menuButton.events.onInputDown.add(removeMenu,this);
 
-//<<<<<<< Updated upstream
 }
 
 function addStudent(image, x, y){
