@@ -1,7 +1,8 @@
-var screenwidth=window.innerWidth;
-var screenheight=window.innerHeight;
+var screenwidth=1200;
+var screenheight=600;
 var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var ballTimerEvent = null;
 
 function preload() {
     game.load.image('Menu','images/MainMenu.png');
@@ -242,7 +243,7 @@ function launchBall() {
         ballFlying = true;
 
         //CREATE A TIMER EVENT TO REDUCE SIZE OF BALL
-        timerEvent = game.time.events.loop(100, updateSize, this);
+        ballTimerEvent = game.time.events.loop(100, updateSize, this);
         //END TIMER
     }
 }
@@ -320,8 +321,8 @@ function update() {
       //   checkLife();
 
     //Restart after collision.
-    if (ball.x < 0 || ball.x> screenwidth || ball.y > screenheight || ball.y < 0){
-     restart();
+    if (ball.x < 0 || ball.x > screenwidth || ball.y > screenheight || ball.y < 0){
+        restart();
     }
 
     // update the control arrow
@@ -378,7 +379,7 @@ function reset(){
 
 function pause(){
     game.physics.p2.pause();
-    game.time.events.pause(timerEvent);
+    game.time.events.pause(ballTimerEvent);
 }
 
 
@@ -388,7 +389,7 @@ function restart(){
     ballCollided = false;
     ball.reset(ballinitx,ballinity);
     ball.body.static = true;
-    game.time.events.remove(timerEvent);
+    game.time.events.remove(ballTimerEvent);
     ball.scale.setTo(0.15,0.15);
     sz = 0.15;
 }
