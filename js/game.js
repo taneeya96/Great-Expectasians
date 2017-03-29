@@ -25,7 +25,7 @@ function preload() {
     game.load.image('playButton', 'images/PlayButton.png');
 
     //COLLISION NOT WORKING YET
-    game.load.physics('physicsData', 'assets/physics/student1.json');
+    game.load.physics('physicsData', 'assets/studentHead1.json');
     game.load.image('gradeF','images/gradeF.png');
     
 
@@ -121,8 +121,10 @@ function create() {
         var student = addStudent('student1', studentXs[i], studentYs[i]);
         arrayStudents.push(student);
         //student.body.setRectangle(80,80); //for collision, box-shaped
-        student.body.loadPolygon('physicsData', 'student1');
-        student.body.setCollisionGroup(studentCollisionGroup);
+        
+        student.body.clearShapes();
+		student.body.loadPolygon('physicsData', 'student1');        
+		student.body.setCollisionGroup(studentCollisionGroup);
         student.body.collides([studentCollisionGroup, ballCollisionGroup]);
     }
     //  This creates a simple sprite that is using our loaded image and
