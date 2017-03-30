@@ -80,7 +80,7 @@ var oldball;
 var numBalls;
 
 
-
+var customBound;
 
 function create() {
 
@@ -128,10 +128,14 @@ function create() {
 		student.body.setCollisionGroup(studentCollisionGroup);
         student.body.collides([studentCollisionGroup, ballCollisionGroup]);
     }
-    //  This creates a simple sprite that is using our loaded image and
-    //  displays it on-screen and assign it to a variable
+
+    //Creates custom lower bound for ball, value to be set later:
+    customBound = null;
+
+
     slingshot = game.add.sprite(slingshotX,slingshotY,'slingshot');
     slingshot.height = slingshotHeight;
+
 
 
     ball = game.add.sprite(ballinitx, ballinity, 'ball');
@@ -232,20 +236,20 @@ function holdBall() {
 }
 
 function launchBall() {
-    if(!ballFlying){
-        hideArrow();
+    arrowLengthX = arrow.x - origin.x;
+    arrowLengthY = arrow.y - origin.y;
+    if(!ballFlying && Math.abs(arrowLengthY) > 3){
         ball.body.static = false;
-        Xvector = (arrow.x - origin.x) *5;
-        Yvector = (arrow.y - origin.y) *10;
-        ball.body.velocity.x = Xvector;
-        ball.body.velocity.y = Yvector;
-        currentVel = Yvector;
+        ball.body.velocity.x = arrowLengthX*5;
+        ball.body.velocity.y = arrowLengthY*10;
+        currentVel = ball.body.velocity.y;
         ballFlying = true;
 
         //CREATE A TIMER EVENT TO REDUCE SIZE OF BALL
         ballTimerEvent = game.time.events.loop(100, updateSize, this);
         //END TIMER
     }
+    hideArrow();
 }
 
 function updateSize() {
@@ -280,45 +284,21 @@ function hideArrow(){
 
 function ballHit(body1, body2) {
     ballCollided = true;
-    //restart();
     if (body2.x == randomStudent.x && body2.y == randomStudent.y){
         studentHit();
         chooseStudent();
-        //restart();
-        console.log("Hit the right student");
     }
     else{
         lives--;
         livesDisplay.text = "Lives : "+lives;
-        //restart();
-        console.log('Hit the wrong student');
     }
     checkLife();
+    game.time.events.remove(ballTimerEvent);
 }
 
 
 function update() {
     //Randomized selection of student
-    //TODO: update in p2 sys
-
-      // if(game.physics.arcade.collide(randomStudent,ball))
-      // {
-      //   studentHit();
-      //   chooseStudent();
-      //   restart();
-      // }
-      //   else{
-      //     for(i=0; i<5; i++)
-      //     {
-      //       if(arrayStudents[i]!=randomStudent && game.physics.arcade.collide(arrayStudents[i],ball))
-      //       {
-      //       lives--;
-      //       livesDisplay.text = "Lives : "+lives;
-      //       restart();
-      //     }
-      //   }
-      //   }
-      //   checkLife();
 
     //Restart after collision.
     if (ball.x < 0 || ball.x > screenwidth || ball.y > screenheight || ball.y < 0){
@@ -346,17 +326,31 @@ function update() {
 
     //check when direction changed FOR COLLISION
     if (ballFlying){
-        dirChange = directionChanged(ball.body.velocity.y);
+        var dirChange = isBallDirectionChanged(ball.body.velocity.y);
+        if (dirChange){
+            console.log("dir changed");
+            setCustomBound(200, 200);
+            dirChange = false;
+        }
     }
 
 
 }
 
+function setCustomBound(x, y){
+    var sim = game.physics.p2;
+    var mask = sim.boundsCollisionGroup.mask;
+    var h = 100;
+    console.log(x, y);
+    customBound = new p2.Body({ mass: 0, position: [sim.pxmi(x), sim.pxmi(y + h) ] });
+    customBound.addShape(new p2.Plane());
+    sim.world.addBody(customBound);
+}
 
-function directionChanged( newVel){
+
+function isBallDirectionChanged( newVel){
     if (newVel * currentVel < 0){
         currentVel = newVel;
-        console.log('ball falling')
         return true;
     } else{
         currentVel = newVel;
