@@ -94,8 +94,8 @@ function create() {
     livesDisplay = game.add.text(1000,16,'',{fill: '#ffffff' });
     livesDisplay.text = "Lives : "+lives;
 
-    var studentCollisionGroup = game.physics.p2.createCollisionGroup();
-    var ballCollisionGroup = game.physics.p2.createCollisionGroup();
+    studentCollisionGroup = game.physics.p2.createCollisionGroup();
+    ballCollisionGroup = game.physics.p2.createCollisionGroup();
     var studentXs = [320,1000,870,200,600];
     var studentYs = [250,500,250,500,250];
     arrayStudents = [];
@@ -173,12 +173,12 @@ function create() {
     menuButton.alpha = 1;
     menuButton.scale.setTo(0.1,0.1);
     menuButton.inputEnabled  = true;
-    menuButton.events.onInputDown.add(removeMenu,this);
+    menuButton.events.onInputDown.add(startGame,this);
 
 }
 
 function createBall() {
-  newBall = game.add.sprite(ballinitx, ballinity, 'ball');
+  var newBall = game.add.sprite(ballinitx, ballinity, 'ball');
   game.physics.p2.enable(newBall);
   newBall.scale.setTo(0.15,0.15);
   newBall.anchor.setTo(0.5, 0.5);
@@ -186,9 +186,19 @@ function createBall() {
   newBall.body.static = true;
   newBall.body.setCollisionGroup(ballCollisionGroup);
   newBall.body.collides(studentCollisionGroup , ballHit, this);
-  //ballsInMotion.append(newBall);
+
+  //add some other characterisitcs to ball
+  newBall.timer = game.time.events.loop(100, updateSize, this);
+  game.time.events.pause(newBall.timer);
+  newBall.timer.startTimer = function(){
+    game.time.events.resume(this);
+  }
+  newBall.timer.removeTimer = function(){
+    game.time.events.remove(this);
+  }
   return newBall;
 }
+
 
 function addStudent(image, x, y){
     student = game.add.sprite(x,y, image);
@@ -203,31 +213,27 @@ function addStudent(image, x, y){
 
 
 function holdBall() {
-    if(!ballFlying){
-        showArrow();
-        ballInSlingshot.body.static = true;
-    }
-
+    showArrow();
+    ballInSlingshot.body.static = true;
 }
 
 function launchBall() {
-    if(!ballFlying){
-        hideArrow();
-        ballInSlingshot.body.static = false;
-        Xvector = (arrow.x - origin.x) *5;
-        Yvector = (arrow.y - origin.y) *10;
-        ballInSlingshot.body.velocity.x = Xvector;
-        ballInSlingshot.body.velocity.y = Yvector;
-        currentVel = Yvector;
-        ballFlying = true;
+    hideArrow();
+    ballInSlingshot.body.static = false;
+    Xvector = (arrow.x - origin.x) *5;
+    Yvector = (arrow.y - origin.y) *10;
+    ballInSlingshot.body.velocity.x = Xvector;
+    ballInSlingshot.body.velocity.y = Yvector;
+    currentVel = Yvector;
+    ballFlying = true;
 
-        //CREATE A TIMER EVENT TO REDUCE SIZE OF BALL
-        ballTimerEvent = game.time.events.loop(100, updateSize, this);
-        //END TIMER
+    //CREATE A TIMER EVENT TO REDUCE SIZE OF BALL
+    //ballTimerEvent = game.time.events.loop(100, updateSize, this);
+    ballInSlingshot.timer.startTimer();
+    //END TIMER
 
-        ballsInMotion.append(ballInSlingshot);
-        ballInSlingshot = createBall();
-    }
+    ballsInMotion.push(createBall());
+    ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
 }
 
 function updateSize() {
@@ -270,6 +276,7 @@ function ballHit(body1, body2) {
         chooseStudent();
         //restart();
         console.log("Hit the right student");
+        //body1.timer.removeTimer();
     }
     else{
         lives--;
@@ -283,26 +290,6 @@ function ballHit(body1, body2) {
 
 function update() {
     //Randomized selection of student
-    //TODO: update in p2 sys
-
-      // if(game.physics.arcade.collide(randomStudent,ball))
-      // {
-      //   studentHit();
-      //   chooseStudent();
-      //   restart();
-      // }
-      //   else{
-      //     for(i=0; i<5; i++)
-      //     {
-      //       if(arrayStudents[i]!=randomStudent && game.physics.arcade.collide(arrayStudents[i],ball))
-      //       {
-      //       lives--;
-      //       livesDisplay.text = "Lives : "+lives;
-      //       restart();
-      //     }
-      //   }
-      //   }
-      //   checkLife();
 
     //Restart after collision.
     for(var i=0; i<ballsInMotion.lenght; i++){
@@ -317,7 +304,7 @@ function update() {
   }
 
     // update the control arrow
-    if (game.input.activePointer.isDown && !ballFlying && !ballCollided){
+    if (game.input.activePointer.isDown){
         var dist = game.physics.arcade.distanceToPointer(origin);
         var angle = game.physics.arcade.angleToPointer(origin);
 
@@ -335,7 +322,7 @@ function update() {
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
         }
 
-    //check when direction changed FOR COLLISION
+    check when direction changed FOR COLLISION
     if (ballFlying){
         dirChange = directionChanged(ball.body.velocity.y);
     }
@@ -378,10 +365,9 @@ function restart(){
     ballSpeed=0;
     ballFlying = false;
     ballCollided = false;
-    ball.reset(ballinitx,ballinity);
-    ball.body.static = true;
+    ballsInMotion = [];
+    ballsInMotion.push(createBall());
     game.time.events.remove(ballTimerEvent);
-    ball.scale.setTo(0.15,0.15);
     sz = 0.15;
 }
 
@@ -398,7 +384,7 @@ function play()
 
 //<<<<<<< Updated upstream
 //=======
-function removeMenu()
+function startGame()
 {
   menu.alpha=0;
   menuButton.alpha = 0;
@@ -406,6 +392,8 @@ function removeMenu()
   bground.inputEnabled = true;
   bground.events.onInputDown.add(holdBall);
   bground.events.onInputUp.add(launchBall);
+  ballsInMotion.push(createBall());
+  ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
 }
 //>>>>>>> Stashed changes
 function chooseStudent(){
