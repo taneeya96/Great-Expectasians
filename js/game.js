@@ -394,7 +394,7 @@ function play()
     //game.time.events.resume(timerEvent);
     game.physics.p2.resume();
     bground.inputEnabled = true;
-    game.time.events.resume(ballTimerEvent);
+    //game.time.events.resume(ballTimerEvent);
 }
 
 //<<<<<<< Updated upstream
