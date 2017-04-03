@@ -14,9 +14,9 @@ function preload() {
     game.load.image('slingshot', 'images/CatapultSprite.png')
     game.load.image('student1', 'images/student1.png');
     game.load.image('student2', 'images/student2.png');
-    game.load.image('student3', 'images/student1.png');
-    game.load.image('student4', 'images/student4.png');
-    game.load.image('student5', 'images/student5.png');
+    game.load.image('student3', 'images/student3.png');
+    game.load.image('student4', 'images/student3.png');
+    game.load.image('student5', 'images/student3.png');
 
     game.load.image('arrow', 'images/blackarrow.png');
     game.load.image('tail', 'images/black.png');
@@ -100,13 +100,13 @@ function create() {
     var studentYs = [250,500,250,500,250];
     arrayStudents = [];
 
-    for (var i=0; i<3; i++){
-        var student = addStudent('student1', studentXs[i], studentYs[i]);
+    for (var i=1; i<=3; i++){
+        var student = addStudent('student'+i, studentXs[i], studentYs[i]);
         arrayStudents.push(student);
         //student.body.setRectangle(80,80); //for collision, box-shaped
 
-        // student.body.clearShapes();
-    // student.body.loadPolygon('physicsData', 'student1');
+        student.body.clearShapes();
+    student.body.loadPolygon('physicsData', 'student1');
     student.body.setCollisionGroup(studentCollisionGroup);
         student.body.collides([studentCollisionGroup, ballCollisionGroup]);
     }
@@ -210,7 +210,7 @@ function addStudent(image, x, y){
     student.body.static = true;
     //FOR COLLISION
     // student.body.clearShapes();
-    //     student.body.loadPolygon('physicsData', 'student1');
+    // student.body.loadPolygon('physicsData', 'student1');
     return(student)
 }
 
