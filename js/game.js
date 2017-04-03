@@ -324,24 +324,12 @@ function update() {
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
         }
 
-    //check when direction changed FOR COLLISION,
-    // if (ballFlying){
-    //     var dirChange = isBallDirectionChanged(ball.body.velocity.y);
-    //     if (dirChange){
-    //         console.log("dir changed");
-    //         setCustomBound(200, 200);
-    //         dirChange = false;
-    //     }
-    // }
-
-
 }
 
 function setCustomBound(x, y){
     var sim = game.physics.p2;
     var mask = sim.boundsCollisionGroup.mask;
     var h = 100;
-    console.log(x, y);
     customBound = new p2.Body({ mass: 0, position: [sim.pxmi(x), sim.pxmi(y + h) ] });
     customBound.addShape(new p2.Plane());
     sim.world.addBody(customBound);
@@ -374,6 +362,7 @@ text.text = "";
 function pause(){
     game.physics.p2.pause();
     game.time.events.pause(ballTimerEvent);
+    bground.inputEnabled = false;
 }
 
 
@@ -381,21 +370,31 @@ function restart(){
     ballSpeed=0;
     ballFlying = false;
     ballCollided = false;
+    for(var i =0; i<ballsInMotion.length; i++){
+        ballsInMotion[i].destroy();
+    }
     ballsInMotion = [];
     ballsInMotion.push(createBall());
+    ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
+    bground.inputEnabled = true;
+    game.physics.p2.resume();
     game.time.events.remove(ballTimerEvent);
     sz = 0.15;
 }
 
 function play()
 {
-    if(ballFlying)
-    {
-        game.time.events.resume(timerEvent);
-        game.physics.p2.resume();
-    }else{
-        pass;
-    }
+    // if("")
+    // {
+    //     game.time.events.resume(timerEvent);
+    //     game.physics.p2.resume();
+    // }else{
+    //     pass;
+    // }
+    //game.time.events.resume(timerEvent);
+    game.physics.p2.resume();
+    bground.inputEnabled = true;
+    game.time.events.resume(ballTimerEvent);
 }
 
 //<<<<<<< Updated upstream
@@ -439,7 +438,8 @@ function checkLife(){
     randomStudent.alpha = 0.5;
     gradeF.alpha =1;
     gradeF.scale.setTo(0.8,0.8);
-    restart();
+    pause();
+    //restart();
   }
 }
 
