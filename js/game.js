@@ -34,7 +34,7 @@ function preload() {
 }
 
 var text;
-var counter = 0;
+
 var slingshotX = 450;
 var slingshotY = 500
 var slingshotHeight = 340
@@ -69,8 +69,11 @@ const buttonYPos = 50;
 const pauseButtonHeight = 60;
 
 var arrayStudents;
-var lives=3;
 
+var score = 0;
+var pointGoal=100;
+const wrongHitPoints = 5;
+const rightHitPoints = 10;
 var gradeF;
 
 var customBound;
@@ -92,7 +95,6 @@ function create() {
 
     text = game.add.text(450, 16, '', { fill: '#ffffff' });
     livesDisplay = game.add.text(1000,16,'',{fill: '#ffffff' });
-    livesDisplay.text = "Lives : "+lives;
 
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -282,10 +284,9 @@ function ballHit(body1, body2) {
         chooseStudent();
     }
     else{
-        lives--;
-        livesDisplay.text = "Lives : "+lives;
+      score-= wrongHitPoints;
+      console.log("5 points taken off")
     }
-    checkLife();
     game.time.events.remove(ballTimerEvent);
 }
 
@@ -353,9 +354,9 @@ restart();
   randomStudent.alpha = 0.5;
   chooseStudent();
   lives = 3;
-counter =0;
+ score=0;
 text.text = "";
-    livesDisplay.text ="Lives : "+lives;
+
 
 }
 
@@ -425,13 +426,14 @@ function chooseStudent(){
 
 function studentHit()
 {
-    counter++;
-    text.text ="Score : " + counter;
+    score+= rightHitPoints;
+    console.log("10 points added");
+    text.text ="Score : " + score;
     randomStudent.alpha = 0.5;
 }
 
-function checkLife(){
-  if (lives<=0)
+function checkPointLimit(){
+  if (score<pointGoal)
   {
     livesDisplay.text = "GAME OVER";
     text.text = "Click the reset button to play again!"

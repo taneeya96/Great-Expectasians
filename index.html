@@ -4,7 +4,10 @@
 <head>
     <title>Projectile for Paper Ball Take 001</title>
     <script type="text/javascript" src="js/phaser.min.js"></script>
-    <script type="text/javascript" src="js/game.js"></script>
+    <script type="text/javascript"><!--
+      // Temporary (?) workaround for Chrome's love of caching outdated JS
+      document.write('<script type="text/javascript" src="js/game.js?' + new Date().getTime() + '"></script>');
+    --></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -22,6 +25,5 @@
     </script> -->
 </head>
 <body>
-
 </body>
 </html>
