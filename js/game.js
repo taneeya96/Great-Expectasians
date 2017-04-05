@@ -5,6 +5,7 @@ var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-exa
 var ballTimerEvent = null;
 var balls = [];
 var ball = null;
+var timer,timerEvent;
 
 function preload() {
     game.load.image('Menu','images/MainMenu.png');
@@ -14,9 +15,9 @@ function preload() {
     game.load.image('slingshot', 'images/CatapultSprite.png')
     game.load.image('student1', 'images/student1.png');
     game.load.image('student2', 'images/student2.png');
-    game.load.image('student3', 'images/student3.png');
-    game.load.image('student4', 'images/student3.png');
-    game.load.image('student5', 'images/student3.png');
+    game.load.image('student3', 'images/student1.png');
+    game.load.image('student4', 'images/student4.png');
+    game.load.image('student5', 'images/student5.png');
 
     game.load.image('arrow', 'images/blackarrow.png');
     game.load.image('tail', 'images/black.png');
@@ -27,7 +28,6 @@ function preload() {
     game.load.image('resetButton','images/ResetButton.png')
     game.load.image('playButton', 'images/PlayButton.png');
 
-    //COLLISION NOT WORKING YET
     game.load.physics('physicsData', 'assets/studentHead1.json');
     game.load.image('gradeF','images/gradeF.png');
 
@@ -38,14 +38,9 @@ var text;
 var slingshotX = 450;
 var slingshotY = 500
 var slingshotHeight = 340
-//=======
-//const slingshotX = 300;
-//const slingshotY = 300
-//const slingshotHeight = 340
-//>>>>>>> Stashed changes
 var ballInSlingshot;
-var ballHeld = false; //checks if the ball is held or not
-var ballSpeed = 0; // speed of the ball
+var ballHeld = false;
+var ballSpeed = 0;
 const ballinitx=slingshotX+100;
 const ballinity=slingshotY+65;
 var ballFlying = false;
@@ -102,13 +97,13 @@ function create() {
     var studentYs = [250,500,250,500,250];
     arrayStudents = [];
 
-    for (var i=1; i<=3; i++){
-        var student = addStudent('student'+i, studentXs[i], studentYs[i]);
+    for (var i=0; i<3; i++){
+        var student = addStudent('student1', studentXs[i], studentYs[i]);
         arrayStudents.push(student);
         //student.body.setRectangle(80,80); //for collision, box-shaped
 
-        student.body.clearShapes();
-    student.body.loadPolygon('physicsData', 'student1');
+        // student.body.clearShapes();
+    // student.body.loadPolygon('physicsData', 'student1');
     student.body.setCollisionGroup(studentCollisionGroup);
         student.body.collides([studentCollisionGroup, ballCollisionGroup]);
     }
@@ -179,7 +174,9 @@ function create() {
     menuButton.scale.setTo(0.1,0.1);
     menuButton.inputEnabled  = true;
     menuButton.events.onInputDown.add(startGame,this);
-
+    timer = game.time.create();
+    timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 10, endTimer);
+    timer.start();
 }
 
 function createBall() {
@@ -212,7 +209,7 @@ function addStudent(image, x, y){
     student.body.static = true;
     //FOR COLLISION
     // student.body.clearShapes();
-    // student.body.loadPolygon('physicsData', 'student1');
+    //     student.body.loadPolygon('physicsData', 'student1');
     return(student)
 }
 
@@ -325,12 +322,24 @@ function update() {
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
         }
 
+    //check when direction changed FOR COLLISION,
+    // if (ballFlying){
+    //     var dirChange = isBallDirectionChanged(ball.body.velocity.y);
+    //     if (dirChange){
+    //         console.log("dir changed");
+    //         setCustomBound(200, 200);
+    //         dirChange = false;
+    //     }
+    // }
+
+
 }
 
 function setCustomBound(x, y){
     var sim = game.physics.p2;
     var mask = sim.boundsCollisionGroup.mask;
     var h = 100;
+    console.log(x, y);
     customBound = new p2.Body({ mass: 0, position: [sim.pxmi(x), sim.pxmi(y + h) ] });
     customBound.addShape(new p2.Plane());
     sim.world.addBody(customBound);
@@ -363,7 +372,6 @@ text.text = "";
 function pause(){
     game.physics.p2.pause();
     game.time.events.pause(ballTimerEvent);
-    bground.inputEnabled = false;
 }
 
 
@@ -371,31 +379,21 @@ function restart(){
     ballSpeed=0;
     ballFlying = false;
     ballCollided = false;
-    for(var i =0; i<ballsInMotion.length; i++){
-        ballsInMotion[i].destroy();
-    }
     ballsInMotion = [];
     ballsInMotion.push(createBall());
-    ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
-    bground.inputEnabled = true;
-    game.physics.p2.resume();
     game.time.events.remove(ballTimerEvent);
     sz = 0.15;
 }
 
 function play()
 {
-    // if("")
-    // {
-    //     game.time.events.resume(timerEvent);
-    //     game.physics.p2.resume();
-    // }else{
-    //     pass;
-    // }
-    //game.time.events.resume(timerEvent);
-    game.physics.p2.resume();
-    bground.inputEnabled = true;
-    //game.time.events.resume(ballTimerEvent);
+    if(ballFlying)
+    {
+        game.time.events.resume(timerEvent);
+        game.physics.p2.resume();
+    }else{
+        pass;
+    }
 }
 
 //<<<<<<< Updated upstream
@@ -440,13 +438,22 @@ function checkPointLimit(){
     randomStudent.alpha = 0.5;
     gradeF.alpha =1;
     gradeF.scale.setTo(0.8,0.8);
-    pause();
-    //restart();
+    restart();
   }
 }
 
+function formatTime(s) {
+        var minutes = "0" + Math.floor(s / 60);
+        var seconds = "0" + (s - minutes * 60);
+        return minutes.substr(-2) + ":" + seconds.substr(-2);
+    }
 
+function endTimer() {
+
+        timer.stop();
+}
 function render() {
     game.debug.text("Drag the ball and release to launch", 32, 32);
+    game.debug.text(formatTime(Math.round((timerEvent.delay - timer.ms) / 1000)), 32, 50);
 
 }
