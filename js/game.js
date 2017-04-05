@@ -138,10 +138,6 @@ function create() {
     origin.anchor.setTo(0.5,0.5);
     origin.alpha = 0;
 
-    //Respond to any input on screen
-    // game.input.onDown.add(holdBall);
-    // game.input.onUp.add(launchBall);
-
 
     //buttons
     pauseButton = game.add.button(buttonXPos, buttonYPos, 'pauseButton', pause , this, 2, 1, 0);
@@ -153,6 +149,7 @@ function create() {
    	playButton.scale.setTo(0.054,0.054);
 
     randomIndex = Math.floor((Math.random() * 3))
+
     //randomIndex = 0;
     randomStudent = arrayStudents[randomIndex];
     for( var i=0; i< arrayStudents.length; i++)
@@ -175,7 +172,7 @@ function create() {
     menuButton.inputEnabled  = true;
     menuButton.events.onInputDown.add(startGame,this);
     timer = game.time.create();
-    timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 10, endTimer);
+    timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 40, endTimer);
     timer.start();
 }
 
@@ -293,9 +290,7 @@ function update() {
 
     //Restart after collision.
     for(var i=0; i<ballsInMotion.lenght; i++){
-    // if (ball.x < 0 || ball.x > screenwidth || ball.y > screenheight || ball.y < 0){
-    //     restart();
-    // }
+
     ballsInMotion[i].body.collideWorldBounds = true;
     if(i==ballsInMotion.length -1)
     {
@@ -321,16 +316,6 @@ function update() {
         arrow.x = origin.x -  0.5*dist*Math.cos(angle);
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
         }
-
-    //check when direction changed FOR COLLISION,
-    // if (ballFlying){
-    //     var dirChange = isBallDirectionChanged(ball.body.velocity.y);
-    //     if (dirChange){
-    //         console.log("dir changed");
-    //         setCustomBound(200, 200);
-    //         dirChange = false;
-    //     }
-    // }
 
 
 }
@@ -396,8 +381,7 @@ function play()
     }
 }
 
-//<<<<<<< Updated upstream
-//=======
+
 function startGame()
 {
   menu.alpha=0;
@@ -409,7 +393,9 @@ function startGame()
   ballsInMotion.push(createBall());
   ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
 }
-//>>>>>>> Stashed changes
+
+
+
 function chooseStudent(){
   num = Math.floor((Math.random() * 3));
   while(num==randomIndex)
@@ -449,8 +435,8 @@ function formatTime(s) {
     }
 
 function endTimer() {
-
         timer.stop();
+        checkPointLimit();
 }
 function render() {
     game.debug.text("Drag the ball and release to launch", 32, 32);
