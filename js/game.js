@@ -171,11 +171,13 @@ function create() {
     menuButton.scale.setTo(0.1,0.1);
     menuButton.inputEnabled  = true;
     menuButton.events.onInputDown.add(startGame,this);
-    timer = game.time.create();
-    timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 40, endTimer);
-    timer.start();
-}
+    initialiateTimer();
 
+}
+function initialiateTimer(){
+  timer = game.time.create();
+  timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 15, endTimer);
+}
 function createBall() {
   var newBall = game.add.sprite(ballinitx, ballinity, 'ball');
   game.physics.p2.enable(newBall);
@@ -324,7 +326,7 @@ function setCustomBound(x, y){
     var sim = game.physics.p2;
     var mask = sim.boundsCollisionGroup.mask;
     var h = 100;
-    console.log(x, y);
+    console.log(x,y);
     customBound = new p2.Body({ mass: 0, position: [sim.pxmi(x), sim.pxmi(y + h) ] });
     customBound.addShape(new p2.Plane());
     sim.world.addBody(customBound);
@@ -344,19 +346,21 @@ function isBallDirectionChanged( newVel){
 
 function reset(){
   gradeF.alpha = 0;
-restart();
+  restart();
   randomStudent.alpha = 0.5;
   chooseStudent();
   lives = 3;
- score=0;
-text.text = "";
-
-
+  score=0;
+  text.text = "";
+  timer.destroy();
+  initialiateTimer();
+  timer.start();
 }
 
 function pause(){
     game.physics.p2.pause();
     game.time.events.pause(ballTimerEvent);
+    timer.pause();
 }
 
 
@@ -368,6 +372,8 @@ function restart(){
     ballsInMotion.push(createBall());
     game.time.events.remove(ballTimerEvent);
     sz = 0.15;
+
+
 }
 
 function play()
@@ -376,6 +382,7 @@ function play()
     {
         game.time.events.resume(timerEvent);
         game.physics.p2.resume();
+        timer.resume();
     }else{
         pass;
     }
@@ -392,6 +399,7 @@ function startGame()
   bground.events.onInputUp.add(launchBall);
   ballsInMotion.push(createBall());
   ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
+  timer.start();
 }
 
 
