@@ -44,8 +44,7 @@ var slingshotHeight = 340
 //const slingshotHeight = 340
 //>>>>>>> Stashed changes
 var ballInSlingshot;
-var ballHeld = false; //checks if the ball is held or not
-var ballSpeed = 0; // speed of the ball
+var ballHeld = false; //checks if the ball is held or not // speed of the ball
 const ballinitx=slingshotX+100;
 const ballinity=slingshotY+65;
 var ballFlying = false;
@@ -56,7 +55,8 @@ var sz = 0.15;
 
 var analog;
 var tail;
-var arrow;
+var arrow; 
+var arrowInvisible;//measure velocity
 var origin;
 var background;
 const tailWidth = 10;
@@ -79,6 +79,9 @@ var gradeF;
 var customBound;
 
 var ballsInMotion = [];
+var ballsTimer;
+
+var currentId = -1;
 
 function create() {
 
@@ -108,8 +111,8 @@ function create() {
         //student.body.setRectangle(80,80); //for collision, box-shaped
 
         student.body.clearShapes();
-    student.body.loadPolygon('physicsData', 'student1');
-    student.body.setCollisionGroup(studentCollisionGroup);
+        student.body.loadPolygon('physicsData', 'student1');
+        student.body.setCollisionGroup(studentCollisionGroup);
         student.body.collides([studentCollisionGroup, ballCollisionGroup]);
     }
 
@@ -137,6 +140,11 @@ function create() {
     arrow.scale.setTo(0.1,0.1);
     arrow.anchor.setTo(0,0.5);
     arrow.alpha = 0;
+
+    arrowInvisible = game.add.sprite(300, 300, 'arrow');
+    arrowInvisible.scale.setTo(0.1,0.1);
+    arrowInvisible.anchor.setTo(0,0.5);
+    arrowInvisible.alpha = 0;
 
     origin = game.add.sprite(300,300,'origin');
     origin.scale.setTo(0.02,0.02);
@@ -191,15 +199,10 @@ function createBall() {
   newBall.body.static = true;
   newBall.body.setCollisionGroup(ballCollisionGroup);
   newBall.body.collides(studentCollisionGroup , ballHit, this);
-
-  //add some other characterisitcs to ball
-  newBall.timer = game.time.events.loop(100, updateSize, this);
-  game.time.events.pause(newBall.timer);
-  newBall.timer.startTimer = function(){
-    game.time.events.resume(this);
-  }
-  newBall.timer.removeTimer = function(){
-    game.time.events.remove(this);
+  currentId++;
+  newBall.id = currentId;
+  newBall.getId = function(){
+    return this.id;
   }
   return newBall;
 }
@@ -223,33 +226,29 @@ function holdBall() {
 }
 
 function launchBall() {
-    arrowLengthX = arrow.x - origin.x;
-    arrowLengthY = arrow.y - origin.y;
+    arrowLengthX = arrowInvisible.x - origin.x;
+    arrowLengthY = arrowInvisible.y - origin.y;
     if(Math.abs(arrowLengthY) > 3){
         ballInSlingshot.body.static = false;
-        Xvector = (arrow.x - origin.x) *5;
-        Yvector = (arrow.y - origin.y) *10;
+        Xvector = (arrowLengthX) *5;
+        Yvector = (arrowLengthY) *10;
         ballInSlingshot.body.velocity.x = Xvector;
         ballInSlingshot.body.velocity.y = Yvector;
         currentVel = Yvector;
         ballFlying = true;
 
         //CREATE A TIMER EVENT TO REDUCE SIZE OF BALL
-        //ballTimerEvent = game.time.events.loop(100, updateSize, this);
-        ballInSlingshot.timer.startTimer();
-        //END TIMER
-
-        ballsInMotion.push(createBall());
-        ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
+        ballsInMotion[ballInSlingshot.getId()] = ballInSlingshot;
+        ballInSlingshot = createBall();
     }
     hideArrow();
 }
 
 function updateSize() {
-    sz = sz*0.96;
-    for(var i=0; i<ballsInMotion.length; i++){
-    ballsInMotion[i].scale.setTo(sz,sz);
-  }
+    for (i=0; i< ballsInMotion.length ; i++){
+        var size = ballsInMotion[i].scale.x;
+        ballsInMotion[i].scale.setTo(size*0.96, size*0.96);
+    }
 }
 
 function showArrow() {
@@ -285,9 +284,10 @@ function ballHit(body1, body2) {
     }
     else{
       score-= wrongHitPoints;
-      console.log("5 points taken off")
+      console.log("5 points taken off");
     }
-    game.time.events.remove(ballTimerEvent);
+    console.log("-------->", body1);
+    //game.time.events.remove(ballsTimer[body1.getId()]);
 }
 
 
@@ -313,14 +313,24 @@ function update() {
 
         if (Math.abs(angle) <= 0.05){
             arrow.rotation = 0;
-        } else{
+            arrowInvisible.rotation = 0;
+        } else if (angle == 2*3.14){
+            arrow.rotation = angle;
+        }else{
             arrow.rotation =  angle + 3.14;
+            arrowInvisible.rotation = angle + 3.14;
         }
         tail.rotation = angle - 3.14/2;
         analog.rotation = angle - 3.14/2;
-
-        tail.height = 0.5*dist;
         analog.height = dist;
+        arrowInvisible.x = origin.x -  0.5*dist*Math.cos(angle);
+        arrowInvisible.y = origin.y - 0.5*dist*Math.sin(angle);
+
+        if (dist <= 150){
+            tail.height = 0.7*dist;
+        } else{
+            dist = 150;
+        }
         arrow.x = origin.x -  0.5*dist*Math.cos(angle);
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
         }
@@ -362,24 +372,27 @@ text.text = "";
 
 function pause(){
     game.physics.p2.pause();
-    game.time.events.pause(ballTimerEvent);
+     for(var i =0; i<ballsTimer
+        .length; i++){
+        game.time.events.remove(ballsTimer[i]);
+    }
     bground.inputEnabled = false;
 }
 
 
 function restart(){
     ballSpeed=0;
+    currentId = -1;
     ballFlying = false;
     ballCollided = false;
     for(var i =0; i<ballsInMotion.length; i++){
         ballsInMotion[i].destroy();
+        game.time.events.remove(ballsTimer[i]);
     }
     ballsInMotion = [];
-    ballsInMotion.push(createBall());
-    ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
+    ballInSlingshot = createBall;
     bground.inputEnabled = true;
     game.physics.p2.resume();
-    game.time.events.remove(ballTimerEvent);
     sz = 0.15;
 }
 
@@ -408,8 +421,8 @@ function startGame()
   bground.inputEnabled = true;
   bground.events.onInputDown.add(holdBall);
   bground.events.onInputUp.add(launchBall);
-  ballsInMotion.push(createBall());
-  ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
+  ballInSlingshot = createBall();
+  ballsTimer = game.time.events.loop(200, updateSize, this); 
 }
 //>>>>>>> Stashed changes
 function chooseStudent(){
