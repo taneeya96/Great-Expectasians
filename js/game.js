@@ -48,7 +48,6 @@ var ballCollided = false;
 var currentVel = 0;
 var sz = 0.15;
 
-
 var analog;
 var tail;
 var arrow;
@@ -67,10 +66,11 @@ var arrayStudents;
 
 var score = 0;
 var pointGoal=100;
+var levelGoal=[0,100,250,420,720];
 const wrongHitPoints = 5;
 const rightHitPoints = 10;
 var gradeF;
-
+var currentLevel=1;
 var customBound;
 
 var ballsInMotion = [];
@@ -88,8 +88,11 @@ function create() {
     game.physics.p2.restitution = 0.1; //bounciness of the world
     game.physics.p2.setImpactEvents(true);
 
-    text = game.add.text(450, 16, '', { fill: '#ffffff' });
-    livesDisplay = game.add.text(1000,16,'',{fill: '#ffffff' });
+    timerDisplay = game.add.text(32,16,'',{fill: '#ffffff' });
+    scoreDisplay = game.add.text(350, 16, '', { fill: '#ffffff' });
+    goalDisplay = game.add.text(700,16,'',{fill: '#ffffff' });
+    levelDisplay = game.add.text(1000,16,'',{fill: '#ffffff' });
+
 
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -104,7 +107,7 @@ function create() {
 
         // student.body.clearShapes();
     // student.body.loadPolygon('physicsData', 'student1');
-    student.body.setCollisionGroup(studentCollisionGroup);
+        student.body.setCollisionGroup(studentCollisionGroup);
         student.body.collides([studentCollisionGroup, ballCollisionGroup]);
     }
 
@@ -158,7 +161,6 @@ function create() {
     }
     randomStudent.alpha = 1;
 
-
     gradeF = game.add.sprite(250,-100,'gradeF');
     gradeF.alpha = 0;
 
@@ -171,12 +173,18 @@ function create() {
     menuButton.scale.setTo(0.1,0.1);
     menuButton.inputEnabled  = true;
     menuButton.events.onInputDown.add(startGame,this);
-    initialiateTimer();
-
+    initiateTimer();
+    
 }
-function initialiateTimer(){
+function initiateTimer(){
   timer = game.time.create();
-  timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 15, endTimer);
+  timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 45, endTimer);
+}
+
+function reIniTimer(){
+  timer.destroy();
+  initiateTimer();
+  timer.start();
 }
 function createBall() {
   var newBall = game.add.sprite(ballinitx, ballinity, 'ball');
@@ -349,12 +357,9 @@ function reset(){
   restart();
   randomStudent.alpha = 0.5;
   chooseStudent();
-  lives = 3;
   score=0;
-  text.text = "";
-  timer.destroy();
-  initialiateTimer();
-  timer.start();
+  reIniTimer();
+  currentLevel=1;
 }
 
 function pause(){
@@ -372,7 +377,6 @@ function restart(){
     ballsInMotion.push(createBall());
     game.time.events.remove(ballTimerEvent);
     sz = 0.15;
-
 
 }
 
@@ -420,19 +424,24 @@ function studentHit()
 {
     score+= rightHitPoints;
     console.log("10 points added");
-    text.text ="Score : " + score;
     randomStudent.alpha = 0.5;
 }
 
-function checkPointLimit(){
-  if (score<pointGoal)
+function checkPointLimit(level){
+  if (score<levelGoal[level])
   {
-    livesDisplay.text = "GAME OVER";
+    levelDisplay.text = "GAME OVER";
     text.text = "Click the reset button to play again!"
     randomStudent.alpha = 0.5;
     gradeF.alpha =1;
     gradeF.scale.setTo(0.8,0.8);
     restart();
+  } else
+  {
+    currentLevel=level+1;
+    levelDisplay.text="Level: "+currentLevel;
+    initiateTimer();
+    timer.start();
   }
 }
 
@@ -444,10 +453,11 @@ function formatTime(s) {
 
 function endTimer() {
         timer.stop();
-        checkPointLimit();
+        checkPointLimit(currentLevel);
 }
 function render() {
-    game.debug.text("Drag the ball and release to launch", 32, 32);
-    game.debug.text(formatTime(Math.round((timerEvent.delay - timer.ms) / 1000)), 32, 50);
-
+    timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
+    levelDisplay.text="Level: "+currentLevel;
+    scoreDisplay.text ="Score : " + score;
+    goalDisplay.text="Goal: "+levelGoal[currentLevel];
 }
