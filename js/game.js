@@ -191,7 +191,7 @@ function createBall() {
   newBall.body.collides(studentCollisionGroup , ballHit, this);
   newBall.body.z = 0;
   newBall.body.velocity.z = 0;
-  newBall.floorPositionSet = false;
+  newBall.hitFloor = false;
   newBall.floor = -1000;
   newBall.timesHitFloor = 0;
   return newBall;
@@ -244,19 +244,23 @@ function updateBalls() {
 }
 
 function updateBallSize(ball) {
-    if (!ball.floorPositionSet){
+    if (!ball.hitFloor){ //stop scaling ball after it hits the floor
         ball.body.z += ball.body.velocity.z;
         var size = 0.15/(1 + ball.body.z*0.005);
         ball.scale.setTo(size, size);
         ball.floor = (screenheight + 300) / (1+ ball.body.z *0.01);
     }
     if (ball.body.y > ball.floor){
-        ball.body.velocity.y = - ball.body.velocity.y/1.5;
-        ball.body.velocity.x = ball.body.velocity.x/1.5;
-        ball.body.y = ball.floor;
-        ball.timesHitFloor++;
-        ball.floorPositionSet = true;
+        bounceOffFloor(ball);
     }
+}
+
+function bounceOffFloor(ball){
+    ball.body.velocity.y = - ball.body.velocity.y/1.5;
+    ball.body.velocity.x = ball.body.velocity.x/1.5;
+    ball.body.y = ball.floor;
+    ball.timesHitFloor++;
+    ball.hitFloor = true;
 }
 
 function showArrow() {
