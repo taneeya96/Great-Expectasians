@@ -191,6 +191,9 @@ function createBall() {
   newBall.body.collides(studentCollisionGroup , ballHit, this);
   newBall.body.z = 0;
   newBall.body.velocity.z = 0;
+  newBall.floorPositionSet = false;
+  newBall.floor = -1000;
+  newBall.timesHitFloor = 0;
   return newBall;
 }
 
@@ -231,32 +234,29 @@ function launchBall() {
 
 function updateBalls() {
     for (i=0; i< ballsInMotion.length ; i++){
-        // var size = ballsInMotion[i].scale.x;
-        // ballsInMotion[i].scale.setTo(size*0.9, size*0.9);
-        // if (size < 0.09){
-        //     ballsInMotion[i].body.velocity.y = - ballsInMotion[i].body.velocity.y;
-        // }
-
-        updateBallSize(ballsInMotion[i]);
+        if (ballsInMotion[i].timesHitFloor > 4){
+            ballsInMotion[i].kill();
+            ballsInMotion.splice(i, 1);
+        } else{
+            updateBallSize(ballsInMotion[i]);
+        }
     }
 }
 
 function updateBallSize(ball) {
-    ball.body.z += ball.body.velocity.z;
-    var size = 0.15/(1 + ball.body.z*0.01);
-    ball.scale.setTo(size, size);
-    console.log("=========> ", floorPosition(ball.body.z));
-    // ball.scale(SOME_CONSTANT / (1 + ball.z))
-    // console.log(floorPosition(ball.body.z))
-//     if (ball.body.y > floorPosition(ball.body.z)){
-//         console.log("ball hits floor");
-//         // bounce vertically?
-//     }
-}
-
-function floorPosition(z){
-    // return screenheight/(1+ z*0.01);
-    return screenheight-z;
+    if (!ball.floorPositionSet){
+        ball.body.z += ball.body.velocity.z;
+        var size = 0.15/(1 + ball.body.z*0.005);
+        ball.scale.setTo(size, size);
+        ball.floor = (screenheight + 300) / (1+ ball.body.z *0.01);
+    }
+    if (ball.body.y > ball.floor){
+        ball.body.velocity.y = - ball.body.velocity.y/1.5;
+        ball.body.velocity.x = ball.body.velocity.x/1.5;
+        ball.body.y = ball.floor;
+        ball.timesHitFloor++;
+        ball.floorPositionSet = true;
+    }
 }
 
 function showArrow() {
@@ -422,7 +422,7 @@ function startGame()
   bground.events.onInputDown.add(holdBall);
   bground.events.onInputUp.add(launchBall);
   ballInSlingshot = createBall();
-  ballsTimer = game.time.events.loop(300, updateBalls, this); 
+  ballsTimer = game.time.events.loop(50, updateBalls, this); 
 }
 
 function chooseStudent(){
