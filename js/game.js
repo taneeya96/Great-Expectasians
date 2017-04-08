@@ -73,6 +73,10 @@ var gradeF;
 var ballsInMotion = [];
 var ballsTimer;
 
+var studentCollisionGroup;
+var ballCollisionGroup;
+var inactiveCollisionGroup;
+
 function create() {
 
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -91,6 +95,7 @@ function create() {
 
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
+    inactiveCollisionGroup = game.physics.p2.createCollisionGroup();
     var studentXs = [320,1000,870,200,600];
     var studentYs = [250,500,250,500,250];
     arrayStudents = [];
@@ -103,7 +108,7 @@ function create() {
         student.body.clearShapes();
         student.body.loadPolygon('physicsData', 'student1');
         student.body.setCollisionGroup(studentCollisionGroup);
-        student.body.collides([studentCollisionGroup, ballCollisionGroup]);
+        student.body.collides(ballCollisionGroup, ballHit, this);
     }
 
     //Creates custom lower bound for ball, value to be set later:
@@ -188,7 +193,7 @@ function createBall() {
   newBall.body.setCircle(30); //for collision
   newBall.body.static = true;
   newBall.body.setCollisionGroup(ballCollisionGroup);
-  newBall.body.collides(studentCollisionGroup , ballHit, this);
+  newBall.body.collides(studentCollisionGroup);
   newBall.body.z = 0;
   newBall.body.velocity.z = 0;
   newBall.hitFloor = false;
@@ -290,7 +295,7 @@ function hideArrow(){
 
 function ballHit(body1, body2) {
     ballCollided = true;
-    if (body2.x == randomStudent.x && body2.y == randomStudent.y){
+    if (body1.x == randomStudent.x && body1.y == randomStudent.y){
         studentHit();
         chooseStudent();
     }
@@ -298,8 +303,12 @@ function ballHit(body1, body2) {
       score-= wrongHitPoints;
       console.log("5 points taken off");
     }
+    body2.sprite.body.setCollisionGroup(inactiveCollisionGroup); //Disable collision detection with students after hitting one student.
 }
 
+function doNothing(body1, body2){
+    pass;
+}
 
 function update() {
     //Randomized selection of student
