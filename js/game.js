@@ -27,7 +27,6 @@ function preload() {
     game.load.image('resetButton','images/ResetButton.png')
     game.load.image('playButton', 'images/PlayButton.png');
 
-    //COLLISION NOT WORKING YET
     game.load.physics('physicsData', 'assets/studentHead1.json');
     game.load.image('gradeF','images/gradeF.png');
 
@@ -38,11 +37,6 @@ var text;
 var slingshotX = 450;
 var slingshotY = 500
 var slingshotHeight = 340
-//=======
-//const slingshotX = 300;
-//const slingshotY = 300
-//const slingshotHeight = 340
-//>>>>>>> Stashed changes
 var ballInSlingshot;
 var ballHeld = false; //checks if the ball is held or not // speed of the ball
 const ballinitx=slingshotX+100;
@@ -76,12 +70,8 @@ const wrongHitPoints = 5;
 const rightHitPoints = 10;
 var gradeF;
 
-var customBound;
-
 var ballsInMotion = [];
 var ballsTimer;
-
-var currentId = -1;
 
 function create() {
 
@@ -199,11 +189,8 @@ function createBall() {
   newBall.body.static = true;
   newBall.body.setCollisionGroup(ballCollisionGroup);
   newBall.body.collides(studentCollisionGroup , ballHit, this);
-  currentId++;
-  newBall.id = currentId;
-  newBall.getId = function(){
-    return this.id;
-  }
+  newBall.body.z = 0;
+  newBall.body.velocity.z = 0;
   return newBall;
 }
 
@@ -213,9 +200,6 @@ function addStudent(image, x, y){
     game.physics.p2.enable(student);
     student.anchor.set(0.5,0.5);
     student.body.static = true;
-    //FOR COLLISION
-    // student.body.clearShapes();
-    // student.body.loadPolygon('physicsData', 'student1');
     return(student)
 }
 
@@ -230,7 +214,7 @@ function launchBall() {
     arrowLengthY = arrowInvisible.y - origin.y;
     if(Math.abs(arrowLengthY) > 3){
         ballInSlingshot.body.static = false;
-        Xvector = (arrowLengthX) *5;
+        Xvector = (arrowLengthX) *10;
         Yvector = (arrowLengthY) *10;
         ballInSlingshot.body.velocity.x = Xvector;
         ballInSlingshot.body.velocity.y = Yvector;
@@ -238,17 +222,41 @@ function launchBall() {
         ballFlying = true;
 
         //CREATE A TIMER EVENT TO REDUCE SIZE OF BALL
-        ballsInMotion[ballInSlingshot.getId()] = ballInSlingshot;
-        ballInSlingshot = createBall();
+        ballInSlingshot.body.velocity.z = - arrowLengthY / 10;
+        ballsInMotion.push(ballInSlingshot);
+        ballInSlingshot = createBall(); 
     }
     hideArrow();
 }
 
-function updateSize() {
+function updateBalls() {
     for (i=0; i< ballsInMotion.length ; i++){
-        var size = ballsInMotion[i].scale.x;
-        ballsInMotion[i].scale.setTo(size*0.96, size*0.96);
+        // var size = ballsInMotion[i].scale.x;
+        // ballsInMotion[i].scale.setTo(size*0.9, size*0.9);
+        // if (size < 0.09){
+        //     ballsInMotion[i].body.velocity.y = - ballsInMotion[i].body.velocity.y;
+        // }
+
+        updateBallSize(ballsInMotion[i]);
     }
+}
+
+function updateBallSize(ball) {
+    ball.body.z += ball.body.velocity.z;
+    var size = 0.15/(1 + ball.body.z*0.01);
+    ball.scale.setTo(size, size);
+    console.log("=========> ", floorPosition(ball.body.z));
+    // ball.scale(SOME_CONSTANT / (1 + ball.z))
+    // console.log(floorPosition(ball.body.z))
+//     if (ball.body.y > floorPosition(ball.body.z)){
+//         console.log("ball hits floor");
+//         // bounce vertically?
+//     }
+}
+
+function floorPosition(z){
+    // return screenheight/(1+ z*0.01);
+    return screenheight-z;
 }
 
 function showArrow() {
@@ -286,8 +294,6 @@ function ballHit(body1, body2) {
       score-= wrongHitPoints;
       console.log("5 points taken off");
     }
-    console.log("-------->", body1);
-    //game.time.events.remove(ballsTimer[body1.getId()]);
 }
 
 
@@ -359,24 +365,19 @@ function isBallDirectionChanged( newVel){
 
 
 function reset(){
-  gradeF.alpha = 0;
-restart();
-  randomStudent.alpha = 0.5;
-  chooseStudent();
-  lives = 3;
- score=0;
-text.text = "";
-
-
+    gradeF.alpha = 0;
+    restart();
+    randomStudent.alpha = 0.5;
+    chooseStudent();
+    lives = 3;
+    score=0;
+    text.text = "";
 }
 
 function pause(){
     game.physics.p2.pause();
-     for(var i =0; i<ballsTimer
-        .length; i++){
-        game.time.events.remove(ballsTimer[i]);
-    }
     bground.inputEnabled = false;
+    game.time.events.pause(ballsTimer);
 }
 
 
@@ -387,12 +388,12 @@ function restart(){
     ballCollided = false;
     for(var i =0; i<ballsInMotion.length; i++){
         ballsInMotion[i].destroy();
-        game.time.events.remove(ballsTimer[i]);
     }
     ballsInMotion = [];
-    ballInSlingshot = createBall;
+    ballInSlingshot = createBall();
     bground.inputEnabled = true;
     game.physics.p2.resume();
+    game.time.events.remove(ballsTimer);
     sz = 0.15;
 }
 
@@ -408,11 +409,10 @@ function play()
     //game.time.events.resume(timerEvent);
     game.physics.p2.resume();
     bground.inputEnabled = true;
-    //game.time.events.resume(ballTimerEvent);
+    game.time.events.resume(ballsTimer);
 }
 
-//<<<<<<< Updated upstream
-//=======
+
 function startGame()
 {
   menu.alpha=0;
@@ -422,9 +422,9 @@ function startGame()
   bground.events.onInputDown.add(holdBall);
   bground.events.onInputUp.add(launchBall);
   ballInSlingshot = createBall();
-  ballsTimer = game.time.events.loop(200, updateSize, this); 
+  ballsTimer = game.time.events.loop(300, updateBalls, this); 
 }
-//>>>>>>> Stashed changes
+
 function chooseStudent(){
   num = Math.floor((Math.random() * 3));
   while(num==randomIndex)
@@ -460,6 +460,6 @@ function checkPointLimit(){
 
 
 function render() {
-    game.debug.text("Drag the ball and release to launch", 32, 32);
+    game.debug.text("Drag anywhere on the screen and release to launch", 32, 32);
 
 }
