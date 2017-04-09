@@ -1,5 +1,7 @@
-var screenwidth=1200;
-var screenheight=600;
+// var screenwidth=1200;
+// var screenheight=600;
+var screenwidth=1584;
+var screenheight=795;
 var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 var ballTimerEvent = null;
