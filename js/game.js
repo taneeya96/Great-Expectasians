@@ -1,8 +1,8 @@
-var screenwidth=1200;
-var screenheight=600;
+var screenwidth=1584;
+var screenheight=795;
 var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
-var ballTimerEvent = null;
+// var ballTimerEvent = null;
 var balls = [];
 var ball = null;
 
@@ -30,6 +30,7 @@ function preload() {
     game.load.physics('physicsData', 'assets/studentHead1.json');
     game.load.image('gradeF','images/gradeF.png');
 
+    game.load.image('pausePopup','images/overwatch.png');
 }
 
 var text;
@@ -59,13 +60,14 @@ var resetButton;
 var pauseButton;
 var playButton;
 const buttonXPos = 1100;
-const buttonYPos = 50;
+const buttonYPos = 65;
 const pauseButtonHeight = 60;
 
 var arrayStudents;
 
 var score = 0;
 var pointGoal=100;
+var levelGoal=[0,30,250,420,720];
 const wrongHitPoints = 5;
 const rightHitPoints = 10;
 var gradeF;
@@ -84,6 +86,39 @@ function create() {
 
     bground = game.add.sprite(0,0,'background');
     bground.alpha = 0.75; //transparency of background
+
+
+    pausePopup = game.add.sprite(game.world.centerX, game.world.centerY, 'pausePopup');
+    pausePopup.alpha = 0;
+    pausePopup.anchor.set(0.5,0.5);
+    pausePopup.inputEnabled = false;
+
+
+
+    playButton = game.make.sprite(0,0, 'MenuButton');
+    playButton.anchor.set(0.5,0.5);
+    playButton.scale.setTo(0.1,0.1);
+    playButton.alpha=1;
+    playButton.inputEnabled = true;
+    playButton.input.priorityID = 1;
+    playButton.events.onInputDown.add(resume,this);
+    pausePopup.addChild(playButton);
+
+
+    levelupPopup = game.add.sprite(game.world.centerX, game.world.centerY, 'pausePopup');
+    levelupPopup.alpha = 0;
+    levelupPopup.anchor.set(0.5,0.5);
+    levelupPopup.inputEnabled = false;
+
+
+    LevelUpButton = game.make.sprite(0,0, 'playButton');
+    LevelUpButton.anchor.set(0.5,0.5);
+    LevelUpButton.scale.setTo(0.08,0.08);
+    LevelUpButton.alpha=1;
+    LevelUpButton.inputEnabled = true;
+    LevelUpButton.input.priorityID=1;
+    LevelUpButton.events.onInputDown.add(levelUpResume,this);
+    levelupPopup.addChild(LevelUpButton);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.y = 500; //larger y gravity the narrower the parabol.
@@ -153,15 +188,16 @@ function create() {
 
     //buttons
     pauseButton = game.add.button(buttonXPos, buttonYPos, 'pauseButton', pause , this, 2, 1, 0);
-    resetButton = game.add.button(buttonXPos, buttonYPos+60, 'resetButton', reset , this, 2, 1, 0 );
-    playButton = game.add.button(buttonXPos, buttonYPos+120,'playButton', play , this, 2, 1, 0);
+    //resetButton = game.add.button(buttonXPos, buttonYPos+60, 'resetButton', reset , this, 2, 1, 0 );
+    //playButton = game.add.button(buttonXPos, buttonYPos+120,'playButton', play , this, 2, 1, 0);
 
-   	pauseButton.scale.setTo(0.015,0.015);
-   	resetButton.scale.setTo(0.15,0.15);
-   	playButton.scale.setTo(0.054,0.054);
+   	pauseButton.scale.setTo(0.03,0.03);
+   	//resetButton.scale.setTo(0.15,0.15);
+   	//playButton.scale.setTo(0.054,0.054);
+
+
 
     randomIndex = Math.floor((Math.random() * 3))
-    //randomIndex = 0;
     randomStudent = arrayStudents[randomIndex];
     for( var i=0; i< arrayStudents.length; i++)
     {
@@ -169,9 +205,23 @@ function create() {
     }
     randomStudent.alpha = 1;
 
-
-    gradeF = game.add.sprite(250,-100,'gradeF');
+    gradeF = game.add.sprite(game.world.centerX, game.world.centerY,'gradeF');
+    gradeF.anchor.set(0.5,0.5);
     gradeF.alpha = 0;
+    gradeF.inputEnabled=false;
+
+    //var rw = gradeF.width / 2;
+    //var rh = gradeF.height/2;
+    var resetButton = game.make.sprite(0,100, 'resetButton');
+
+    resetButton.anchor.set(0.5,0.5);
+    resetButton.scale.setTo(0.3,0.3);
+    resetButton.alpha=1;
+    resetButton.inputEnabled = true;
+    resetButton.input.priorityID = 1;
+    resetButton.events.onInputDown.add(reset,this);
+    gradeF.addChild(resetButton);
+
 
     menu = game.add.sprite(-100,-100,'Menu');
     menu.alpha = 1;
@@ -182,7 +232,20 @@ function create() {
     menuButton.scale.setTo(0.1,0.1);
     menuButton.inputEnabled  = true;
     menuButton.events.onInputDown.add(startGame,this);
+    initiateTimer();
 
+}
+
+function initiateTimer(){
+  timer = game.time.create();
+  timerEvent = timer.add(Phaser.Timer.SECOND * 20, endTimer);
+}
+
+function levelUpResume(){
+  levelupPopup.alpha=0;
+  levelupPopup.inputEnabled=false;
+  bground.inputEnabled = true;
+  game.physics.p2.resume();
 }
 
 function createBall() {
@@ -211,7 +274,6 @@ function addStudent(image, x, y){
     return(student)
 }
 
-
 function holdBall() {
     showArrow();
     ballInSlingshot.body.static = true;
@@ -229,7 +291,6 @@ function launchBall() {
         currentVel = Yvector;
         ballFlying = true;
 
-        //CREATE A TIMER EVENT TO REDUCE SIZE OF BALL
         ballInSlingshot.body.velocity.z = - arrowLengthY / 10;
         ballsInMotion.push(ballInSlingshot);
         ballInSlingshot = createBall(); 
@@ -306,10 +367,6 @@ function ballHit(body1, body2) {
     body2.sprite.body.setCollisionGroup(inactiveCollisionGroup); //Disable collision detection with students after hitting one student.
 }
 
-function doNothing(body1, body2){
-    pass;
-}
-
 function update() {
     //Randomized selection of student
 
@@ -356,26 +413,6 @@ function update() {
 
 }
 
-function setCustomBound(x, y){
-    var sim = game.physics.p2;
-    var mask = sim.boundsCollisionGroup.mask;
-    var h = 100;
-    customBound = new p2.Body({ mass: 0, position: [sim.pxmi(x), sim.pxmi(y + h) ] });
-    customBound.addShape(new p2.Plane());
-    sim.world.addBody(customBound);
-}
-
-
-function isBallDirectionChanged( newVel){
-    if (newVel * currentVel < 0){
-        currentVel = newVel;
-        return true;
-    } else{
-        currentVel = newVel;
-        return false;
-    }
-}
-
 
 function reset(){
     gradeF.alpha = 0;
@@ -388,9 +425,13 @@ function reset(){
 }
 
 function pause(){
+    console.log("-->pause");
     game.physics.p2.pause();
-    bground.inputEnabled = false;
     game.time.events.pause(ballsTimer);
+    timer.pause();
+    bground.inputEnabled = false;
+    pausePopup.alpha=1;
+    pausePopup.inputEnabled=true;
 }
 
 
@@ -406,28 +447,26 @@ function restart(){
     ballInSlingshot = createBall();
     bground.inputEnabled = true;
     game.physics.p2.resume();
-    game.time.events.remove(ballsTimer);
     sz = 0.15;
 }
 
 function play()
 {
-    // if("")
-    // {
-    //     game.time.events.resume(timerEvent);
-    //     game.physics.p2.resume();
-    // }else{
-    //     pass;
-    // }
-    //game.time.events.resume(timerEvent);
     game.physics.p2.resume();
     bground.inputEnabled = true;
     game.time.events.resume(ballsTimer);
+    timer.resume();
+}
+
+function resume(){
+  console.log("--->resume");
+  play();
+  pausePopup.alpha=0;
+  pausePopup.inputEnabled=false;
 }
 
 
-function startGame()
-{
+function startGame(){
   menu.alpha=0;
   menuButton.alpha = 0;
   menuButton.inputEnabled = false;
@@ -445,32 +484,41 @@ function chooseStudent(){
     num = Math.floor((Math.random() * 3));
   }
   randomIndex=num;
-  //randomIndex = 0;
   randomStudent = arrayStudents[randomIndex];
   randomStudent.alpha = 1;
 }
 
-function studentHit()
-{
+function studentHit(){
     score+= rightHitPoints;
     console.log("10 points added");
     text.text ="Score : " + score;
     randomStudent.alpha = 0.5;
 }
 
-function checkPointLimit(){
-  if (score<pointGoal)
+
+function checkPointLimit(level){
+  game.physics.p2.pause();
+  game.time.events.pause(ballsTimer);
+  bground.inputEnabled = false;
+  if (score<levelGoal[level])
   {
-    livesDisplay.text = "GAME OVER";
-    text.text = "Click the reset button to play again!"
     randomStudent.alpha = 0.5;
     gradeF.alpha =1;
-    gradeF.scale.setTo(0.8,0.8);
-    pause();
-    //restart();
+
+  } else
+  {
+    currentLevel=level+1;
+    levelDisplay.text="Level: "+currentLevel;
+    levelupPopup.alpha=1;
   }
 }
 
+
+
+function endTimer() {
+        timer.stop();
+        checkPointLimit(currentLevel);
+}
 
 function render() {
     game.debug.text("Drag anywhere on the screen and release to launch", 32, 32);
