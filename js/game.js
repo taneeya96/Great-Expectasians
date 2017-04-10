@@ -13,7 +13,6 @@ function preload() {
     game.load.image('ball', 'images/paperBall.png');
     game.load.image('slingshot', 'images/CatapultSprite.png')
     game.load.image('student1', 'images/student1.png');
-    game.load.image('student1-hit', 'images/student1-hit.png');
     game.load.image('student2', 'images/student2.png');
     game.load.image('student3', 'images/student3.png');
     game.load.image('student4', 'images/student3.png');
@@ -140,7 +139,6 @@ function create() {
         var student = addStudent('student'+i, studentXs[i], studentYs[i]);
         arrayStudents.push(student);
         //student.body.setRectangle(80,80); //for collision, box-shaped
-
         student.body.clearShapes();
         student.body.loadPolygon('physicsData', 'student1');
         student.body.setCollisionGroup(studentCollisionGroup);
@@ -274,10 +272,15 @@ function addStudent(image, x, y){
     student.body.static = true;
 <<<<<<< HEAD
     //FOR COLLISION
+<<<<<<< HEAD
     student.body.clearShapes();
     student.body.loadPolygon('physicsData', 'student1');
 =======
 >>>>>>> origin/master
+=======
+    // student.body.clearShapes();
+    //     student.body.loadPolygon('physicsData', 'student1');
+>>>>>>> parent of f7d95d4... Testing animation
     return(student)
 }
 
@@ -365,7 +368,6 @@ function ballHit(body1, body2) {
     ballCollided = true;
     if (body1.x == randomStudent.x && body1.y == randomStudent.y){
         studentHit();
-        randomStudent.loadTexture('student1-hit', 0);
         chooseStudent();
     }
     else{
