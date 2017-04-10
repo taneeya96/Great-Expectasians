@@ -31,7 +31,6 @@ function preload() {
     game.load.physics('physicsData', 'assets/studentHead1.json');
     game.load.image('gradeF','images/gradeF.png');
 
-    game.load.image('pausePopup','images/overwatch.png');
 }
 
 var text;
@@ -61,14 +60,14 @@ var resetButton;
 var pauseButton;
 var playButton;
 const buttonXPos = 1100;
-const buttonYPos = 65;
+const buttonYPos = 50;
 const pauseButtonHeight = 60;
 
 var arrayStudents;
 
 var score = 0;
 var pointGoal=100;
-var levelGoal=[0,30,250,420,720];
+var levelGoal=[0,100,250,420,720];
 const wrongHitPoints = 5;
 const rightHitPoints = 10;
 var gradeF;
@@ -87,39 +86,6 @@ function create() {
 
     bground = game.add.sprite(0,0,'background');
     bground.alpha = 0.75; //transparency of background
-
-
-    pausePopup = game.add.sprite(game.world.centerX, game.world.centerY, 'pausePopup');
-    pausePopup.alpha = 0;
-    pausePopup.anchor.set(0.5,0.5);
-    pausePopup.inputEnabled = false;
-
-
-
-    playButton = game.make.sprite(0,0, 'MenuButton');
-    playButton.anchor.set(0.5,0.5);
-    playButton.scale.setTo(0.1,0.1);
-    playButton.alpha=1;
-    playButton.inputEnabled = true;
-    playButton.input.priorityID = 1;
-    playButton.events.onInputDown.add(resume,this);
-    pausePopup.addChild(playButton);
-
-
-    levelupPopup = game.add.sprite(game.world.centerX, game.world.centerY, 'pausePopup');
-    levelupPopup.alpha = 0;
-    levelupPopup.anchor.set(0.5,0.5);
-    levelupPopup.inputEnabled = false;
-
-
-    LevelUpButton = game.make.sprite(0,0, 'playButton');
-    LevelUpButton.anchor.set(0.5,0.5);
-    LevelUpButton.scale.setTo(0.08,0.08);
-    LevelUpButton.alpha=1;
-    LevelUpButton.inputEnabled = true;
-    LevelUpButton.input.priorityID=1;
-    LevelUpButton.events.onInputDown.add(levelUpResume,this);
-    levelupPopup.addChild(LevelUpButton);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.y = 500; //larger y gravity the narrower the parabol.
@@ -195,8 +161,6 @@ function create() {
    	resetButton.scale.setTo(0.28,0.28);
    	playButton.scale.setTo(0.098,0.098);
 
-
-
     randomIndex = Math.floor((Math.random() * 3))
     randomStudent = arrayStudents[randomIndex];
     for( var i=0; i< arrayStudents.length; i++)
@@ -205,23 +169,8 @@ function create() {
     }
     randomStudent.alpha = 1;
 
-    gradeF = game.add.sprite(game.world.centerX, game.world.centerY,'gradeF');
-    gradeF.anchor.set(0.5,0.5);
+    gradeF = game.add.sprite(250,-100,'gradeF');
     gradeF.alpha = 0;
-    gradeF.inputEnabled=false;
-
-    //var rw = gradeF.width / 2;
-    //var rh = gradeF.height/2;
-    var resetButton = game.make.sprite(0,100, 'resetButton');
-
-    resetButton.anchor.set(0.5,0.5);
-    resetButton.scale.setTo(0.3,0.3);
-    resetButton.alpha=1;
-    resetButton.inputEnabled = true;
-    resetButton.input.priorityID = 1;
-    resetButton.events.onInputDown.add(reset,this);
-    gradeF.addChild(resetButton);
-
 
     menu = game.add.sprite(-100,-100,'Menu');
     menu.alpha = 1;
@@ -233,12 +182,11 @@ function create() {
     menuButton.inputEnabled  = true;
     menuButton.events.onInputDown.add(startGame,this);
     initiateTimer();
-
+    
 }
-
 function initiateTimer(){
   timer = game.time.create();
-  timerEvent = timer.add(Phaser.Timer.SECOND * 20, endTimer);
+  timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 45, endTimer);
 }
 
 function levelUpResume(){
@@ -248,6 +196,11 @@ function levelUpResume(){
   game.physics.p2.resume();
 }
 
+function reIniTimer(){
+  timer.destroy();
+  initiateTimer();
+  timer.start();
+}
 function createBall() {
   var newBall = game.add.sprite(ballinitx, ballinity, 'ball');
   game.physics.p2.enable(newBall);
@@ -276,6 +229,7 @@ function addStudent(image, x, y){
     student.body.loadPolygon('physicsData', 'student1');
     return(student)
 }
+
 
 function holdBall() {
     showArrow();
@@ -371,6 +325,7 @@ function ballHit(body1, body2) {
     body2.sprite.body.setCollisionGroup(inactiveCollisionGroup); //Disable collision detection with students after hitting one student.
 }
 
+
 function update() {
     //Randomized selection of student
 
@@ -429,7 +384,6 @@ function reset(){
 }
 
 function pause(){
-    console.log("-->pause");
     game.physics.p2.pause();
     game.time.events.pause(ballsTimer);
     timer.pause();
@@ -444,13 +398,12 @@ function restart(){
     currentId = -1;
     ballFlying = false;
     ballCollided = false;
-    for(var i =0; i<ballsInMotion.length; i++){
-        ballsInMotion[i].destroy();
-    }
     ballsInMotion = [];
     ballInSlingshot = createBall();
     bground.inputEnabled = true;
     game.physics.p2.resume();
+    ballsInMotion.push(createBall());
+    game.time.events.remove(ballTimerEvent);
     sz = 0.15;
 }
 
@@ -467,10 +420,19 @@ function resume(){
   play();
   pausePopup.alpha=0;
   pausePopup.inputEnabled=false;
+    if(ballFlying)
+    {
+        game.time.events.resume(timerEvent);
+        game.physics.p2.resume();
+        timer.resume();
+    }else{
+        pass;
+    }
 }
 
 
-function startGame(){
+function startGame()
+{
   menu.alpha=0;
   menuButton.alpha = 0;
   menuButton.inputEnabled = false;
@@ -492,7 +454,8 @@ function chooseStudent(){
   randomStudent.alpha = 1;
 }
 
-function studentHit(){
+function studentHit()
+{
     score+= rightHitPoints;
     console.log("10 points added");
     text.text ="Score : " + score;
@@ -506,14 +469,18 @@ function checkPointLimit(level){
   bground.inputEnabled = false;
   if (score<levelGoal[level])
   {
+    levelDisplay.text = "GAME OVER";
+    text.text = "Click the reset button to play again!"
     randomStudent.alpha = 0.5;
     gradeF.alpha =1;
-
+    gradeF.scale.setTo(0.8,0.8);
+    restart();
   } else
   {
     currentLevel=level+1;
     levelDisplay.text="Level: "+currentLevel;
-    levelupPopup.alpha=1;
+    initiateTimer();
+    timer.start();
   }
 }
 
@@ -523,7 +490,6 @@ function endTimer() {
         timer.stop();
         checkPointLimit(currentLevel);
 }
-
 function render() {
     game.debug.text("Drag anywhere on the screen and release to launch", 32, 32);
 
