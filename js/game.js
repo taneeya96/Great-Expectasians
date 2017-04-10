@@ -187,13 +187,13 @@ function create() {
 
 
     //buttons
-    pauseButton = game.add.button(buttonXPos, buttonYPos, 'pauseButton', pause , this, 2, 1, 0);
-    //resetButton = game.add.button(buttonXPos, buttonYPos+60, 'resetButton', reset , this, 2, 1, 0 );
-    //playButton = game.add.button(buttonXPos, buttonYPos+120,'playButton', play , this, 2, 1, 0);
+    pauseButton = game.add.button(buttonXPos+300, buttonYPos, 'pauseButton', pause , this, 2, 1, 0);
+    resetButton = game.add.button(buttonXPos+300, buttonYPos+100, 'resetButton', reset , this, 2, 1, 0 );
+    playButton = game.add.button(buttonXPos+300, buttonYPos+197,'playButton', play , this, 2, 1, 0);
 
    	pauseButton.scale.setTo(0.03,0.03);
-   	//resetButton.scale.setTo(0.15,0.15);
-   	//playButton.scale.setTo(0.054,0.054);
+   	resetButton.scale.setTo(0.28,0.28);
+   	playButton.scale.setTo(0.098,0.098);
 
 
 
@@ -361,7 +361,7 @@ function ballHit(body1, body2) {
     ballCollided = true;
     if (body1.x == randomStudent.x && body1.y == randomStudent.y){
         studentHit();
-        randomStudent.loadTexture('student1-hit', 0);
+        //randomStudent.loadTexture('student1-hit', 0);
         chooseStudent();
     }
     else{
