@@ -1,13 +1,10 @@
-// var screenwidth=1200;
-// var screenheight=600;
 var screenwidth=1584;
 var screenheight=795;
 var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
-var ballTimerEvent = null;
+// var ballTimerEvent = null;
 var balls = [];
 var ball = null;
-var timer,timerEvent;
 
 function preload() {
     game.load.image('Menu','images/MainMenu.png');
@@ -18,9 +15,9 @@ function preload() {
     game.load.image('student1', 'images/student1.png');
     game.load.image('student1-hit', 'images/student1-hit.png');
     game.load.image('student2', 'images/student2.png');
-    game.load.image('student3', 'images/student1.png');
-    game.load.image('student4', 'images/student4.png');
-    game.load.image('student5', 'images/student5.png');
+    game.load.image('student3', 'images/student3.png');
+    game.load.image('student4', 'images/student3.png');
+    game.load.image('student5', 'images/student3.png');
 
     game.load.image('arrow', 'images/blackarrow.png');
     game.load.image('tail', 'images/black.png');
@@ -43,8 +40,7 @@ var slingshotX = 450;
 var slingshotY = 500
 var slingshotHeight = 340
 var ballInSlingshot;
-var ballHeld = false;
-var ballSpeed = 0;
+var ballHeld = false; //checks if the ball is held or not // speed of the ball
 const ballinitx=slingshotX+100;
 const ballinity=slingshotY+65;
 var ballFlying = false;
@@ -52,9 +48,11 @@ var ballCollided = false;
 var currentVel = 0;
 var sz = 0.15;
 
+
 var analog;
 var tail;
-var arrow;
+var arrow; 
+var arrowInvisible;//measure velocity
 var origin;
 var background;
 const tailWidth = 10;
@@ -74,10 +72,13 @@ var levelGoal=[0,30,250,420,720];
 const wrongHitPoints = 5;
 const rightHitPoints = 10;
 var gradeF;
-var currentLevel=1;
-var customBound;
 
 var ballsInMotion = [];
+var ballsTimer;
+
+var studentCollisionGroup;
+var ballCollisionGroup;
+var inactiveCollisionGroup;
 
 function create() {
 
@@ -125,27 +126,25 @@ function create() {
     game.physics.p2.restitution = 0.1; //bounciness of the world
     game.physics.p2.setImpactEvents(true);
 
-    timerDisplay = game.add.text(32,16,'',{fill: '#ffffff' });
-    scoreDisplay = game.add.text(350, 16, '', { fill: '#ffffff' });
-    goalDisplay = game.add.text(700,16,'',{fill: '#ffffff' });
-    levelDisplay = game.add.text(1000,16,'',{fill: '#ffffff' });
-
+    text = game.add.text(450, 16, '', { fill: '#ffffff' });
+    livesDisplay = game.add.text(1000,16,'',{fill: '#ffffff' });
 
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
+    inactiveCollisionGroup = game.physics.p2.createCollisionGroup();
     var studentXs = [320,1000,870,200,600];
     var studentYs = [250,500,250,500,250];
     arrayStudents = [];
 
-    for (var i=0; i<3; i++){
-        var student = addStudent('student1', studentXs[i], studentYs[i]);
+    for (var i=1; i<=3; i++){
+        var student = addStudent('student'+i, studentXs[i], studentYs[i]);
         arrayStudents.push(student);
         //student.body.setRectangle(80,80); //for collision, box-shaped
 
-        //student.body.clearShapes();
-        //student.body.loadPolygon('physicsData', 'student1');
+        student.body.clearShapes();
+        student.body.loadPolygon('physicsData', 'student1');
         student.body.setCollisionGroup(studentCollisionGroup);
-        student.body.collides([studentCollisionGroup, ballCollisionGroup]);
+        student.body.collides(ballCollisionGroup, ballHit, this);
     }
 
     //Creates custom lower bound for ball, value to be set later:
@@ -173,10 +172,19 @@ function create() {
     arrow.anchor.setTo(0,0.5);
     arrow.alpha = 0;
 
+    arrowInvisible = game.add.sprite(300, 300, 'arrow');
+    arrowInvisible.scale.setTo(0.1,0.1);
+    arrowInvisible.anchor.setTo(0,0.5);
+    arrowInvisible.alpha = 0;
+
     origin = game.add.sprite(300,300,'origin');
     origin.scale.setTo(0.02,0.02);
     origin.anchor.setTo(0.5,0.5);
     origin.alpha = 0;
+
+    //Respond to any input on screen
+    // game.input.onDown.add(holdBall);
+    // game.input.onUp.add(launchBall);
 
 
     //buttons
@@ -191,8 +199,6 @@ function create() {
 
 
     randomIndex = Math.floor((Math.random() * 3))
-
-    //randomIndex = 0;
     randomStudent = arrayStudents[randomIndex];
     for( var i=0; i< arrayStudents.length; i++)
     {
@@ -236,18 +242,11 @@ function initiateTimer(){
   timerEvent = timer.add(Phaser.Timer.SECOND * 20, endTimer);
 }
 
-function reIniTimer(){
-  timer.destroy();
-  initiateTimer();
-  timer.start();
-}
 function levelUpResume(){
-  reIniTimer();
   levelupPopup.alpha=0;
   levelupPopup.inputEnabled=false;
   bground.inputEnabled = true;
   game.physics.p2.resume();
-  game.time.events.remove(ballTimerEvent);
 }
 
 function createBall() {
@@ -258,17 +257,12 @@ function createBall() {
   newBall.body.setCircle(30); //for collision
   newBall.body.static = true;
   newBall.body.setCollisionGroup(ballCollisionGroup);
-  newBall.body.collides(studentCollisionGroup , ballHit, this);
-
-  //add some other characterisitcs to ball
-  newBall.timer = game.time.events.loop(100, updateSize, this);
-  game.time.events.pause(newBall.timer);
-  newBall.timer.startTimer = function(){
-    game.time.events.resume(this);
-  }
-  newBall.timer.removeTimer = function(){
-    game.time.events.remove(this);
-  }
+  newBall.body.collides(studentCollisionGroup);
+  newBall.body.z = 0;
+  newBall.body.velocity.z = 0;
+  newBall.hitFloor = false;
+  newBall.floor = -1000;
+  newBall.timesHitFloor = 0;
   return newBall;
 }
 
@@ -278,9 +272,12 @@ function addStudent(image, x, y){
     game.physics.p2.enable(student);
     student.anchor.set(0.5,0.5);
     student.body.static = true;
+<<<<<<< HEAD
     //FOR COLLISION
     student.body.clearShapes();
     student.body.loadPolygon('physicsData', 'student1');
+=======
+>>>>>>> origin/master
     return(student)
 }
 
@@ -290,33 +287,53 @@ function holdBall() {
 }
 
 function launchBall() {
-    arrowLengthX = arrow.x - origin.x;
-    arrowLengthY = arrow.y - origin.y;
+    arrowLengthX = arrowInvisible.x - origin.x;
+    arrowLengthY = arrowInvisible.y - origin.y;
     if(Math.abs(arrowLengthY) > 3){
         ballInSlingshot.body.static = false;
-        Xvector = (arrow.x - origin.x) *5;
-        Yvector = (arrow.y - origin.y) *10;
+        Xvector = (arrowLengthX) *10;
+        Yvector = (arrowLengthY) *10;
         ballInSlingshot.body.velocity.x = Xvector;
         ballInSlingshot.body.velocity.y = Yvector;
         currentVel = Yvector;
         ballFlying = true;
 
-        //CREATE A TIMER EVENT TO REDUCE SIZE OF BALL
-        //ballTimerEvent = game.time.events.loop(100, updateSize, this);
-        ballInSlingshot.timer.startTimer();
-        //END TIMER
-
-        ballsInMotion.push(createBall());
-        ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
+        ballInSlingshot.body.velocity.z = - arrowLengthY / 10;
+        ballsInMotion.push(ballInSlingshot);
+        ballInSlingshot = createBall(); 
     }
     hideArrow();
 }
 
-function updateSize() {
-    sz = sz*0.96;
-    for(var i=0; i<ballsInMotion.length; i++){
-    ballsInMotion[i].scale.setTo(sz,sz);
-  }
+function updateBalls() {
+    for (i=0; i< ballsInMotion.length ; i++){
+        if (ballsInMotion[i].timesHitFloor > 4){
+            ballsInMotion[i].kill();
+            ballsInMotion.splice(i, 1);
+        } else{
+            updateBallSize(ballsInMotion[i]);
+        }
+    }
+}
+
+function updateBallSize(ball) {
+    if (!ball.hitFloor){ //stop scaling ball after it hits the floor
+        ball.body.z += ball.body.velocity.z;
+        var size = 0.15/(1 + ball.body.z*0.005);
+        ball.scale.setTo(size, size);
+        ball.floor = (screenheight + 300) / (1+ ball.body.z *0.01);
+    }
+    if (ball.body.y > ball.floor){
+        bounceOffFloor(ball);
+    }
+}
+
+function bounceOffFloor(ball){
+    ball.body.velocity.y = - ball.body.velocity.y/1.5;
+    ball.body.velocity.x = ball.body.velocity.x/1.5;
+    ball.body.y = ball.floor;
+    ball.timesHitFloor++;
+    ball.hitFloor = true;
 }
 
 function showArrow() {
@@ -346,16 +363,16 @@ function hideArrow(){
 
 function ballHit(body1, body2) {
     ballCollided = true;
-    if (body2.x == randomStudent.x && body2.y == randomStudent.y){
+    if (body1.x == randomStudent.x && body1.y == randomStudent.y){
         studentHit();
         randomStudent.loadTexture('student1-hit', 0);
         chooseStudent();
     }
     else{
       score-= wrongHitPoints;
-      console.log("5 points taken off")
+      console.log("5 points taken off");
     }
-    game.time.events.remove(ballTimerEvent);
+    body2.sprite.body.setCollisionGroup(inactiveCollisionGroup); //Disable collision detection with students after hitting one student.
 }
 
 function update() {
@@ -363,7 +380,9 @@ function update() {
 
     //Restart after collision.
     for(var i=0; i<ballsInMotion.lenght; i++){
-
+    // if (ball.x < 0 || ball.x > screenwidth || ball.y > screenheight || ball.y < 0){
+    //     restart();
+    // }
     ballsInMotion[i].body.collideWorldBounds = true;
     if(i==ballsInMotion.length -1)
     {
@@ -378,87 +397,73 @@ function update() {
 
         if (Math.abs(angle) <= 0.05){
             arrow.rotation = 0;
-        } else{
+            arrowInvisible.rotation = 0;
+        } else if (angle == 2*3.14){
+            arrow.rotation = angle;
+        }else{
             arrow.rotation =  angle + 3.14;
+            arrowInvisible.rotation = angle + 3.14;
         }
         tail.rotation = angle - 3.14/2;
         analog.rotation = angle - 3.14/2;
-
-        tail.height = 0.5*dist;
         analog.height = dist;
+        arrowInvisible.x = origin.x -  0.5*dist*Math.cos(angle);
+        arrowInvisible.y = origin.y - 0.5*dist*Math.sin(angle);
+
+        if (dist <= 150){
+            tail.height = 0.7*dist;
+        } else{
+            dist = 150;
+        }
         arrow.x = origin.x -  0.5*dist*Math.cos(angle);
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
         }
 
-
-}
-
-function setCustomBound(x, y){
-    var sim = game.physics.p2;
-    var mask = sim.boundsCollisionGroup.mask;
-    var h = 100;
-    console.log(x,y);
-    customBound = new p2.Body({ mass: 0, position: [sim.pxmi(x), sim.pxmi(y + h) ] });
-    customBound.addShape(new p2.Plane());
-    sim.world.addBody(customBound);
-}
-
-
-function isBallDirectionChanged( newVel){
-    if (newVel * currentVel < 0){
-        currentVel = newVel;
-        return true;
-    } else{
-        currentVel = newVel;
-        return false;
-    }
 }
 
 
 function reset(){
-  gradeF.alpha = 0;
-  restart();
-  randomStudent.alpha = 0.5;
-  chooseStudent();
-  score=0;
-  reIniTimer();
-  currentLevel=1;
+    gradeF.alpha = 0;
+    restart();
+    randomStudent.alpha = 0.5;
+    chooseStudent();
+    lives = 3;
+    score=0;
+    text.text = "";
 }
 
 function pause(){
     console.log("-->pause");
     game.physics.p2.pause();
-    game.time.events.pause(ballTimerEvent);
+    game.time.events.pause(ballsTimer);
     timer.pause();
     bground.inputEnabled = false;
     pausePopup.alpha=1;
     pausePopup.inputEnabled=true;
-
 }
 
 
 function restart(){
     ballSpeed=0;
+    currentId = -1;
     ballFlying = false;
     ballCollided = false;
     for(var i =0; i<ballsInMotion.length; i++){
         ballsInMotion[i].destroy();
     }
     ballsInMotion = [];
-    ballsInMotion.push(createBall());
-    ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
+    ballInSlingshot = createBall();
     bground.inputEnabled = true;
     game.physics.p2.resume();
-    game.time.events.remove(ballTimerEvent);
     sz = 0.15;
-
 }
 
-function play(){
-  game.physics.p2.resume();
-  bground.inputEnabled = true;
-  game.time.events.resume(ballTimerEvent);
-  timer.resume();
+function play()
+{
+    game.physics.p2.resume();
+    bground.inputEnabled = true;
+    game.time.events.resume(ballsTimer);
+    timer.resume();
 }
 
 function resume(){
@@ -476,12 +481,9 @@ function startGame(){
   bground.inputEnabled = true;
   bground.events.onInputDown.add(holdBall);
   bground.events.onInputUp.add(launchBall);
-  ballsInMotion.push(createBall());
-  ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
-  timer.start();
+  ballInSlingshot = createBall();
+  ballsTimer = game.time.events.loop(50, updateBalls, this); 
 }
-
-
 
 function chooseStudent(){
   num = Math.floor((Math.random() * 3));
@@ -490,7 +492,6 @@ function chooseStudent(){
     num = Math.floor((Math.random() * 3));
   }
   randomIndex=num;
-  //randomIndex = 0;
   randomStudent = arrayStudents[randomIndex];
   randomStudent.alpha = 1;
 }
@@ -498,12 +499,14 @@ function chooseStudent(){
 function studentHit(){
     score+= rightHitPoints;
     console.log("10 points added");
+    text.text ="Score : " + score;
     randomStudent.alpha = 0.5;
 }
 
+
 function checkPointLimit(level){
   game.physics.p2.pause();
-  game.time.events.pause(ballTimerEvent);
+  game.time.events.pause(ballsTimer);
   bground.inputEnabled = false;
   if (score<levelGoal[level])
   {
@@ -518,11 +521,7 @@ function checkPointLimit(level){
   }
 }
 
-function formatTime(s) {
-        var minutes = "0" + Math.floor(s / 60);
-        var seconds = "0" + (s - minutes * 60);
-        return minutes.substr(-2) + ":" + seconds.substr(-2);
-    }
+
 
 function endTimer() {
         timer.stop();
@@ -530,8 +529,6 @@ function endTimer() {
 }
 
 function render() {
-    timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
-    levelDisplay.text="Level: "+currentLevel;
-    scoreDisplay.text ="Score : " + score;
-    goalDisplay.text="Goal: "+levelGoal[currentLevel];
+    game.debug.text("Drag anywhere on the screen and release to launch", 32, 32);
+
 }
