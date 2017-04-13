@@ -19,6 +19,7 @@ function preload() {
     game.load.image('student2', 'images/student2.png');
     game.load.image('student2-hit', 'images/student2-hit.png');
     game.load.image('student3', 'images/student3.png');
+    game.load.image('student3-hit', 'images/student3-hit.png');
     game.load.image('student4', 'images/student3.png');
     game.load.image('student5', 'images/student3.png');
 
@@ -373,7 +374,8 @@ function ballHit(body1, body2) {
     ballCollided = true;
     if (body1.x == randomStudent.x && body1.y == randomStudent.y){
         studentHit();
-        randomStudent.loadTexture('student2-hit', 0);
+        studentNum = randomIndex+1;
+        randomStudent.loadTexture('student'+studentNum+'-hit', 0);
         chooseStudent();
     }
     else{
