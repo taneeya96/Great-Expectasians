@@ -81,7 +81,6 @@ var currentLevel=1;
 var customBound;
 
 var ballsInMotion = [];
-
 var studentCollisionGroup;
 var ballCollisionGroup;
 var inactiveCollisionGroup;
@@ -258,7 +257,6 @@ function levelUpResume(){
   levelupPopup.inputEnabled=false;
   bground.inputEnabled = true;
   game.physics.p2.resume();
-  game.time.events.remove();
 }
 
 function createBall() {
@@ -453,7 +451,7 @@ function reset(){
 function pause(){
     console.log("-->pause");
     game.physics.p2.pause();
-    game.time.events.pause();
+    game.time.events.pause(ballsTimer);
     timer.pause();
     bground.inputEnabled = false;
     pausePopup.alpha=1;
@@ -474,7 +472,6 @@ function restart(){
     ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
     bground.inputEnabled = true;
     game.physics.p2.resume();
-    game.time.events.remove();
     sz = 0.15;
 
 }
@@ -482,7 +479,7 @@ function restart(){
 function play(){
   game.physics.p2.resume();
   bground.inputEnabled = true;
-  game.time.events.resume();
+  game.time.events.resume(ballsTimer);
   timer.resume();
 }
 
@@ -501,14 +498,9 @@ function startGame(){
   bground.inputEnabled = true;
   bground.events.onInputDown.add(holdBall);
   bground.events.onInputUp.add(launchBall);
-//<<<<<<< HEAD
   ballInSlingshot = createBall();
   ballsTimer = game.time.events.loop(100, updateBalls, this);
-//=======
-  ballsInMotion.push(createBall());
-  ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
   timer.start();
-//>>>>>>> origin/master
 }
 
 
@@ -520,7 +512,6 @@ function chooseStudent(){
     num = Math.floor((Math.random() * 3));
   }
   randomIndex=num;
-  //randomIndex = 0;
   randomStudent = arrayStudents[randomIndex];
   randomStudent.alpha = 1;
 }
@@ -534,7 +525,7 @@ function studentHit(){
 
 function checkPointLimit(level){
   game.physics.p2.pause();
-  game.time.events.pause();
+  game.time.events.pause(ballsTimer);
   bground.inputEnabled = false;
   if (score<levelGoal[level])
   {
