@@ -6,6 +6,7 @@ var  ballsTimer= null;
 var balls = [];
 var ball = null;
 var timer,timerEvent;
+var levelTime = 60;
 
 function preload() {
     game.load.image('Menu','images/MainMenu.png');
@@ -29,6 +30,7 @@ function preload() {
     game.load.image('pauseButton','images/PauseButton2.png');
     game.load.image('resetButton','images/ResetButton.png')
     game.load.image('playButton', 'images/PlayButton.png');
+
 
     game.load.physics('physicsData', 'assets/studentHead1.json');
     game.load.image('gradeF','images/gradeF.png');
@@ -65,6 +67,7 @@ const tailWidth = 10;
 var resetButton;
 var pauseButton;
 var playButton;
+
 const buttonXPos = 1100;
 const buttonYPos = 65;
 const pauseButtonHeight = 60;
@@ -73,7 +76,7 @@ var arrayStudents;
 
 var score = 0;
 var pointGoal=100;
-var levelGoal=[0,30,250,420,720];
+var levelGoal=[0,100,250,420,720];
 const wrongHitPoints = 5;
 const rightHitPoints = 10;
 var gradeF;
@@ -98,7 +101,6 @@ function create() {
     pausePopup.alpha = 0;
     pausePopup.anchor.set(0.5,0.5);
     pausePopup.inputEnabled = false;
-
 
 
     playButton = game.make.sprite(0,0, 'MenuButton');
@@ -147,8 +149,8 @@ function create() {
     var studentYs = [250,500,250,500,250];
     arrayStudents = [];
 
-    for (var i=0; i<3; i++){
-        var student = addStudent('student1', studentXs[i], studentYs[i]);
+    for (var i=1; i<=3; i++){
+        var student = addStudent('student'+i, studentXs[i], studentYs[i]);
         arrayStudents.push(student);
         //student.body.setRectangle(80,80); //for collision, box-shaped
 
@@ -194,11 +196,10 @@ function create() {
     //resetButton = game.add.button(buttonXPos, buttonYPos+60, 'resetButton', reset , this, 2, 1, 0 );
     //playButton = game.add.button(buttonXPos, buttonYPos+120,'playButton', play , this, 2, 1, 0);
 
+
    	pauseButton.scale.setTo(0.03,0.03);
    	//resetButton.scale.setTo(0.15,0.15);
    	//playButton.scale.setTo(0.054,0.054);
-
-
 
     randomIndex = Math.floor((Math.random() * 3))
 
@@ -243,7 +244,7 @@ function create() {
 
 function initiateTimer(){
   timer = game.time.create();
-  timerEvent = timer.add(Phaser.Timer.SECOND * 20, endTimer);
+  timerEvent = timer.add(Phaser.Timer.SECOND * levelTime, endTimer);
 }
 
 function reIniTimer(){
@@ -252,6 +253,7 @@ function reIniTimer(){
   timer.start();
 }
 function levelUpResume(){
+  levelTime-=10;
   reIniTimer();
   levelupPopup.alpha=0;
   levelupPopup.inputEnabled=false;
@@ -535,6 +537,8 @@ function checkPointLimit(level){
   } else
   {
     currentLevel=level+1;
+    score = 0;
+    scoreDisplay.text = "Score: "+score;
     levelDisplay.text="Level: "+currentLevel;
     levelupPopup.alpha=1;
   }
