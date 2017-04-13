@@ -2,7 +2,8 @@ var screenwidth=1584;
 var screenheight=795;
 var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
-// var ballTimerEvent = null;
+
+var  ballsTimer= null;
 var balls = [];
 var ball = null;
 
@@ -13,8 +14,9 @@ function preload() {
     game.load.image('ball', 'images/paperBall.png');
     game.load.image('slingshot', 'images/CatapultSprite.png')
     game.load.image('student1', 'images/student1.png');
-    game.load.image('student1-hit', 'images/student1.png');
+    game.load.image('student1-hit', 'images/student1-hit.png');
     game.load.image('student2', 'images/student2.png');
+    game.load.image('student2-hit', 'images/student2-hit.png');
     game.load.image('student3', 'images/student3.png');
     game.load.image('student4', 'images/student3.png');
     game.load.image('student5', 'images/student3.png');
@@ -31,6 +33,10 @@ function preload() {
     game.load.physics('physicsData', 'assets/studentHead1.json');
     game.load.image('gradeF','images/gradeF.png');
 
+    game.load.image('pausePopup','images/overwatch.png');
+
+    //sound effects
+    game.load.audio('collisionSound', 'assets/Audio/collisionSound.mp3');
 }
 
 var text;
@@ -50,7 +56,7 @@ var sz = 0.15;
 
 var analog;
 var tail;
-var arrow; 
+var arrow;
 var arrowInvisible;//measure velocity
 var origin;
 var background;
@@ -73,8 +79,6 @@ const rightHitPoints = 10;
 var gradeF;
 
 var ballsInMotion = [];
-var ballsTimer;
-
 var studentCollisionGroup;
 var ballCollisionGroup;
 var inactiveCollisionGroup;
@@ -92,8 +96,13 @@ function create() {
     game.physics.p2.restitution = 0.1; //bounciness of the world
     game.physics.p2.setImpactEvents(true);
 
-    text = game.add.text(450, 16, '', { fill: '#ffffff' });
-    livesDisplay = game.add.text(1000,16,'',{fill: '#ffffff' });
+    timerDisplay = game.add.text(32,16,'',{fill: '#ffffff' });
+    scoreDisplay = game.add.text(350, 16, '', { fill: '#ffffff' });
+    goalDisplay = game.add.text(700,16,'',{fill: '#ffffff' });
+    levelDisplay = game.add.text(1000,16,'',{fill: '#ffffff' });
+
+    //sound effects
+    collisionSound = game.add.audio('collisionSound');
 
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -109,7 +118,7 @@ function create() {
         //student.body.clearShapes();
         //student.body.loadPolygon('physicsData', 'student1');
         student.body.setCollisionGroup(studentCollisionGroup);
-        student.body.collides(ballCollisionGroup, ballHit, this);
+        student.body.collides(ballCollisionGroup,ballHit,this);
     }
 
     //Creates custom lower bound for ball, value to be set later:
@@ -210,11 +219,11 @@ function createBall() {
   newBall.body.static = true;
   newBall.body.setCollisionGroup(ballCollisionGroup);
   newBall.body.collides(studentCollisionGroup);
-  newBall.body.z = 0;
+  newBall.body.z =0;
   newBall.body.velocity.z = 0;
   newBall.hitFloor = false;
   newBall.floor = -1000;
-  newBall.timesHitFloor = 0;
+  newBall.timesHitFloor =0;
   return newBall;
 }
 
@@ -241,16 +250,15 @@ function launchBall() {
     arrowLengthY = arrowInvisible.y - origin.y;
     if(Math.abs(arrowLengthY) > 3){
         ballInSlingshot.body.static = false;
-        Xvector = (arrowLengthX) *10;
-        Yvector = (arrowLengthY) *10;
+        Xvector = (arrow.x - origin.x) *10;
+        Yvector = (arrow.y - origin.y) *10;
         ballInSlingshot.body.velocity.x = Xvector;
         ballInSlingshot.body.velocity.y = Yvector;
         currentVel = Yvector;
         ballFlying = true;
-
         ballInSlingshot.body.velocity.z = - arrowLengthY / 10;
         ballsInMotion.push(ballInSlingshot);
-        ballInSlingshot = createBall(); 
+        ballInSlingshot = createBall();
     }
     hideArrow();
 }
@@ -266,24 +274,25 @@ function updateBalls() {
     }
 }
 
-function updateBallSize(ball) {
-    if (!ball.hitFloor){ //stop scaling ball after it hits the floor
-        ball.body.z += ball.body.velocity.z;
-        var size = 0.15/(1 + ball.body.z*0.005);
-        ball.scale.setTo(size, size);
-        ball.floor = (screenheight + 300) / (1+ ball.body.z *0.01);
-    }
-    if (ball.body.y > ball.floor){
-        bounceOffFloor(ball);
-    }
+
+function updateBallSize(ball){
+  if(!ball.hitFloor){
+    ball.body.z += ball.body.velocity.z;
+    var size = 0.15/(1 + ball.body.z*0.005);
+    ball.scale.setTo(size,size);
+    ball.floor = (screenheight + 300) / (1 + ball.body.z * 0.01);
+  }
+  if(ball.body.y > ball.floor){
+    bounceOffFloor(ball);
+  }
 }
 
-function bounceOffFloor(ball){
-    ball.body.velocity.y = - ball.body.velocity.y/1.5;
-    ball.body.velocity.x = ball.body.velocity.x/1.5;
-    ball.body.y = ball.floor;
-    ball.timesHitFloor++;
-    ball.hitFloor = true;
+function bounceOffFloor(ball) {
+  ball.body.velocity.y = -ball.body.velocity.y/1.5;
+  ball.body.velocity.x = ball.body.velocity.x/1.5;
+  ball.body.y = ball.floor;
+  ball.timesHitFloor++;
+  ball.hitFloor = true;
 }
 
 function showArrow() {
@@ -315,14 +324,14 @@ function ballHit(body1, body2) {
     ballCollided = true;
     if (body1.x == randomStudent.x && body1.y == randomStudent.y){
         studentHit();
-        //randomStudent.loadTexture('student1-hit', 0);
+        randomStudent.loadTexture('student2-hit', 0);
         chooseStudent();
     }
     else{
       score-= wrongHitPoints;
       console.log("5 points taken off");
     }
-    body2.sprite.body.setCollisionGroup(inactiveCollisionGroup); //Disable collision detection with students after hitting one student.
+    body2.sprite.body.setCollisionGroup(inactiveCollisionGroup);
 }
 
 
@@ -402,17 +411,14 @@ function restart(){
     ballInSlingshot = createBall();
     bground.inputEnabled = true;
     game.physics.p2.resume();
-    ballsInMotion.push(createBall());
-    game.time.events.remove(ballTimerEvent);
     sz = 0.15;
 }
 
-function play()
-{
-    game.physics.p2.resume();
-    bground.inputEnabled = true;
-    game.time.events.resume(ballsTimer);
-    timer.resume();
+function play(){
+  game.physics.p2.resume();
+  bground.inputEnabled = true;
+  game.time.events.resume(ballsTimer);
+  timer.resume();
 }
 
 function resume(){
@@ -440,7 +446,8 @@ function startGame()
   bground.events.onInputDown.add(holdBall);
   bground.events.onInputUp.add(launchBall);
   ballInSlingshot = createBall();
-  ballsTimer = game.time.events.loop(50, updateBalls, this); 
+  ballsTimer = game.time.events.loop(100, updateBalls, this);
+  timer.start();
 }
 
 function chooseStudent(){
@@ -454,8 +461,9 @@ function chooseStudent(){
   randomStudent.alpha = 1;
 }
 
-function studentHit()
-{
+
+function studentHit(){
+    collisionSound.play();
     score+= rightHitPoints;
     console.log("10 points added");
     text.text ="Score : " + score;
