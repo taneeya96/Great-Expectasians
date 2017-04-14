@@ -10,7 +10,7 @@ var timer,timerEvent;
 function preload() {
     game.load.image('Menu','images/MainMenu.png');
     game.load.image('MenuButton','images/MenuPlay.png');
-    game.load.image('background','images/Background.png');
+    game.load.image('background','images/Background1.png');
     game.load.image('ball', 'images/paperBall.png');
     game.load.image('slingshot', 'images/CatapultSprite.png')
     game.load.image('student1', 'images/student1.png');
