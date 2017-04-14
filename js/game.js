@@ -157,7 +157,7 @@ function create() {
     arrayStudents = [];
 
     for (var i=0; i<3; i++){
-        var student = addStudent('student1', studentXs[i], studentYs[i]);
+        var student = addStudent('student'+(i+1), studentXs[i], studentYs[i]);
         arrayStudents.push(student);
         //student.body.setRectangle(80,80); //for collision, box-shaped
 
@@ -381,7 +381,8 @@ function ballHit(body1, body2) {
     ballCollided = true;
     if (body1.x == randomStudent.x && body1.y == randomStudent.y){
         studentHit();
-        randomStudent.loadTexture('student2-hit', 0);
+        studentnum = randomIndex+1;
+        randomStudent.loadTexture('student'+studentnum+'-hit', 0);
         chooseStudent();
     }
     else{
