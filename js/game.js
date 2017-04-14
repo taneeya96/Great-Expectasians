@@ -37,6 +37,9 @@ function preload() {
 
     //sound effects
     game.load.audio('collisionSound', 'assets/Audio/collisionSound.mp3');
+
+  //game.load.spritesheet('runningStudent', 'images/RunningStudentSpriteSheet3.png', 125, 500, 8,60);
+
 }
 
 var text;
@@ -70,6 +73,7 @@ const buttonYPos = 65;
 const pauseButtonHeight = 60;
 
 var arrayStudents;
+//var runningStudent;
 
 var score = 0;
 var pointGoal=100;
@@ -143,6 +147,11 @@ function create() {
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
     inactiveCollisionGroup = game.physics.p2.createCollisionGroup();
 
+    // runningStudent = game.add.sprite(50,50,'runningStudent');
+    // runningStudent.scale.setTo(0.5,0.5)
+    // var walk = runningStudent.animations.add('walk');
+    // runningStudent.animations.play('walk',5,true);
+
     var studentXs = [320,1000,870,200,600];
     var studentYs = [250,500,250,500,250];
     arrayStudents = [];
@@ -157,6 +166,7 @@ function create() {
         student.body.setCollisionGroup(studentCollisionGroup);
         student.body.collides(ballCollisionGroup,ballHit,this);
     }
+
 
     //Creates custom lower bound for ball, value to be set later:
     customBound = null;
@@ -378,6 +388,11 @@ function ballHit(body1, body2) {
       score-= wrongHitPoints;
       console.log("5 points taken off")
     }
+    //not working -- runningStuddent collision
+    // if(body1.x ==runningStudent.x && body1.y == runningStudent.y){
+    //   score+=50;
+    //   scoreDisplay.text = "Score : "+score;
+    // }
     body2.sprite.body.setCollisionGroup(inactiveCollisionGroup);
 }
 
@@ -413,9 +428,14 @@ function update() {
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
         }
 
+      // runningStudent.x += 2;
+      //
+      // if (runningStudent.x < -runningStudent.width)
+      // {
+      //   runningStudent.x = game.world.width;
+      // }
 
-}
-
+  }
 function setCustomBound(x, y){
     var sim = game.physics.p2;
     var mask = sim.boundsCollisionGroup.mask;
