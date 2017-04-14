@@ -18,6 +18,7 @@ function preload() {
     game.load.image('student2', 'images/student2.png');
     game.load.image('student2-hit', 'images/student2-hit.png');
     game.load.image('student3', 'images/student3.png');
+    game.load.image('student3-hit', 'images/student3-hit.png');
     game.load.image('student4', 'images/student3.png');
     game.load.image('student5', 'images/student3.png');
 
