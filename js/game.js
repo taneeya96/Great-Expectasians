@@ -13,6 +13,7 @@ function preload() {
     game.load.image('InstructionsButton','images/InstructionsButton2.png');
     game.load.image('MenuButton','images/MenuPlay.png');
     game.load.image('InstructionsPage','images/InstructionsPage2.png');
+    game.load.image('BackButton','images/BackButton.png');
     game.load.image('background','images/Background1.png');
     game.load.image('ball', 'images/paperBall.png');
     game.load.image('slingshot', 'images/CatapultSprite.png')
@@ -245,8 +246,15 @@ function create() {
 
     instructionsPage = game.add.sprite(0,0,'InstructionsPage');
     instructionsPage.alpha =0;
+
     menu = game.add.sprite(-100,-100,'Menu');
     menu.alpha = 1;
+
+
+    backButton = game.add.sprite(50,250,'BackButton');
+    backButton.alpha =0;
+    backButton.scale.setTo(0.2,0.2);
+    backButton.events.onInputDown.add(backToMenu,this);
 
     instructionsButton = game.add.sprite(300,50,'InstructionsButton');
     instructionsButton.scale.setTo(0.45,0.45);
@@ -565,9 +573,21 @@ function displayInstructions()
   menuButton.inputEnabled = false;
   instructionsPage.alpha =1;
   instructionsPage.scale.setTo(0.92,0.92);
+  backButton.alpha =1;
+  backButton.inputEnabled=true;
 
 }
 
+function backToMenu()
+{
+  backButton.alpha = 0;
+  instructionsPage.alpha = 0;
+  menu.alpha =1;
+  instructionsButton.alpha = 1;
+  menuButton.alpha = 1;
+  instructionsButton.inputEnabled = true;
+  menuButton.inputEnabled = true;
+}
 
 function chooseStudent(){
   num = Math.floor((Math.random() * 3));
