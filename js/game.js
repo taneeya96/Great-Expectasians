@@ -160,10 +160,12 @@ function create() {
     for (var i=0; i<3; i++){
         var student = addStudent('student'+(i+1), studentXs[i], studentYs[i]);
         arrayStudents.push(student);
-        //student.body.setRectangle(80,80); //for collision, box-shaped
 
-        // student.body.clearShapes();
-    // student.body.loadPolygon('physicsData', 'student1');
+        //uncommented - 3
+        student.body.setRectangle(80,80); //for collision, box-shaped
+        student.body.clearShapes();
+        student.body.loadPolygon('physicsData', 'student1');
+
         student.body.setCollisionGroup(studentCollisionGroup);
         student.body.collides(ballCollisionGroup,ballHit,this);
     }
@@ -294,8 +296,9 @@ function addStudent(image, x, y){
     student.anchor.set(0.5,0.5);
     student.body.static = true;
     //FOR COLLISION
-    // student.body.clearShapes();
-    //     student.body.loadPolygon('physicsData', 'student1');
+    //uncommented - 2
+    student.body.clearShapes();
+    student.body.loadPolygon('physicsData', 'student1');
     return(student)
 }
 
@@ -489,6 +492,11 @@ function restart(){
     for(var i =0; i<ballsInMotion.length; i++){
         ballsInMotion[i].destroy();
     }
+    for(var i = 0; i<3; i++)
+    {
+      studNum = i+1
+      arrayStudents[i].loadTexture('student'+studNum,0);
+    }
     ballsInMotion = [];
     ballsInMotion.push(createBall());
     ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
@@ -536,6 +544,8 @@ function chooseStudent(){
   randomIndex=num;
   randomStudent = arrayStudents[randomIndex];
   randomStudent.alpha = 1;
+  studentNumber = randomIndex+1;
+  randomStudent.loadTexture('student'+studentNumber, 0);
 }
 
 function studentHit(){
