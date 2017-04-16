@@ -9,7 +9,9 @@ var timer,timerEvent;
 
 function preload() {
     game.load.image('Menu','images/MainMenu.png');
+    game.load.image('InstructionsButton','images/InstructionsButton2.png');
     game.load.image('MenuButton','images/MenuPlay.png');
+    game.load.image('InstructionsPage','images/InstructionsPage2.png');
     game.load.image('background','images/Background1.png');
     game.load.image('ball', 'images/paperBall.png');
     game.load.image('slingshot', 'images/CatapultSprite.png')
@@ -46,7 +48,7 @@ function preload() {
 var text;
 
 var slingshotX = 450;
-var slingshotY = 500
+var slingshotY = 400
 var slingshotHeight = 340
 var ballInSlingshot;
 var ballHeld = false;
@@ -240,14 +242,19 @@ function create() {
     resetButton.events.onInputDown.add(reset,this);
     gradeF.addChild(resetButton);
 
-
+    instructionsPage = game.add.sprite(0,0,'InstructionsPage');
+    instructionsPage.alpha =0;
     menu = game.add.sprite(-100,-100,'Menu');
     menu.alpha = 1;
 
+    instructionsButton = game.add.sprite(300,50,'InstructionsButton');
+    instructionsButton.scale.setTo(0.45,0.45);
+    instructionsButton.inputEnabled = true;
+    instructionsButton.events.onInputDown.add(displayInstructions, this);
 
-    menuButton = game.add.sprite(500,50,'MenuButton');
+    menuButton = game.add.sprite(600,50,'MenuButton');
     menuButton.alpha = 1;
-    menuButton.scale.setTo(0.1,0.1);
+    menuButton.scale.setTo(0.1,0.075);
     menuButton.inputEnabled  = true;
     menuButton.events.onInputDown.add(startGame,this);
     initiateTimer();
@@ -522,6 +529,8 @@ function resume(){
 
 
 function startGame(){
+  instructionsButton.alpha = 0;
+  instructionsButton.inputEnabled = false;
   menu.alpha=0;
   menuButton.alpha = 0;
   menuButton.inputEnabled = false;
@@ -533,6 +542,16 @@ function startGame(){
   timer.start();
 }
 
+function displayInstructions()
+{
+  instructionsButton.alpha =0;
+  menu.alpha = 0;
+  menuButton.alpha = 0;
+  menuButton.inputEnabled = false;
+  instructionsPage.alpha =1;
+  instructionsPage.scale.setTo(0.92,0.92);
+
+}
 
 
 function chooseStudent(){
