@@ -356,12 +356,11 @@ const WALL_Z = 250;
 
 function updateBallSize(ball){
   if(!ball.hitFloor){
-    if (ball.body.z >= WALL_Z | ball.body.x <= wallX(ball.body.z, ball.body.y)){
+    if (ball.body.z >= WALL_Z | ball.body.x <= getWallX(ball.body.z, ball.body.y)){
       ball.body.velocity.x = 0;
       ball.body.velocity.y = ball.body.velocity.y;
       ball.floor = WALL_FLOOR;
-    }
-    else{
+    }else{
       ball.body.z += ball.body.velocity.z;
       var size = 0.15/(1 + ball.body.z*0.005);
       ball.scale.setTo(size,size);
@@ -381,7 +380,7 @@ function bounceOffFloor(ball) {
   ball.hitFloor = true;
 }
 
-function wallX(z,y){
+function getWallX(z,y){
   var x = 600 - 0.8*z - y
   return(x)
 }
@@ -561,7 +560,7 @@ function startGame(){
   bground.events.onInputDown.add(holdBall);
   bground.events.onInputUp.add(launchBall);
   ballInSlingshot = createBall();
-  ballsTimer = game.time.events.loop(100, updateBalls, this);
+  ballsTimer = game.time.events.loop(50, updateBalls, this);
   timer.start();
 }
 
