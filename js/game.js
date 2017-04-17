@@ -13,6 +13,7 @@ function preload() {
     game.load.image('InstructionsButton','images/InstructionsButton2.png');
     game.load.image('MenuButton','images/MenuPlay.png');
     game.load.image('InstructionsPage','images/InstructionsPage2.png');
+    game.load.image('StartInstructions','images/InstructionsPage3.png');
     game.load.image('BackButton','images/BackButton.png');
     game.load.image('background','images/Background1.png');
     game.load.image('ball', 'images/paperBall.png');
@@ -255,6 +256,11 @@ function create() {
     instructionsPage = game.add.sprite(0,0,'InstructionsPage');
     instructionsPage.alpha =0;
 
+    startInstructions = game.add.sprite(-10,0,'StartInstructions');
+    startInstructions.scale.setTo(0.9,1);
+    startInstructions.alpha =0;
+    startInstructions.events.onInputDown.add(startGame,this);
+
     menu = game.add.sprite(-100,-100,'Menu');
     menu.alpha = 1;
 
@@ -273,7 +279,7 @@ function create() {
     menuButton.alpha = 1;
     menuButton.scale.setTo(0.1,0.075);
     menuButton.inputEnabled  = true;
-    menuButton.events.onInputDown.add(startGame,this);
+    menuButton.events.onInputDown.add(displayStartInstructions,this);
     initiateTimer();
 
 }
@@ -569,6 +575,8 @@ function resume(){
 
 
 function startGame(){
+  startInstructions.alpha =0;
+  startInstructions.inputEnabled = false;
   console.log("--->startGame");
   instructionsButton.alpha = 0;
   instructionsButton.inputEnabled = false;
@@ -658,6 +666,15 @@ function endTimer() {
         checkPointLimit(currentLevel);
 }
 
+function displayStartInstructions()
+{
+  instructionsButton.alpha =0;
+  menu.alpha = 0;
+  menuButton.alpha = 0;
+  menuButton.inputEnabled = false;
+  startInstructions.alpha = 1;
+  startInstructions.inputEnabled = true;
+}
 function render() {
     timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
     levelDisplay.text="Level: "+currentLevel;
