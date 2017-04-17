@@ -1,5 +1,5 @@
-var screenwidth=1200;
-var screenheight=600;
+var screenwidth=1280;
+var screenheight=720;
 var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 var  ballsTimer= null;
@@ -23,8 +23,11 @@ function preload() {
     game.load.image('student2-hit', 'images/student2-hit.png');
     game.load.image('student3', 'images/student3.png');
     game.load.image('student3-hit', 'images/student3-hit.png');
-    game.load.image('student4', 'images/student3.png');
-    game.load.image('student5', 'images/student3.png');
+    game.load.image('student4', 'images/student4.png');
+    game.load.image('student4-hit', 'images/student4-hit.png');
+    game.load.image('student5', 'images/student5.png');
+    game.load.image('student5-hit', 'images/student5-hit.png');
+
 
     game.load.image('arrow', 'images/blackarrow.png');
     game.load.image('tail', 'images/black.png');
@@ -165,7 +168,7 @@ function create() {
     var studentYs = [250,500,250,500,250];
     arrayStudents = [];
 
-    for (var i=0; i<3; i++){
+    for (var i=0; i<5; i++){
         var student = addStudent('student'+(i+1), studentXs[i], studentYs[i]);
         arrayStudents.push(student);
 
