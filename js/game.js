@@ -6,6 +6,7 @@ var  ballsTimer= null;
 var balls = [];
 var ball = null;
 var timer,timerEvent;
+var timerConstant = 40;
 const WALL_FLOOR = 290;
 
 function preload() {
@@ -84,7 +85,7 @@ var arrayStudents;
 
 var score = 0;
 var pointGoal=100;
-var levelGoal=[0,30,250,420,720];
+var levelGoal=[0,100,250,420,720];
 const wrongHitPoints = 5;
 const rightHitPoints = 10;
 var gradeF;
@@ -277,7 +278,7 @@ function create() {
 function initiateTimer(){
   console.log("---->initiateTimer");
   timer = game.time.create();
-  timerEvent = timer.add(Phaser.Timer.SECOND * 20, endTimer);
+  timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, endTimer);
 }
 
 function reIniTimer(){
@@ -290,6 +291,7 @@ function reIniTimer(){
 }
 function levelUpResume(){
   console.log("--->levelUpResume");
+  timerConstant-=5;
   reIniTimer();
   levelupPopup.alpha=0;
   levelupPopup.input.enabled=false;
