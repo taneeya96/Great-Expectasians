@@ -237,7 +237,7 @@ function create() {
 
     //var rw = gradeF.width / 2;
     //var rh = gradeF.height/2;
-    var resetButton = game.make.sprite(0,100, 'resetButton');
+    resetButton = game.make.sprite(0,100, 'resetButton');
 
     resetButton.anchor.set(0.5,0.5);
     resetButton.scale.setTo(0.3,0.3);
@@ -632,7 +632,7 @@ function checkPointLimit(level){
     randomStudent.alpha = 0.5;
     gradeF.alpha =1;
     gradeF.input.enabled=true;
-    //resetButton.input.enabled=true;
+    resetButton.input.enabled=true;
   } else
   {
     currentLevel=level+1;
