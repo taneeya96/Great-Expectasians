@@ -666,7 +666,7 @@ function endTimer() {
         checkPointLimit(currentLevel);
 }
 
-<<<<<<< HEAD
+
 function displayStartInstructions()
 {
   instructionsButton.alpha =0;
@@ -676,7 +676,7 @@ function displayStartInstructions()
   startInstructions.alpha = 1;
   startInstructions.inputEnabled = true;
 }
-=======
+
 function flashTimerDisplay(){
   var currentTime = Math.round((timerEvent.delay - timer.ms) / 100)/10
   if ( currentTime <6){
@@ -689,7 +689,6 @@ function flashTimerDisplay(){
 }
 
 
->>>>>>> origin/master
 function render() {
     levelDisplay.text="Level: "+currentLevel;
     scoreDisplay.text ="Score : " + score;
