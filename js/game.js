@@ -147,10 +147,14 @@ function create() {
     game.physics.p2.restitution = 0.7; //bounciness of the world
     game.physics.p2.setImpactEvents(true);
 
-    timerDisplay = game.add.text(32,16,'',{fill: '#ffffff' });
+    timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' });
     scoreDisplay = game.add.text(350, 16, '', { fill: '#ffffff' });
     goalDisplay = game.add.text(700,16,'',{fill: '#ffffff' });
     levelDisplay = game.add.text(1000,16,'',{fill: '#ffffff' });
+    timerDisplay.fontSize = 40;
+    scoreDisplay.fontSize = 40;
+    goalDisplay.fontSize = 40;
+    levelDisplay.fontSize = 40;
 
     //sound effects
     collisionSound = game.add.audio('collisionSound');
