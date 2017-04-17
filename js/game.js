@@ -285,6 +285,8 @@ function reIniTimer(){
   timer.destroy();
   initiateTimer();
   timer.start();
+  timerDisplay.addColor("#ffffff",0);
+  timerDisplay.stroke = "#ffffff";
 }
 function levelUpResume(){
   console.log("--->levelUpResume");
@@ -653,7 +655,7 @@ function flashTimerDisplay(){
   if ( currentTime <6){
     timerDisplay.addColor("#ff0000",0);
     timerDisplay.stroke = "#ff0000";
-    timerDisplay.strokeThickness = 1*(currentTime%1*3 + 2);
+    timerDisplay.strokeThickness = 1*(currentTime%1*2 + 2);
     timerDisplay.fontSize = (currentTime%1 + 1)*40;
     //Play to ticking sound here
   }
