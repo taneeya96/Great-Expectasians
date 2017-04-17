@@ -443,17 +443,15 @@ function ballHit(body1, body2) {
 }
 
 function update() {
-    //Randomized selection of student
+  //   //Restart after collision.
+  //   for(var i=0; i<ballsInMotion.lenght; i++){
 
-    //Restart after collision.
-    for(var i=0; i<ballsInMotion.lenght; i++){
-
-    ballsInMotion[i].body.collideWorldBounds = true;
-    if(i==ballsInMotion.length -1)
-    {
-      restart();
-    }
-  }
+  //   ballsInMotion[i].body.collideWorldBounds = true;
+  //   if(i==ballsInMotion.length -1)
+  //   {
+  //     restart();
+  //   }
+  // }
 
     // update the control arrow
     if (game.input.activePointer.isDown){
@@ -481,6 +479,8 @@ function update() {
       //   runningStudent.x = game.world.width;
       // }
 
+      timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
+      flashTimerDisplay();
   }
 function setCustomBound(x, y){
     var sim = game.physics.p2;
@@ -658,8 +658,19 @@ function endTimer() {
         checkPointLimit(currentLevel);
 }
 
+function flashTimerDisplay(){
+  var currentTime = Math.round((timerEvent.delay - timer.ms) / 100)/10
+  if ( currentTime <6){
+    timerDisplay.addColor("#ff0000",0);
+    timerDisplay.stroke = "#ff0000";
+    timerDisplay.strokeThickness = 1*(currentTime%1*3 + 2);
+    timerDisplay.fontSize = (currentTime%1 + 1)*40;
+    //Play to ticking sound here 
+  }
+}
+
+
 function render() {
-    timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
     levelDisplay.text="Level: "+currentLevel;
     scoreDisplay.text ="Score : " + score;
     goalDisplay.text="Goal: "+levelGoal[currentLevel];
