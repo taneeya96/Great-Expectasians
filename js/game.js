@@ -106,7 +106,8 @@ function create() {
     pausePopup = game.add.sprite(game.world.centerX, game.world.centerY, 'pausePopup');
     pausePopup.alpha = 0;
     pausePopup.anchor.set(0.5,0.5);
-    pausePopup.inputEnabled = false;
+    pausePopup.inputEnabled = true;
+    pausePopup.input.enabled=false;
 
 
 
@@ -115,6 +116,7 @@ function create() {
     playButton.scale.setTo(0.1,0.1);
     playButton.alpha=1;
     playButton.inputEnabled = true;
+    playButton.input.enabled=false;
     playButton.input.priorityID = 1;
     playButton.events.onInputDown.add(resume,this);
     pausePopup.addChild(playButton);
@@ -123,7 +125,8 @@ function create() {
     levelupPopup = game.add.sprite(game.world.centerX, game.world.centerY, 'pausePopup');
     levelupPopup.alpha = 0;
     levelupPopup.anchor.set(0.5,0.5);
-    levelupPopup.inputEnabled = false;
+    levelupPopup.inputEnabled = true;
+    levelupPopup.input.enabled=false;
 
 
     LevelUpButton = game.make.sprite(0,0, 'playButton');
@@ -131,6 +134,7 @@ function create() {
     LevelUpButton.scale.setTo(0.08,0.08);
     LevelUpButton.alpha=1;
     LevelUpButton.inputEnabled = true;
+    LevelUpButton.input.enabled=false;
     LevelUpButton.input.priorityID=1;
     LevelUpButton.events.onInputDown.add(levelUpResume,this);
     levelupPopup.addChild(LevelUpButton);
@@ -208,13 +212,8 @@ function create() {
 
     //buttons
     pauseButton = game.add.button(buttonXPos, buttonYPos, 'pauseButton', pause , this, 2, 1, 0);
-    //resetButton = game.add.button(buttonXPos, buttonYPos+60, 'resetButton', reset , this, 2, 1, 0 );
-    //playButton = game.add.button(buttonXPos, buttonYPos+120,'playButton', play , this, 2, 1, 0);
 
    	pauseButton.scale.setTo(0.03,0.03);
-   	//resetButton.scale.setTo(0.15,0.15);
-   	//playButton.scale.setTo(0.054,0.054);
-
 
 
     randomIndex = Math.floor((Math.random() * 3))
@@ -230,7 +229,8 @@ function create() {
     gradeF = game.add.sprite(game.world.centerX, game.world.centerY,'gradeF');
     gradeF.anchor.set(0.5,0.5);
     gradeF.alpha = 0;
-    gradeF.inputEnabled=false;
+    gradeF.inputEnabled=true;
+    gradeF.input.enabled=false;
 
     //var rw = gradeF.width / 2;
     //var rh = gradeF.height/2;
@@ -240,6 +240,7 @@ function create() {
     resetButton.scale.setTo(0.3,0.3);
     resetButton.alpha=1;
     resetButton.inputEnabled = true;
+    resetButton.input.enabled=false;
     resetButton.input.priorityID = 1;
     resetButton.events.onInputDown.add(reset,this);
     gradeF.addChild(resetButton);
@@ -271,19 +272,23 @@ function create() {
 }
 
 function initiateTimer(){
+  console.log("---->initiateTimer");
   timer = game.time.create();
   timerEvent = timer.add(Phaser.Timer.SECOND * 20, endTimer);
 }
 
 function reIniTimer(){
+  console.log("---->reIniTimer");
   timer.destroy();
   initiateTimer();
   timer.start();
 }
 function levelUpResume(){
+  console.log("--->levelUpResume");
   reIniTimer();
   levelupPopup.alpha=0;
-  levelupPopup.inputEnabled=false;
+  levelupPopup.input.enabled=false;
+  LevelUpButton.input.enabled=false;
   bground.inputEnabled = true;
   game.physics.p2.resume();
 }
@@ -493,6 +498,7 @@ function isBallDirectionChanged( newVel){
 
 
 function reset(){
+  console.log("--->reset");
   gradeF.alpha = 0;
   restart();
   randomStudent.alpha = 0.5;
@@ -500,6 +506,8 @@ function reset(){
   score=0;
   reIniTimer();
   currentLevel=1;
+  gradeF.input.enabled=false;
+  resetButton.input.enabled=false;
 }
 
 function pause(){
@@ -509,7 +517,8 @@ function pause(){
     timer.pause();
     bground.inputEnabled = false;
     pausePopup.alpha=1;
-    pausePopup.inputEnabled=true;
+    pausePopup.input.enabled=true;
+    playButton.input.enabled=true;
 
 }
 
@@ -536,6 +545,7 @@ function restart(){
 }
 
 function play(){
+  console.log("--->play");
   game.physics.p2.resume();
   bground.inputEnabled = true;
   game.time.events.resume(ballsTimer);
@@ -546,16 +556,18 @@ function resume(){
   console.log("--->resume");
   play();
   pausePopup.alpha=0;
-  pausePopup.inputEnabled=false;
+  pausePopup.input.enabled=false;
+  playButton.input.enabled=false;
 }
 
 
 function startGame(){
+  console.log("--->startGame");
   instructionsButton.alpha = 0;
   instructionsButton.inputEnabled = false;
   menu.alpha=0;
   menuButton.alpha = 0;
-  menuButton.inputEnabled = false;
+  menuButton.input.enabled = false;
   bground.inputEnabled = true;
   bground.events.onInputDown.add(holdBall);
   bground.events.onInputUp.add(launchBall);
@@ -616,12 +628,15 @@ function checkPointLimit(level){
   {
     randomStudent.alpha = 0.5;
     gradeF.alpha =1;
-
+    gradeF.input.enabled=true;
+    //resetButton.input.enabled=true;
   } else
   {
     currentLevel=level+1;
     levelDisplay.text="Level: "+currentLevel;
     levelupPopup.alpha=1;
+    levelupPopup.input.enabled=true;
+    LevelUpButton.input.enabled=true;
   }
 }
 
