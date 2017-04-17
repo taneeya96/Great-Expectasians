@@ -10,9 +10,7 @@ const WALL_FLOOR = 290;
 
 function preload() {
     game.load.image('Menu','images/MainMenu.png');
-    game.load.image('InstructionsButton','images/InstructionsButton2.png');
     game.load.image('MenuButton','images/MenuPlay.png');
-    game.load.image('InstructionsPage','images/InstructionsPage2.png');
     game.load.image('StartInstructions','images/InstructionsPage3.png');
     game.load.image('BackButton','images/BackButton.png');
     game.load.image('background','images/Background1.png');
@@ -253,9 +251,6 @@ function create() {
     resetButton.events.onInputDown.add(reset,this);
     gradeF.addChild(resetButton);
 
-    instructionsPage = game.add.sprite(0,0,'InstructionsPage');
-    instructionsPage.alpha =0;
-
     startInstructions = game.add.sprite(-10,0,'StartInstructions');
     startInstructions.scale.setTo(0.9,1);
     startInstructions.alpha =0;
@@ -270,14 +265,9 @@ function create() {
     backButton.scale.setTo(0.2,0.2);
     backButton.events.onInputDown.add(backToMenu,this);
 
-    instructionsButton = game.add.sprite(300,50,'InstructionsButton');
-    instructionsButton.scale.setTo(0.45,0.45);
-    instructionsButton.inputEnabled = true;
-    instructionsButton.events.onInputDown.add(displayInstructions, this);
-
-    menuButton = game.add.sprite(600,50,'MenuButton');
+    menuButton = game.add.sprite(500,50,'MenuButton');
     menuButton.alpha = 1;
-    menuButton.scale.setTo(0.1,0.075);
+    menuButton.scale.setTo(0.1,0.1);
     menuButton.inputEnabled  = true;
     menuButton.events.onInputDown.add(displayStartInstructions,this);
     initiateTimer();
@@ -578,8 +568,6 @@ function startGame(){
   startInstructions.alpha =0;
   startInstructions.inputEnabled = false;
   console.log("--->startGame");
-  instructionsButton.alpha = 0;
-  instructionsButton.inputEnabled = false;
   menu.alpha=0;
   menuButton.alpha = 0;
   menuButton.input.enabled = false;
@@ -591,27 +579,11 @@ function startGame(){
   timer.start();
 }
 
-function displayInstructions()
-{
-  instructionsButton.alpha =0;
-  menu.alpha = 0;
-  menuButton.alpha = 0;
-  menuButton.inputEnabled = false;
-  instructionsPage.alpha =1;
-  instructionsPage.scale.setTo(0.92,0.92);
-  backButton.alpha =1;
-  backButton.inputEnabled=true;
-
-}
-
 function backToMenu()
 {
   backButton.alpha = 0;
-  instructionsPage.alpha = 0;
   menu.alpha =1;
-  instructionsButton.alpha = 1;
   menuButton.alpha = 1;
-  instructionsButton.inputEnabled = true;
   menuButton.inputEnabled = true;
 }
 
@@ -666,17 +638,15 @@ function endTimer() {
         checkPointLimit(currentLevel);
 }
 
-<<<<<<< HEAD
 function displayStartInstructions()
 {
-  instructionsButton.alpha =0;
   menu.alpha = 0;
   menuButton.alpha = 0;
   menuButton.inputEnabled = false;
   startInstructions.alpha = 1;
   startInstructions.inputEnabled = true;
 }
-=======
+
 function flashTimerDisplay(){
   var currentTime = Math.round((timerEvent.delay - timer.ms) / 100)/10
   if ( currentTime <6){
@@ -684,12 +654,11 @@ function flashTimerDisplay(){
     timerDisplay.stroke = "#ff0000";
     timerDisplay.strokeThickness = 1*(currentTime%1*3 + 2);
     timerDisplay.fontSize = (currentTime%1 + 1)*40;
-    //Play to ticking sound here 
+    //Play to ticking sound here
   }
 }
 
 
->>>>>>> origin/master
 function render() {
     levelDisplay.text="Level: "+currentLevel;
     scoreDisplay.text ="Score : " + score;
