@@ -19,14 +19,20 @@ function preload() {
     game.load.image('slingshot', 'images/CatapultSprite.png')
     game.load.image('student1', 'images/student1.png');
     game.load.image('student1-hit', 'images/student1-hit.png');
+    game.load.image('student1-active', 'images/student1-active.png');
     game.load.image('student2', 'images/student2.png');
     game.load.image('student2-hit', 'images/student2-hit.png');
+    game.load.image('student2-active', 'images/student2-active.png');
     game.load.image('student3', 'images/student3.png');
     game.load.image('student3-hit', 'images/student3-hit.png');
+    game.load.image('student3-active', 'images/student3-active.png');
     game.load.image('student4', 'images/student4.png');
     game.load.image('student4-hit', 'images/student4-hit.png');
+    game.load.image('student4-active', 'images/student4-active.png');
     game.load.image('student5', 'images/student5.png');
     game.load.image('student5-hit', 'images/student5-hit.png');
+    game.load.image('student5-active', 'images/student5-active.png');
+
 
 
     game.load.image('arrow', 'images/blackarrow.png');
@@ -168,8 +174,9 @@ function create() {
     // var walk = runningStudent.animations.add('walk');
     // runningStudent.animations.play('walk',5,true);
 
-    var studentXs = [320,1000,870,200,600];
-    var studentYs = [250,500,250,500,250];
+    var studentXs = [320,600,870,200,1000];
+    var studentYs = [250,250,250,500,500];
+    //current student 4: x= 600, y=250. 2= 1000,500
     arrayStudents = [];
 
     for (var i=0; i<5; i++){
@@ -223,7 +230,8 @@ function create() {
    	pauseButton.scale.setTo(0.03,0.03);
 
 
-    randomIndex = Math.floor((Math.random() * 3))
+    randomIndex = Math.floor(Math.random() * 5);
+
 
     //randomIndex = 0;
     randomStudent = arrayStudents[randomIndex];
@@ -592,16 +600,16 @@ function backToMenu()
 }
 
 function chooseStudent(){
-  num = Math.floor((Math.random() * 3));
+  num = Math.floor((Math.random() * 5));
   while(num==randomIndex)
   {
-    num = Math.floor((Math.random() * 3));
+    num = Math.floor((Math.random() * 5));
   }
   randomIndex=num;
   randomStudent = arrayStudents[randomIndex];
   randomStudent.alpha = 1;
   studentNumber = randomIndex+1;
-  randomStudent.loadTexture('student'+studentNumber, 0);
+  randomStudent.loadTexture('student'+studentNumber+'-active', 0);
 }
 
 function studentHit(){
