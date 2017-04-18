@@ -174,8 +174,8 @@ function create() {
     // var walk = runningStudent.animations.add('walk');
     // runningStudent.animations.play('walk',5,true);
 
-    var studentXs = [320,600,870,200,1000];
-    var studentYs = [250,250,250,500,500];
+    var studentXs = [320,610,915,175,1095];
+    var studentYs = [280,280,280,525,525];
     //current student 4: x= 600, y=250. 2= 1000,500
     arrayStudents = [];
 
@@ -434,9 +434,17 @@ function ballHit(body1, body2) {
     ballCollided = true;
     if (body1.x == randomStudent.x && body1.y == randomStudent.y){
         studentHit();
-        studentnum = randomIndex+1;
-        randomStudent.loadTexture('student'+studentnum+'-hit', 0);
+
+      studentnum = randomIndex+1;
+        
+        //TESTING TIMER HERE
+        //randomStudent.loadTexture('student'+studentnum+'-hit', 0);
+
+        //for some reason the code only works when the timer keeps going on. If the seconds are set to 1 or something, it gives an error. Moreover, running this function prevents the hit animation from working.
+        game.time.events.add(Phaser.Timer.SECOND * 10000, randomStudent.loadTexture('student'+studentnum, 0), this);
+
         chooseStudent();
+
     }
     else{
       score-= wrongHitPoints;
@@ -449,6 +457,7 @@ function ballHit(body1, body2) {
     // }
     body2.sprite.body.setCollisionGroup(inactiveCollisionGroup);
 }
+
 
 function update() {
   //   //Restart after collision.
@@ -607,9 +616,11 @@ function chooseStudent(){
   }
   randomIndex=num;
   randomStudent = arrayStudents[randomIndex];
-  randomStudent.alpha = 1;
   studentNumber = randomIndex+1;
   randomStudent.loadTexture('student'+studentNumber+'-active', 0);
+  randomStudent.alpha = 1;
+  
+  
 }
 
 function studentHit(){
@@ -674,6 +685,6 @@ function flashTimerDisplay(){
 
 function render() {
     levelDisplay.text="Level: "+currentLevel;
-    scoreDisplay.text ="Score : " + score;
-    goalDisplay.text="Goal: "+levelGoal[currentLevel];
+    scoreDisplay.text ="Score : " + score + '/' + levelGoal[currentLevel];
+    //goalDisplay.text="Goal: "+levelGoal[currentLevel];
 }
