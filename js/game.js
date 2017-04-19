@@ -308,6 +308,8 @@ function levelUpResume(){
   LevelUpButton.input.enabled=false;
   bground.inputEnabled = true;
   game.physics.p2.resume();
+  game.time.events.resume();
+  // game.time.events.pause(ballsTimer);
 }
 
 function createBall() {
@@ -448,7 +450,6 @@ function ballHit(body1, body2) {
 
     }
     else{
-      // score-= wrongHitPoints;
       showScoreTween("lose", body2.x, body2.y);
     }
     //not working -- runningStuddent collision
@@ -459,6 +460,21 @@ function ballHit(body1, body2) {
     body2.sprite.body.setCollisionGroup(inactiveCollisionGroup);
 }
 
+function flashScore(){
+  console.log('flash score');
+  game.time.events.add(100, function(){
+    scoreDisplay.fontSize = 50;
+    scoreDisplay.addColor("#00ffff",0);
+    game.time.events.add(350, function(){
+      scoreDisplay.fontSize = 45;
+      game.time.events.add(350, function(){
+        scoreDisplay.fontSize = 50;
+        game.time.events.add(300, function(){
+          scoreDisplay.fontSize = 40; scoreDisplay.addColor("#ffffff",0);}, this);
+      }, this);
+    }, this);
+  }, this)
+}
 
 function update() {
     // update the control arrow
@@ -632,11 +648,17 @@ function showScoreTween(action, x, y){
   game.time.events.add(
       300,
       function() {
+          console.log("fade text")
           game.add.tween(text).to({x: 430, y: 16}, 600, Phaser.Easing.Linear.None, true);
           game.add.tween(text).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
-      }, 
-      this);
-  game.time.events.add(1000, function(){text.destroy(); score+= deltaScore;}, this);
+      });
+  game.time.events.add(1000, function(){
+    text.destroy(); 
+    score+= deltaScore;
+    if (score ==levelGoal[currentLevel]){
+      flashScore();
+    }
+  });
   
 }
 
