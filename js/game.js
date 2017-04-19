@@ -162,7 +162,7 @@ function create() {
     goalDisplay.fontSize = 40;
     levelDisplay.fontSize = 40;
 
-    
+
     //sound effects
     collisionSound = game.add.audio('collisionSound');
 
@@ -301,6 +301,8 @@ function reIniTimer(){
 }
 function levelUpResume(){
   console.log("--->levelUpResume");
+  score = 0;
+  scoreDisplay.text ="Score : " + score + '/' + levelGoal[currentLevel];
   timerConstant-=5;
   reIniTimer();
   levelupPopup.alpha=0;
@@ -434,7 +436,7 @@ function ballHit(body1, body2) {
     if (body1.x == randomStudent.x && body1.y == randomStudent.y){
         studentHit(body2.x, body2.y);
         studentnum = randomIndex+1;
-        
+
         //TESTING TIMER HERE
         //randomStudent.loadTexture('student'+studentnum+'-hit', 0);
 
@@ -601,8 +603,8 @@ function chooseStudent(){
   studentNumber = randomIndex+1;
   randomStudent.loadTexture('student'+studentNumber+'-active', 0);
   randomStudent.alpha = 1;
-  
-  
+
+
 }
 
 function studentHit(ballX, ballY){
@@ -628,13 +630,13 @@ function showScoreTween(action, x, y){
           game.add.tween(text).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
       });
   game.time.events.add(1000, function(){
-    text.destroy(); 
+    text.destroy();
     score+= deltaScore;
     if (score ==levelGoal[currentLevel]){
       flashScore();
     }
   });
-  
+
 }
 
 function checkPointLimit(level){
