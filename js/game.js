@@ -52,8 +52,6 @@ function preload() {
     //sound effects
     game.load.audio('collisionSound', 'assets/Audio/collisionSound.mp3');
 
-  //game.load.spritesheet('runningStudent', 'images/RunningStudentSpriteSheet3.png', 125, 500, 8,60);
-
 }
 
 var text;
@@ -87,7 +85,6 @@ const buttonYPos = 65;
 const pauseButtonHeight = 60;
 
 var arrayStudents;
-//var runningStudent;
 
 var score = 0;
 var pointGoal=100;
@@ -169,11 +166,6 @@ function create() {
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
     inactiveCollisionGroup = game.physics.p2.createCollisionGroup();
-
-    // runningStudent = game.add.sprite(50,50,'runningStudent');
-    // runningStudent.scale.setTo(0.5,0.5)
-    // var walk = runningStudent.animations.add('walk');
-    // runningStudent.animations.play('walk',5,true);
 
     var studentXs = [320,610,915,175,1095];
     var studentYs = [280,280,280,525,525];
@@ -451,11 +443,7 @@ function ballHit(body1, body2) {
     else{
       showScoreTween("lose", body2.x, body2.y);
     }
-    //not working -- runningStuddent collision
-    // if(body1.x ==runningStudent.x && body1.y == runningStudent.y){
-    //   score+=50;
-    //   scoreDisplay.text = "Score : "+score;
-    // }
+
     body2.sprite.body.setCollisionGroup(inactiveCollisionGroup);
 }
 
@@ -494,13 +482,6 @@ function update() {
         arrow.x = origin.x -  0.5*dist*Math.cos(angle);
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
         }
-
-      // runningStudent.x += 2;
-      //
-      // if (runningStudent.x < -runningStudent.width)
-      // {
-      //   runningStudent.x = game.world.width;b
-      // }
 
       timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
       flashTimerDisplay();
@@ -622,7 +603,7 @@ function showScoreTween(action, x, y){
     var deltaScore = rightHitPoints;
   } else{
     var text = game.add.text(x,y,'-'+ wrongHitPoints,{fill: '#ff0000', fontWeight: 'bold' , fontSize: 60, stroke: '#ff0000', strokeThickness: 3});
-    var deltaScore = wrongHitPoints;
+    var deltaScore= -wrongHitPoints;
   }
   game.time.events.add(
       300,
