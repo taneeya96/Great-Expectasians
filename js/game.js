@@ -7,7 +7,7 @@ var balls = [];
 var ball = null;
 var timer,timerEvent;
 var timerConstant = 40;
-const WALL_FLOOR = 290;
+
 
 function preload() {
     game.load.image('Menu','images/MainMenu.png');
@@ -150,7 +150,7 @@ function create() {
 
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.y = 500; //larger y gravity the narrower the parabol.
-    game.physics.p2.restitution = 0.7; //bounciness of the world
+    game.physics.p2.restitution = 0.2; //bounciness of the world
     game.physics.p2.setImpactEvents(true);
 
     timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' });
@@ -376,17 +376,17 @@ function updateBalls() {
     }
 }
 
-const WALL_Z = 250;
+const WALL_Z = 300;
+const WALL_FLOOR = 260;
 
 function updateBallSize(ball){
   if(!ball.hitFloor){
-    if (ball.body.z >= WALL_Z | ball.body.x <= getWallX(ball.body.z, ball.body.y)){
+    if (ball.body.z >= WALL_Z){
       ball.body.velocity.x = 0;
-      ball.body.velocity.y = ball.body.velocity.y;
       ball.floor = WALL_FLOOR;
     }else{
       ball.body.z += ball.body.velocity.z;
-      var size = 0.15/(1 + ball.body.z*0.005);
+      var size = 0.15/(1 + ball.body.z*0.003);
       ball.scale.setTo(size,size);
       ball.floor = (screenheight + 300) / (1 + ball.body.z * 0.01);
     }
@@ -397,16 +397,11 @@ function updateBallSize(ball){
 }
 
 function bounceOffFloor(ball) {
-  ball.body.velocity.y = -ball.body.velocity.y/2;
+  ball.body.velocity.y = -ball.body.velocity.y/2.5;
   ball.body.velocity.x = ball.body.velocity.x/1.5;
   ball.floor = ball.body.y;
   ball.timesHitFloor++;
   ball.hitFloor = true;
-}
-
-function getWallX(z,y){
-  var x = 600 - 0.8*z - y
-  return(x)
 }
 
 function showArrow() {
@@ -500,7 +495,7 @@ function update() {
       //
       // if (runningStudent.x < -runningStudent.width)
       // {
-      //   runningStudent.x = game.world.width;
+      //   runningStudent.x = game.world.width;b
       // }
 
       timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
