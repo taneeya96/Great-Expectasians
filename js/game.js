@@ -506,26 +506,6 @@ function update() {
       timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
       flashTimerDisplay();
   }
-function setCustomBound(x, y){
-    var sim = game.physics.p2;
-    var mask = sim.boundsCollisionGroup.mask;
-    var h = 100;
-    console.log(x,y);
-    customBound = new p2.Body({ mass: 0, position: [sim.pxmi(x), sim.pxmi(y + h) ] });
-    customBound.addShape(new p2.Plane());
-    sim.world.addBody(customBound);
-}
-
-
-function isBallDirectionChanged( newVel){
-    if (newVel * currentVel < 0){
-        currentVel = newVel;
-        return true;
-    } else{
-        currentVel = newVel;
-        return false;
-    }
-}
 
 
 function reset(){
