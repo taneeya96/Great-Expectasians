@@ -236,6 +236,8 @@ function create() {
 
     //randomIndex = 0;
     randomStudent = arrayStudents[randomIndex];
+    studentNumber = randomIndex+1;
+    randomStudent.loadTexture('student'+studentNumber+'-active', 0);
     for( var i=0; i< arrayStudents.length; i++)
     {
       arrayStudents[i].alpha = 0.50;
