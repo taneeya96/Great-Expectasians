@@ -162,6 +162,7 @@ function create() {
     goalDisplay.fontSize = 40;
     levelDisplay.fontSize = 40;
 
+    
     //sound effects
     collisionSound = game.add.audio('collisionSound');
 
@@ -279,6 +280,7 @@ function create() {
     menuButton.scale.setTo(0.1,0.1);
     menuButton.inputEnabled  = true;
     menuButton.events.onInputDown.add(displayStartInstructions,this);
+
     initiateTimer();
 
 }
@@ -433,9 +435,8 @@ function hideArrow(){
 function ballHit(body1, body2) {
     ballCollided = true;
     if (body1.x == randomStudent.x && body1.y == randomStudent.y){
-        studentHit();
-
-      studentnum = randomIndex+1;
+        studentHit(body2.x, body2.y);
+        studentnum = randomIndex+1;
         
         //TESTING TIMER HERE
         //randomStudent.loadTexture('student'+studentnum+'-hit', 0);
@@ -447,8 +448,8 @@ function ballHit(body1, body2) {
 
     }
     else{
-      score-= wrongHitPoints;
-      console.log("5 points taken off")
+      // score-= wrongHitPoints;
+      showScoreTween("lose", body2.x, body2.y);
     }
     //not working -- runningStuddent collision
     // if(body1.x ==runningStudent.x && body1.y == runningStudent.y){
@@ -460,16 +461,6 @@ function ballHit(body1, body2) {
 
 
 function update() {
-  //   //Restart after collision.
-  //   for(var i=0; i<ballsInMotion.lenght; i++){
-
-  //   ballsInMotion[i].body.collideWorldBounds = true;
-  //   if(i==ballsInMotion.length -1)
-  //   {
-  //     restart();
-  //   }
-  // }
-
     // update the control arrow
     if (game.input.activePointer.isDown){
         var dist = game.physics.arcade.distanceToPointer(origin);
@@ -623,11 +614,30 @@ function chooseStudent(){
   
 }
 
-function studentHit(){
+function studentHit(ballX, ballY){
     collisionSound.play();
-    score+= rightHitPoints;
-    console.log("10 points added");
+    // score+= rightHitPoints;
     randomStudent.alpha = 0.5;
+    showScoreTween("add", ballX, ballY);
+}
+
+function showScoreTween(action, x, y){
+  if (action == "add"){
+    var text = game.add.text(x,y,'+'+ rightHitPoints,{fill: '#00ffff', fontWeight: 'bold' , fontSize: 60, stroke: '#00ffff', strokeThickness: 3});
+    var deltaScore = rightHitPoints;
+  } else{
+    var text = game.add.text(x,y,'-'+ wrongHitPoints,{fill: '#ff0000', fontWeight: 'bold' , fontSize: 60, stroke: '#ff0000', strokeThickness: 3});
+    var deltaScore = wrongHitPoints;
+  }
+  game.time.events.add(
+      300,
+      function() {
+          game.add.tween(text).to({x: 430, y: 16}, 600, Phaser.Easing.Linear.None, true);
+          game.add.tween(text).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+      }, 
+      this);
+  game.time.events.add(1000, function(){text.destroy(); score+= deltaScore;}, this);
+  
 }
 
 function checkPointLimit(level){
