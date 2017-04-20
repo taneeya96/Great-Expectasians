@@ -498,6 +498,7 @@ function reset(){
   score=0;
   reIniTimer();
   currentLevel=1;
+  resume();
   gradeF.input.enabled=false;
   resetButton.input.enabled=false;
 }
