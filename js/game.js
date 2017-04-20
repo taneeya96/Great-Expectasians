@@ -151,7 +151,7 @@ function create() {
     game.physics.p2.setImpactEvents(true);
 
     timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' });
-    scoreDisplay = game.add.text(350, 16, '', { fill: '#ffffff' });
+    scoreDisplay = game.add.text(500, 16, '', { fill: '#ffffff' });
     goalDisplay = game.add.text(700,16,'',{fill: '#ffffff' });
     levelDisplay = game.add.text(1000,16,'',{fill: '#ffffff' });
     timerDisplay.fontSize = 40;
@@ -426,6 +426,7 @@ function hideArrow(){
 }
 
 function ballHit(body1, body2) {
+    console.log("--->ballHit");
     ballCollided = true;
     if (body1.x == randomStudent.x && body1.y == randomStudent.y){
         studentHit(body2.x, body2.y);
@@ -591,6 +592,7 @@ function chooseStudent(){
 }
 
 function studentHit(ballX, ballY){
+    console.log("--->studentHit");
     collisionSound.play();
     // score+= rightHitPoints;
     randomStudent.alpha = 0.5;
@@ -598,6 +600,7 @@ function studentHit(ballX, ballY){
 }
 
 function showScoreTween(action, x, y){
+  console.log("----->showScoreTween");
   if (action == "add"){
     var text = game.add.text(x,y,'+'+ rightHitPoints,{fill: '#00ffff', fontWeight: 'bold' , fontSize: 60, stroke: '#00ffff', strokeThickness: 3});
     var deltaScore = rightHitPoints;
@@ -609,7 +612,7 @@ function showScoreTween(action, x, y){
       300,
       function() {
           console.log("fade text")
-          game.add.tween(text).to({x: 430, y: 16}, 600, Phaser.Easing.Linear.None, true);
+          game.add.tween(text).to({x: 550, y: 16}, 600, Phaser.Easing.Linear.None, true);
           game.add.tween(text).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
       });
   game.time.events.add(1000, function(){
@@ -670,7 +673,6 @@ function flashTimerDisplay(){
     timerDisplay.stroke = "#ff0000";
     timerDisplay.strokeThickness = 1*(currentTime%1*2 + 2);
     timerDisplay.fontSize = (currentTime%1 + 1)*40;
-    //Play to ticking sound here
   }
 }
 
