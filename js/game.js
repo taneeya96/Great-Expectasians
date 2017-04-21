@@ -130,23 +130,6 @@ function create() {
     pausePopup.addChild(playButton);
 
 
-    levelupPopup = game.add.sprite(game.world.centerX, game.world.centerY, 'pausePopup');
-    levelupPopup.alpha = 0;
-    levelupPopup.anchor.set(0.5,0.5);
-    levelupPopup.inputEnabled = true;
-    levelupPopup.input.enabled=false;
-
-
-    LevelUpButton = game.make.sprite(0,0, 'playButton');
-    LevelUpButton.anchor.set(0.5,0.5);
-    LevelUpButton.scale.setTo(0.08,0.08);
-    LevelUpButton.alpha=1;
-    LevelUpButton.inputEnabled = true;
-    LevelUpButton.input.enabled=false;
-    LevelUpButton.input.priorityID=1;
-    LevelUpButton.events.onInputDown.add(levelUpResume,this);
-    levelupPopup.addChild(LevelUpButton);
-
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.y = 500; //larger y gravity the narrower the parabol.
     game.physics.p2.restitution = 0.2; //bounciness of the world
@@ -243,6 +226,23 @@ function create() {
     gradeF.alpha = 0;
     gradeF.inputEnabled=true;
     gradeF.input.enabled=false;
+
+    levelupPopup = game.add.sprite(game.world.centerX, game.world.centerY, 'pausePopup');
+    levelupPopup.alpha = 0;
+    levelupPopup.anchor.set(0.5,0.5);
+    levelupPopup.inputEnabled = true;
+    levelupPopup.input.enabled=false;
+
+
+    LevelUpButton = game.make.sprite(0,0, 'playButton');
+    LevelUpButton.anchor.set(0.5,0.5);
+    LevelUpButton.scale.setTo(0.08,0.08);
+    LevelUpButton.alpha=1;
+    LevelUpButton.inputEnabled = true;
+    LevelUpButton.input.enabled=false;
+    LevelUpButton.input.priorityID=1;
+    LevelUpButton.events.onInputDown.add(levelUpResume,this);
+    levelupPopup.addChild(LevelUpButton);
 
     //var rw = gradeF.width / 2;
     //var rh = gradeF.height/2;
