@@ -4,7 +4,7 @@ var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 var  ballsTimer= null;
 var targetStudentTimer;
-const targetInitialTimeInterval = 4;
+const targetInitialTimeInterval = 6;
 var balls = [];
 var ball = null;
 var timer,timerEvent;
@@ -288,7 +288,7 @@ function initiateTimer(){
 }
 
 function initiateTargetStudentTimer(){
-  var targetCurrentTimeInterval = targetInitialTimeInterval - 2*Math.log(currentLevel)/Math.log(10) //shorten interval with higher level. level 10 at 1s
+  var targetCurrentTimeInterval = targetInitialTimeInterval - 3*Math.log(currentLevel)/Math.log(10) //shorten interval with higher level. level 10 at 1s
   targetStudentTimer = game.time.events.loop(Phaser.Timer.SECOND * targetCurrentTimeInterval, chooseStudent);
 }
 
