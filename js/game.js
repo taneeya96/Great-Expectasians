@@ -81,7 +81,7 @@ var resetButton;
 var pauseButton;
 var playButton;
 const buttonXPos = 1100;
-const buttonYPos = 65;
+const buttonYPos = 115;
 const pauseButtonHeight = 60;
 
 var arrayStudents;
@@ -109,7 +109,7 @@ function create() {
     bground.alpha = 0.75; //transparency of background
 
 
-    pausePopup = game.add.sprite(game.world.centerX, game.world.centerY, 'pausePopup');
+    pausePopup = game.add.sprite(game.world.centerX, game.world.centerY+100, 'pausePopup');
     pausePopup.alpha = 0;
     pausePopup.anchor.set(0.5,0.5);
     pausePopup.inputEnabled = true;
@@ -260,7 +260,7 @@ function create() {
     startInstructions.alpha =0;
     startInstructions.events.onInputDown.add(startGame,this);
 
-    menu = game.add.sprite(-100,-100,'Menu');
+    menu = game.add.sprite(0,0,'Menu');
     menu.alpha = 1;
 
 
@@ -603,10 +603,10 @@ function studentHit(ballX, ballY){
 function showScoreTween(action, x, y){
   console.log("----->showScoreTween");
   if (action == "add"){
-    var text = game.add.text(x,y,'+'+ rightHitPoints,{fill: '#00ffff', fontWeight: 'bold' , fontSize: 60, stroke: '#00ffff', strokeThickness: 3});
+    var text = game.add.text(x,y,'+'+ rightHitPoints,{fill: '#00ff00', fontWeight: 'bold' , fontSize: 60});
     var deltaScore = rightHitPoints;
   } else{
-    var text = game.add.text(x,y,'-'+ wrongHitPoints,{fill: '#ff0000', fontWeight: 'bold' , fontSize: 60, stroke: '#ff0000', strokeThickness: 3});
+    var text = game.add.text(x,y,'-'+ wrongHitPoints,{fill: '#ff0000', fontWeight: 'bold' , fontSize: 60});
     var deltaScore= -wrongHitPoints;
   }
   game.time.events.add(
@@ -681,5 +681,12 @@ function flashTimerDisplay(){
 function render() {
     levelDisplay.text="Level: "+currentLevel;
     scoreDisplay.text ="Score : " + score + '/' + levelGoal[currentLevel];
+    if(score < levelGoal[currentLevel]){
+      scoreDisplay.addColor("#ff0000", 0); //red
+    }
+    else {
+      scoreDisplay.addColor("#00ff00", 0); //green
+    }
+    
     //goalDisplay.text="Goal: "+levelGoal[currentLevel];
 }
