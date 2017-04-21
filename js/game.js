@@ -3,6 +3,8 @@ var screenheight=720;
 var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 var  ballsTimer= null;
+var targetStudentTimer;
+const targetInitialTimeInterval = 4;
 var balls = [];
 var ball = null;
 var timer,timerEvent;
@@ -285,11 +287,18 @@ function initiateTimer(){
   timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, endTimer);
 }
 
+function initiateTargetStudentTimer(){
+  var targetCurrentTimeInterval = targetInitialTimeInterval - 2*Math.log(currentLevel)/Math.log(10) //shorten interval with higher level. level 10 at 1s
+  targetStudentTimer = game.time.events.loop(Phaser.Timer.SECOND * targetCurrentTimeInterval, chooseStudent);
+}
+
 function reIniTimer(){
   console.log("---->reIniTimer");
   timer.destroy();
   initiateTimer();
   timer.start();
+  game.time.events.remove(targetStudentTimer);
+  initiateTargetStudentTimer();
   timerDisplay.addColor("#ffffff",0);
   timerDisplay.stroke = "#ffffff";
 }
@@ -566,6 +575,7 @@ function startGame(){
   bground.events.onInputUp.add(launchBall);
   ballInSlingshot = createBall();
   ballsTimer = game.time.events.loop(50, updateBalls, this);
+  initiateTargetStudentTimer();
   timer.start();
 }
 
@@ -578,6 +588,7 @@ function backToMenu()
 }
 
 function chooseStudent(){
+  randomStudent.alpha = 0.5;
   num = Math.floor((Math.random() * 5));
   while(num==randomIndex)
   {
