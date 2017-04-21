@@ -288,8 +288,10 @@ function initiateTimer(){
 }
 
 function initiateTargetStudentTimer(){
-  var targetCurrentTimeInterval = targetInitialTimeInterval - 2*Math.log(currentLevel)/Math.log(10) //shorten interval with higher level. level 10 at 1s
-  targetStudentTimer = game.time.events.loop(Phaser.Timer.SECOND * targetCurrentTimeInterval, chooseStudent);
+  game.time.events.remove(targetStudentTimer);
+  var changeFactor = Array(currentLevel+2, currentLevel+1, currentLevel+1, currentLevel, currentLevel,currentLevel,currentLevel,currentLevel)[Math.floor(Math.random()*8)];
+  var targetCurrentTimeInterval = targetInitialTimeInterval - 2*Math.log(changeFactor)/Math.log(10) //shorten interval with higher level. level 10 at 1s
+  targetStudentTimer = game.time.events.add(Phaser.Timer.SECOND * targetCurrentTimeInterval, chooseStudent, this);
 }
 
 function reIniTimer(){
@@ -297,7 +299,7 @@ function reIniTimer(){
   timer.destroy();
   initiateTimer();
   timer.start();
-  game.time.events.remove(targetStudentTimer);
+  // game.time.events.remove(targetStudentTimer);
   initiateTargetStudentTimer();
   timerDisplay.addColor("#ffffff",0);
   timerDisplay.stroke = "#ffffff";
@@ -312,6 +314,18 @@ function levelUpResume(){
   levelupPopup.input.enabled=false;
   LevelUpButton.input.enabled=false;
   bground.inputEnabled = true;
+
+  for(var i =0; i<ballsInMotion.length; i++){
+      ballsInMotion[i].destroy();
+  }
+  for(var i = 0; i<3; i++)
+  {
+    studNum = i+1
+    arrayStudents[i].loadTexture('student'+studNum,0);
+  }
+  ballsInMotion = [];
+  balballInSlingshot = createBall();
+
   game.physics.p2.resume();
   game.time.events.resume();
   // game.time.events.pause(ballsTimer);
@@ -516,7 +530,7 @@ function reset(){
 function pause(){
     console.log("-->pause");
     game.physics.p2.pause();
-    game.time.events.pause(ballsTimer);
+    game.time.events.pause();
     timer.pause();
     bground.inputEnabled = false;
     pausePopup.alpha=1;
@@ -539,10 +553,10 @@ function restart(){
       arrayStudents[i].loadTexture('student'+studNum,0);
     }
     ballsInMotion = [];
-    ballsInMotion.push(createBall());
-    ballInSlingshot = ballsInMotion[ballsInMotion.length - 1];
+    balballInSlingshot = createBall();
     bground.inputEnabled = true;
     game.physics.p2.resume();
+    initiateTargetStudentTimer();
     sz = 0.15;
 
 }
@@ -551,13 +565,15 @@ function play(){
   console.log("--->play");
   game.physics.p2.resume();
   bground.inputEnabled = true;
-  game.time.events.resume(ballsTimer);
+  game.time.events.resume([ballsTimer, targetStudentTimer]);
+  initiateTargetStudentTimer();
   timer.resume();
 }
 
 function resume(){
   console.log("--->resume");
   play();
+  game.time.events.resume(targetStudentTimer);
   pausePopup.alpha=0;
   pausePopup.input.enabled=false;
   playButton.input.enabled=false;
@@ -601,7 +617,7 @@ function chooseStudent(){
   randomStudent.loadTexture('student'+studentNumber+'-active', 0);
   randomStudent.alpha = 1;
 
-
+  initiateTargetStudentTimer();
 }
 
 function studentHit(ballX, ballY){
@@ -640,7 +656,7 @@ function showScoreTween(action, x, y){
 
 function checkPointLimit(level){
   game.physics.p2.pause();
-  game.time.events.pause(ballsTimer);
+  game.time.events.pause([ballsTimer, targetStudentTimer]);
   bground.inputEnabled = false;
   if (score<levelGoal[level])
   {
