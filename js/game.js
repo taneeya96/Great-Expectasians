@@ -505,6 +505,7 @@ function reset(){
   randomStudent.alpha = 0.5;
   chooseStudent();
   score=0;
+  timerConstant = 40;
   reIniTimer();
   currentLevel=1;
   resume();
@@ -698,6 +699,6 @@ function render() {
     else {
       scoreDisplay.addColor("#00ff00", 0); //green
     }
-    
+
     //goalDisplay.text="Goal: "+levelGoal[currentLevel];
 }
