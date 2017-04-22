@@ -118,18 +118,6 @@ function create() {
     pausePopup.input.enabled=false;
 
 
-
-    playButton = game.make.sprite(0,0, 'MenuButton');
-    playButton.anchor.set(0.5,0.5);
-    playButton.scale.setTo(0.1,0.1);
-    playButton.alpha=1;
-    playButton.inputEnabled = true;
-    playButton.input.enabled=false;
-    playButton.input.priorityID = 1;
-    playButton.events.onInputDown.add(resume,this);
-    pausePopup.addChild(playButton);
-
-
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.y = 500; //larger y gravity the narrower the parabol.
     game.physics.p2.restitution = 0.2; //bounciness of the world
@@ -244,8 +232,13 @@ function create() {
     LevelUpButton.events.onInputDown.add(levelUpResume,this);
     levelupPopup.addChild(LevelUpButton);
 
-    //var rw = gradeF.width / 2;
-    //var rh = gradeF.height/2;
+    playButton = game.add.sprite(game.world.centerX-130,game.world.centerY, 'MenuButton');
+    playButton.scale.setTo(0.1,0.1);
+    playButton.alpha=0;
+    playButton.inputEnabled = true;
+    playButton.input.enabled=false;
+    playButton.events.onInputDown.add(resume,this);
+
     resetButton = game.make.sprite(0,100, 'resetButton');
 
     resetButton.anchor.set(0.5,0.5);
@@ -533,8 +526,7 @@ function pause(){
     game.time.events.pause();
     timer.pause();
     bground.inputEnabled = false;
-    pausePopup.alpha=1;
-    pausePopup.input.enabled=true;
+    playButton.alpha=1;
     playButton.input.enabled=true;
 
 }
@@ -574,8 +566,7 @@ function resume(){
   console.log("--->resume");
   play();
   game.time.events.resume(targetStudentTimer);
-  pausePopup.alpha=0;
-  pausePopup.input.enabled=false;
+  playButton.alpha=0;
   playButton.input.enabled=false;
 }
 
