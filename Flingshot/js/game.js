@@ -1,7 +1,7 @@
 var screenwidth=1280;
 var screenheight=720;
 var randomStudent;
-var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
 var  ballsTimer= null;
 var targetStudentTimer;
 const targetInitialTimeInterval = 4;
@@ -12,47 +12,47 @@ var timerConstant = 40;
 
 
 function preload() {
-    game.load.image('Menu','images/MainMenu.png');
-    game.load.image('MenuButton','images/MenuPlay.png');
-    game.load.image('StartInstructions','images/InstructionsPage3.png');
-    game.load.image('BackButton','images/BackButton.png');
-    game.load.image('background','images/Background1.png');
-    game.load.image('ball', 'images/paperBall.png');
-    game.load.image('slingshot', 'images/CatapultSprite.png')
-    game.load.image('student1', 'images/student1.png');
-    game.load.image('student1-hit', 'images/student1-hit.png');
-    game.load.image('student1-active', 'images/student1-active.png');
-    game.load.image('student2', 'images/student2.png');
-    game.load.image('student2-hit', 'images/student2-hit.png');
-    game.load.image('student2-active', 'images/student2-active.png');
-    game.load.image('student3', 'images/student3.png');
-    game.load.image('student3-hit', 'images/student3-hit.png');
-    game.load.image('student3-active', 'images/student3-active.png');
-    game.load.image('student4', 'images/student4.png');
-    game.load.image('student4-hit', 'images/student4-hit.png');
-    game.load.image('student4-active', 'images/student4-active.png');
-    game.load.image('student5', 'images/student5.png');
-    game.load.image('student5-hit', 'images/student5-hit.png');
-    game.load.image('student5-active', 'images/student5-active.png');
+    game.load.image('Menu','assets/images/MainMenu.png');
+    game.load.image('MenuButton','assets/images/MenuPlay.png');
+    game.load.image('StartInstructions','assets/images/InstructionsPage3.png');
+    game.load.image('BackButton','assets/images/BackButton.png');
+    game.load.image('background','assets/images/Background1.png');
+    game.load.image('ball', 'assets/images/paperBall.png');
+    game.load.image('slingshot', 'assets/images/CatapultSprite.png')
+    game.load.image('student1', 'assets/images/student1.png');
+    game.load.image('student1-hit', 'assets/images/student1-hit.png');
+    game.load.image('student1-active', 'assets/images/student1-active.png');
+    game.load.image('student2', 'assets/images/student2.png');
+    game.load.image('student2-hit', 'assets/images/student2-hit.png');
+    game.load.image('student2-active', 'assets/images/student2-active.png');
+    game.load.image('student3', 'assets/images/student3.png');
+    game.load.image('student3-hit', 'assets/images/student3-hit.png');
+    game.load.image('student3-active', 'assets/images/student3-active.png');
+    game.load.image('student4', 'assets/images/student4.png');
+    game.load.image('student4-hit', 'assets/images/student4-hit.png');
+    game.load.image('student4-active', 'assets/images/student4-active.png');
+    game.load.image('student5', 'assets/images/student5.png');
+    game.load.image('student5-hit', 'assets/images/student5-hit.png');
+    game.load.image('student5-active', 'assets/images/student5-active.png');
 
 
 
-    game.load.image('arrow', 'images/blackarrow.png');
-    game.load.image('tail', 'images/black.png');
-    game.load.image('origin', 'images/blackdot.png');
-    game.load.image('analog','images/grey.png');
+    game.load.image('arrow', 'assets/images/blackarrow.png');
+    game.load.image('tail', 'assets/images/black.png');
+    game.load.image('origin', 'assets/images/blackdot.png');
+    game.load.image('analog','assets/images/grey.png');
 
-    game.load.image('pauseButton','images/PauseButton2.png');
-    game.load.image('resetButton','images/ResetButton.png')
-    game.load.image('playButton', 'images/PlayButton.png');
+    game.load.image('pauseButton','assets/images/PauseButton2.png');
+    game.load.image('resetButton','assets/images/ResetButton.png')
+    game.load.image('playButton', 'assets/images/PlayButton.png');
 
-    game.load.physics('physicsData', 'assets/studentHead1.json');
-    game.load.image('gradeF','images/gradeF.png');
+    game.load.physics('physicsData', 'assets/physics/studentHead1.json');
+    game.load.image('gradeF','assets/images/gradeF.png');
 
-    game.load.image('pausePopup','images/overwatch.png');
+    game.load.image('pausePopup','assets/images/overwatch.png');
 
     //sound effects
-    game.load.audio('collisionSound', 'assets/Audio/collisionSound.mp3');
+    game.load.audio('collisionSound', 'assets/audio/collisionSound.mp3');
 
 }
 
@@ -272,17 +272,17 @@ function create() {
     menuButton.events.onInputDown.add(displayStartInstructions,this);
 
 
-       			// play button            
-                playRect = this.add.graphics(0, 0);            
-                // draw a rectangle            
-                playRect.lineStyle(2, 0x0000FF, 0.5);            
-                playRect.beginFill(0xFF8080, 1);            
-                playRect.drawRect(this.world.centerX+280, this.world.centerY + 20, 160, 160);            
-                playRect.endFill();            
-                playRect.inputEnabled = true;            
-                playRect.events.onInputDown.add(displayStartInstructions,this);  
+       			// play button
+                playRect = this.add.graphics(0, 0);
+                // draw a rectangle
+                playRect.lineStyle(2, 0x0000FF, 0.5);
+                playRect.beginFill(0xFF8080, 1);
+                playRect.drawRect(this.world.centerX+280, this.world.centerY + 20, 160, 160);
+                playRect.endFill();
+                playRect.inputEnabled = true;
+                playRect.events.onInputDown.add(displayStartInstructions,this);
                 playRect.alpha =0;
-                  
+
 
 
     initiateTimer();
