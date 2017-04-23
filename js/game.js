@@ -90,7 +90,7 @@ var arrayStudents;
 
 var score = 0;
 var pointGoal=100;
-var levelGoal=[0,100,250,420,720];
+var levelGoal=[0,80,130,160,180,200,230,260,280,300,320,340];
 const wrongHitPoints = 5;
 const rightHitPoints = 10;
 var gradeF;
@@ -503,6 +503,10 @@ function update() {
 
       timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
       flashTimerDisplay();
+      if (score>=levelGoal[currentLevel]){
+        console.log("------>update");
+        endTimer();
+      }
   }
 
 
@@ -673,8 +677,9 @@ function formatTime(s) {
     }
 
 function endTimer() {
-        timer.stop();
-        checkPointLimit(currentLevel);
+  console.log("---->endTimer");
+  timer.stop();
+  checkPointLimit(currentLevel);
 }
 
 
