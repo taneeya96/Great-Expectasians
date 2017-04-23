@@ -303,6 +303,7 @@ function levelUpResume(){
   scoreDisplay.text ="Score : " + score + '/' + levelGoal[currentLevel];
   timerConstant-=5;
   reIniTimer();
+  currentLevel=currentLevel+1;
   levelupPopup.alpha=0;
   levelupPopup.input.enabled=false;
   LevelUpButton.input.enabled=false;
@@ -655,9 +656,9 @@ function checkPointLimit(level){
     gradeF.alpha =1;
     gradeF.input.enabled=true;
     resetButton.input.enabled=true;
+    bground.events.onInputDown.add(reset);
   } else
   {
-    currentLevel=level+1;
     levelDisplay.text="Level: "+currentLevel;
     levelupPopup.alpha=1;
     levelupPopup.input.enabled=true;
