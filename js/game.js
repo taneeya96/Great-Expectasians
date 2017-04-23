@@ -101,6 +101,7 @@ var ballsInMotion = [];
 var studentCollisionGroup;
 var ballCollisionGroup;
 var inactiveCollisionGroup;
+var playRect; // rectangle inside paper ball in menu screen
 
 function create() {
 
@@ -232,7 +233,7 @@ function create() {
     LevelUpButton.events.onInputDown.add(levelUpResume,this);
     levelupPopup.addChild(LevelUpButton);
 
-    playButton = game.add.sprite(game.world.centerX-130,game.world.centerY, 'MenuButton');
+    playButton = game.add.sprite(game.world.centerX,game.world.centerY, 'MenuButton');
     playButton.scale.setTo(0.1,0.1);
     playButton.alpha=0;
     playButton.inputEnabled = true;
@@ -269,6 +270,20 @@ function create() {
     menuButton.scale.setTo(0.1,0.1);
     menuButton.inputEnabled  = true;
     menuButton.events.onInputDown.add(displayStartInstructions,this);
+
+
+       			// play button            
+                playRect = this.add.graphics(0, 0);            
+                // draw a rectangle            
+                playRect.lineStyle(2, 0x0000FF, 0.5);            
+                playRect.beginFill(0xFF8080, 1);            
+                playRect.drawRect(this.world.centerX+280, this.world.centerY + 20, 160, 160);            
+                playRect.endFill();            
+                playRect.inputEnabled = true;            
+                playRect.events.onInputDown.add(displayStartInstructions,this);  
+                playRect.alpha =0;
+                  
+
 
     initiateTimer();
 
@@ -685,6 +700,7 @@ function endTimer() {
 
 function displayStartInstructions()
 {
+	playRect.inputEnabled = false;
   menu.alpha = 0;
   menuButton.alpha = 0;
   menuButton.inputEnabled = false;
