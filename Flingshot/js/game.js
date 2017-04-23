@@ -1,7 +1,20 @@
-var screenwidth=1280;
-var screenheight=720;
+
+const screenwidth=1280;
+const screenheight=720;
+/** NEW GAME STATE
+var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, 'gameDiv');
+
+game.state.add('boot', bootState);
+game.state.add('load',loadState);
+game.state.add('menu',menuState);
+game.state.add('play',playState);
+game.state.add('win',winState);
+*/
+
+
 var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
+
 var  ballsTimer= null;
 var targetStudentTimer;
 const targetInitialTimeInterval = 4;
