@@ -688,7 +688,7 @@ function checkPointLimit(level){
     gradeF.alpha =1;
     gradeF.input.enabled=true;
     resetButton.input.enabled=true;
-    bground.events.onInputDown.add(reset);
+    //bground.events.onInputDown.add(reset);
   } else
   {
     levelDisplay.text="Level: "+currentLevel;
