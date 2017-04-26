@@ -22,7 +22,7 @@ var balls = [];
 var ball = null;
 var timer,timerEvent;
 var timerConstant = 40;
-
+var progressBar
 
 function preload() {
     game.load.image('Menu','assets/images/MainMenu.png');
@@ -66,6 +66,8 @@ function preload() {
 
     //sound effects
     game.load.audio('collisionSound', 'assets/audio/collisionSound.mp3');
+
+    game.load.image('progressBar','assets/images/progressBar.png');
 
 }
 
@@ -116,6 +118,7 @@ var ballCollisionGroup;
 var inactiveCollisionGroup;
 var playRect; // rectangle inside paper ball in menu screen
 
+var progressBar;
 function create() {
 
     game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
@@ -209,6 +212,8 @@ function create() {
 
    	pauseButton.scale.setTo(0.03,0.03);
 
+    progressBar = game.add.sprite(400,40,'progressBar');
+    progressBar.scale.setTo(0.5,0.5);
 
     randomIndex = Math.floor(Math.random() * 5);
 
