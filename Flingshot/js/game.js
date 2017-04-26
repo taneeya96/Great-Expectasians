@@ -118,7 +118,7 @@ var playRect; // rectangle inside paper ball in menu screen
 
 function create() {
 
-    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
 
 
     bground = game.add.sprite(0,0,'background');
