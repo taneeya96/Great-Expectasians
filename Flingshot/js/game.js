@@ -126,7 +126,7 @@ var progressBar;
 
 function create() {
 
-    game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
 
     bground = game.add.sprite(0,0,'background');
@@ -341,12 +341,11 @@ function reIniTimer(){
 }
 function levelUpResume(){
   console.log("--->levelUpResume");
-  totalGoal = totalGoal +levelGoal[currentLevel];
-  console.log(totalGoal);
   scoreDisplay.text ="Score : " + score + '/' + totalGoal;
   timerConstant-=5;
   reIniTimer();
   currentLevel=currentLevel+1;
+  pauseButton.inputEnabled = true;
   levelupPopup.alpha=0;
   levelupPopup.input.enabled=false;
   LevelUpButton.input.enabled=false;
@@ -529,7 +528,7 @@ function update() {
         var angle = game.physics.arcade.angleToPointer(origin);
 
         if (Math.abs(angle) <= 0.05){
-            arrow.rotation = 0;
+            arrow.rotation = 3.14;
         } else{
             arrow.rotation =  angle + 3.14;
         }
@@ -545,9 +544,10 @@ function update() {
       timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
       flashTimerDisplay();
 
-      if (score>=levelGoal[currentLevel]){
+      if (score>=totalGoal){
         console.log("------>update");
         endTimer();
+        totalGoal += levelGoal[currentLevel];
       }
   }
 
@@ -559,6 +559,8 @@ function reset(){
   randomStudent.alpha = 0.5;
   chooseStudent();
   score=0;
+  totalGoal = 80;
+  scoreDisplay.text ="Score : " + score + '/' + totalGoal;
   timerConstant = 40;
   reIniTimer();
   currentLevel=1;
@@ -715,6 +717,8 @@ function checkPointLimit(level){
     levelupPopup.alpha=1;
     levelupPopup.input.enabled=true;
     LevelUpButton.input.enabled=true;
+    pauseButton.inputEnabled = false;
+    hideArrow();
   }
 }
 
@@ -762,5 +766,4 @@ function render() {
       scoreDisplay.addColor("#00ff00", 0); //green
     }
 
-    //goalDisplay.text="Goal: "+levelGoal[currentLevel];
 }
