@@ -59,7 +59,12 @@ function preload() {
     game.load.image('resetButton','assets/images/ResetButton.png')
     game.load.image('playButton', 'assets/images/PlayButton.png');
 
-    game.load.physics('physicsData', 'assets/physics/studentHead1.json');
+    game.load.physics('physicsData1', 'assets/physics/studenthead-1.json');
+    game.load.physics('physicsData2', 'assets/physics/studenthead-2.json');
+    game.load.physics('physicsData3', 'assets/physics/studenthead-3.json');
+    game.load.physics('physicsData4', 'assets/physics/studenthead-4.json');
+    game.load.physics('physicsData5', 'assets/physics/studenthead-5.json');
+
     game.load.image('gradeF','assets/images/gradeF.png');
 
     game.load.image('pausePopup','assets/images/overwatch.png');
@@ -167,9 +172,9 @@ function create() {
         arrayStudents.push(student);
 
         //uncommented - 3
-        student.body.setRectangle(80,80); //for collision, box-shaped
+        //student.body.setRectangle(80,80); //for collision, box-shaped
         student.body.clearShapes();
-        student.body.loadPolygon('physicsData', 'student1');
+        student.body.loadPolygon('physicsData'+(i+1), 'student'+(i+1)+'-active');
 
         student.body.setCollisionGroup(studentCollisionGroup);
         student.body.collides(ballCollisionGroup,ballHit,this);
@@ -381,10 +386,7 @@ function addStudent(image, x, y){
     game.physics.p2.enable(student);
     student.anchor.set(0.5,0.5);
     student.body.static = true;
-    //FOR COLLISION
-    //uncommented - 2
-    student.body.clearShapes();
-    student.body.loadPolygon('physicsData', 'student1');
+
     return(student)
 }
 
