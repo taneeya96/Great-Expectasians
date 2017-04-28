@@ -14,7 +14,6 @@ game.state.add('win',winState);
 
 var randomStudent;
 var game = new Phaser.Game(screenwidth, screenheight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
-
 var  ballsTimer= null;
 var targetStudentTimer;
 const targetInitialTimeInterval = 4;
@@ -59,7 +58,12 @@ function preload() {
     game.load.image('resetButton','assets/images/ResetButton.png')
     game.load.image('playButton', 'assets/images/PlayButton.png');
 
-    game.load.physics('physicsData', 'assets/physics/studentHead1.json');
+    game.load.physics('physicsData1', 'assets/physics/studenthead-1.json');
+    game.load.physics('physicsData2', 'assets/physics/studenthead-2.json');
+    game.load.physics('physicsData3', 'assets/physics/studenthead-3.json');
+    game.load.physics('physicsData4', 'assets/physics/studenthead-4.json');
+    game.load.physics('physicsData5', 'assets/physics/studenthead-5.json');
+
     game.load.image('gradeF','assets/images/gradeF.png');
 
     game.load.image('pausePopup','assets/images/overwatch.png');
@@ -168,9 +172,9 @@ function create() {
         arrayStudents.push(student);
 
         //uncommented - 3
-        student.body.setRectangle(80,80); //for collision, box-shaped
+        //student.body.setRectangle(80,80); //for collision, box-shaped
         student.body.clearShapes();
-        student.body.loadPolygon('physicsData', 'student1');
+        student.body.loadPolygon('physicsData'+(i+1), 'student'+(i+1)+'-active');
 
         student.body.setCollisionGroup(studentCollisionGroup);
         student.body.collides(ballCollisionGroup,ballHit,this);
@@ -314,11 +318,14 @@ function initiateTimer(){
   timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, endTimer);
 }
 
+var gamePaused = false;
 function initiateTargetStudentTimer(){
-  game.time.events.remove(targetStudentTimer);
-  var changeFactor = Array(currentLevel+2, currentLevel+1, currentLevel+1, currentLevel, currentLevel,currentLevel,currentLevel,currentLevel)[Math.floor(Math.random()*8)];
-  var targetCurrentTimeInterval = targetInitialTimeInterval - 2*Math.log(changeFactor)/Math.log(10) //shorten interval with higher level. level 10 at 1s
-  targetStudentTimer = game.time.events.add(Phaser.Timer.SECOND * targetCurrentTimeInterval, chooseStudent, this);
+  if (!gamePaused){
+    game.time.events.remove(targetStudentTimer);
+    var changeFactor = Array(currentLevel+2, currentLevel+1, currentLevel+1, currentLevel, currentLevel,currentLevel,currentLevel,currentLevel)[Math.floor(Math.random()*8)];
+    var targetCurrentTimeInterval = targetInitialTimeInterval - 2*Math.log(changeFactor)/Math.log(10) //shorten interval with higher level. level 10 at 1s
+    targetStudentTimer = game.time.events.add(Phaser.Timer.SECOND * targetCurrentTimeInterval, chooseStudent, this);
+  }
 }
 
 function reIniTimer(){
@@ -357,6 +364,7 @@ function levelUpResume(){
 
   game.physics.p2.resume();
   game.time.events.resume();
+  gamePaused = true;
   // game.time.events.pause(ballsTimer);
 }
 
@@ -383,10 +391,7 @@ function addStudent(image, x, y){
     game.physics.p2.enable(student);
     student.anchor.set(0.5,0.5);
     student.body.static = true;
-    //FOR COLLISION
-    //uncommented - 2
-    student.body.clearShapes();
-    student.body.loadPolygon('physicsData', 'student1');
+
     return(student)
 }
 
@@ -521,10 +526,9 @@ function update() {
     if (game.input.activePointer.isDown){
         var dist = game.physics.arcade.distanceToPointer(origin);
         var angle = game.physics.arcade.angleToPointer(origin);
-        
 
         if (Math.abs(angle) <= 0.05){
-            arrow.rotation = 3.14;
+            arrow.rotation = 0;
         } else{
             arrow.rotation =  angle + 3.14;
         }
@@ -533,14 +537,15 @@ function update() {
 
         tail.height = 0.5*dist;
         analog.height = dist;
-
-        arrow.x = origin.x - 0.5*dist*Math.cos(angle);
+        arrow.x = origin.x -  0.5*dist*Math.cos(angle);
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
         }
 
       timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
       flashTimerDisplay();
-      if (score>=totalGoal){
+
+      if (score>=levelGoal[currentLevel]){
+        console.log("------>update");
         endTimer();
       }
   }
@@ -559,17 +564,18 @@ function reset(){
   resume();
   gradeF.input.enabled=false;
   resetButton.input.enabled=false;
+  gamePaused= false;
 }
 
 function pause(){
     console.log("-->pause");
     game.physics.p2.pause();
-    game.time.events.pause();
+    game.time.events.pause([ballsTimer, targetStudentTimer]);
     timer.pause();
     bground.inputEnabled = false;
     playButton.alpha=1;
     playButton.input.enabled=true;
-
+    gamePaused = true;
 }
 
 
@@ -591,6 +597,7 @@ function restart(){
     game.physics.p2.resume();
     initiateTargetStudentTimer();
     sz = 0.15;
+    gamePaused = false;
 
 }
 
@@ -601,6 +608,7 @@ function play(){
   game.time.events.resume([ballsTimer, targetStudentTimer]);
   initiateTargetStudentTimer();
   timer.resume();
+  gamePaused = false;
 }
 
 function resume(){
@@ -609,6 +617,7 @@ function resume(){
   game.time.events.resume(targetStudentTimer);
   playButton.alpha=0;
   playButton.input.enabled=false;
+  gamePaused = false;
 }
 
 
@@ -626,6 +635,7 @@ function startGame(){
   ballsTimer = game.time.events.loop(50, updateBalls, this);
   initiateTargetStudentTimer();
   timer.start();
+  gamePaused = false;
 }
 
 function backToMenu()
@@ -689,6 +699,7 @@ function showScoreTween(action, x, y){
 function checkPointLimit(level){
   game.physics.p2.pause();
   game.time.events.pause([ballsTimer, targetStudentTimer]);
+  gamePaused = true;
   bground.inputEnabled = false;
   if (score<totalGoal)
   {
