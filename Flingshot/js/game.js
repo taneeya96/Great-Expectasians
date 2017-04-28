@@ -215,7 +215,7 @@ function create() {
     //buttons
     pauseButton = game.add.button(buttonXPos, buttonYPos, 'pauseButton', pause , this, 2, 1, 0);
 
-   	pauseButton.scale.setTo(0.03,0.03);
+   	pauseButton.scale.setTo(0.19,0.19);
 
     progressBar = game.add.sprite(400,40,'progressBar');
     progressBar.scale.setTo(0.5,0.5);
@@ -248,7 +248,7 @@ function create() {
 
     LevelUpButton = game.make.sprite(0,0, 'playButton');
     LevelUpButton.anchor.set(0.5,0.5);
-    LevelUpButton.scale.setTo(0.08,0.08);
+    LevelUpButton.scale.setTo(0.19,0.19);
     LevelUpButton.alpha=1;
     LevelUpButton.inputEnabled = true;
     LevelUpButton.input.enabled=false;
@@ -257,6 +257,7 @@ function create() {
     levelupPopup.addChild(LevelUpButton);
 
     playButton = game.add.sprite(game.world.centerX,game.world.centerY, 'MenuButton');
+    playButton.anchor.set(0.5,0.5);
     playButton.scale.setTo(0.1,0.1);
     playButton.alpha=0;
     playButton.inputEnabled = true;
