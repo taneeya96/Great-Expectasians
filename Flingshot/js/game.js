@@ -558,6 +558,8 @@ function reset(){
   randomStudent.alpha = 0.5;
   chooseStudent();
   score=0;
+  totalGoal = 80;
+  scoreDisplay.text ="Score : " + score + '/' + totalGoal;
   timerConstant = 40;
   reIniTimer();
   currentLevel=1;
