@@ -104,8 +104,8 @@ const pauseButtonHeight = 60;
 var arrayStudents;
 
 var score = 0;
-var pointGoal=100;
-var levelGoal=[0,80,130,160,180,200,230,260,280,300,320,340];
+var levelGoal=[0,130,160,180,200,230,260,280,300,320,340]; //amount that needs to be added to the totalGoal per level
+totalGoal = 80; //totalGoal starts at the level 1 goal of 80
 const wrongHitPoints = 5;
 const rightHitPoints = 10;
 var gradeF;
@@ -119,6 +119,7 @@ var inactiveCollisionGroup;
 var playRect; // rectangle inside paper ball in menu screen
 
 var progressBar;
+
 function create() {
 
     game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
@@ -332,8 +333,9 @@ function reIniTimer(){
 }
 function levelUpResume(){
   console.log("--->levelUpResume");
-  score = 0;
-  scoreDisplay.text ="Score : " + score + '/' + levelGoal[currentLevel];
+  totalGoal = totalGoal +levelGoal[currentLevel];
+  console.log(totalGoal);
+  scoreDisplay.text ="Score : " + score + '/' + totalGoal;
   timerConstant-=5;
   reIniTimer();
   currentLevel=currentLevel+1;
@@ -538,7 +540,7 @@ function update() {
 
       timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
       flashTimerDisplay();
-      if (score>=levelGoal[currentLevel]){
+      if (score>=totalGoal){
         endTimer();
       }
   }
@@ -677,7 +679,7 @@ function showScoreTween(action, x, y){
   game.time.events.add(1000, function(){
     text.destroy();
     score+= deltaScore;
-    if (score ==levelGoal[currentLevel]){
+    if (score ==totalGoal){
       flashScore();
     }
   });
@@ -688,7 +690,7 @@ function checkPointLimit(level){
   game.physics.p2.pause();
   game.time.events.pause([ballsTimer, targetStudentTimer]);
   bground.inputEnabled = false;
-  if (score<levelGoal[level])
+  if (score<totalGoal)
   {
     randomStudent.alpha = 0.5;
     gradeF.alpha =1;
@@ -740,8 +742,8 @@ function flashTimerDisplay(){
 
 function render() {
     levelDisplay.text="Level: "+currentLevel;
-    scoreDisplay.text ="Score : " + score + '/' + levelGoal[currentLevel];
-    if(score < levelGoal[currentLevel]){
+    scoreDisplay.text ="Score : " + score + '/' + totalGoal;
+    if(score < totalGoal){
       scoreDisplay.addColor("#ff0000", 0); //red
     }
     else {
