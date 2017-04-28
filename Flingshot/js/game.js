@@ -519,10 +519,9 @@ function update() {
     if (game.input.activePointer.isDown){
         var dist = game.physics.arcade.distanceToPointer(origin);
         var angle = game.physics.arcade.angleToPointer(origin);
-        
 
         if (Math.abs(angle) <= 0.05){
-            arrow.rotation = 3.14;
+            arrow.rotation = 0;
         } else{
             arrow.rotation =  angle + 3.14;
         }
@@ -531,14 +530,14 @@ function update() {
 
         tail.height = 0.5*dist;
         analog.height = dist;
-
-        arrow.x = origin.x - 0.5*dist*Math.cos(angle);
+        arrow.x = origin.x -  0.5*dist*Math.cos(angle);
         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
         }
 
       timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
       flashTimerDisplay();
       if (score>=levelGoal[currentLevel]){
+        console.log("------>update");
         endTimer();
       }
   }
