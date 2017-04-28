@@ -126,7 +126,7 @@ var progressBar;
 
 function create() {
 
-    game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
 
     bground = game.add.sprite(0,0,'background');
@@ -340,12 +340,11 @@ function reIniTimer(){
 }
 function levelUpResume(){
   console.log("--->levelUpResume");
-  totalGoal = totalGoal +levelGoal[currentLevel];
-  console.log(totalGoal);
   scoreDisplay.text ="Score : " + score + '/' + totalGoal;
   timerConstant-=5;
   reIniTimer();
   currentLevel=currentLevel+1;
+  pauseButton.inputEnabled = true;
   levelupPopup.alpha=0;
   levelupPopup.input.enabled=false;
   LevelUpButton.input.enabled=false;
@@ -547,6 +546,7 @@ function update() {
       if (score>=totalGoal){
         console.log("------>update");
         endTimer();
+        totalGoal += levelGoal[currentLevel];
       }
   }
 
@@ -714,6 +714,8 @@ function checkPointLimit(level){
     levelupPopup.alpha=1;
     levelupPopup.input.enabled=true;
     LevelUpButton.input.enabled=true;
+    pauseButton.inputEnabled = false;
+    hideArrow();
   }
 }
 
