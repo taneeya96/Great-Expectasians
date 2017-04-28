@@ -528,7 +528,7 @@ function update() {
         var angle = game.physics.arcade.angleToPointer(origin);
 
         if (Math.abs(angle) <= 0.05){
-            arrow.rotation = 0;
+            arrow.rotation = 3.14;
         } else{
             arrow.rotation =  angle + 3.14;
         }
