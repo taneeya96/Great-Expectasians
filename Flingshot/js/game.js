@@ -544,7 +544,7 @@ function update() {
       timerDisplay.text=formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
       flashTimerDisplay();
 
-      if (score>=levelGoal[currentLevel]){
+      if (score>=totalGoal){
         console.log("------>update");
         endTimer();
       }
@@ -761,5 +761,4 @@ function render() {
       scoreDisplay.addColor("#00ff00", 0); //green
     }
 
-    //goalDisplay.text="Goal: "+levelGoal[currentLevel];
 }
