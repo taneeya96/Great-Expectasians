@@ -342,7 +342,6 @@ function reIniTimer(){
 function levelUpResume(){
   console.log("--->levelUpResume");
   scoreDisplay.text ="Score : " + score + '/' + totalGoal;
-  timerConstant-=5;
   reIniTimer();
   currentLevel=currentLevel+1;
   pauseButton.inputEnabled = true;
@@ -561,7 +560,6 @@ function reset(){
   score=0;
   totalGoal = 80;
   scoreDisplay.text ="Score : " + score + '/' + totalGoal;
-  timerConstant = 40;
   reIniTimer();
   currentLevel=1;
   resume();
