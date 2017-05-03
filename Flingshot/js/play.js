@@ -29,8 +29,19 @@ var playState = {
     totalGoal = 80;
 
     bground = game.add.sprite(0,0,'background');
-    bground.alpha = 0.75;
+    bground.alpha = 1.0;
     bground.inputEnabled = true;
+
+    var teacher = game.add.sprite(390, -65, 'mummy');
+    teacher.alpha = 1;
+    var walk = teacher.animations.add('walk');
+
+    teacher.animations.play('walk', 3, true);
+
+
+    var table = game.add.sprite(475, 135, 'table');
+    table.alpha = 1;
+
     bground.events.onInputDown.add(this.holdBall);
     bground.events.onInputUp.add(this.launchBall);
 
@@ -114,9 +125,6 @@ var playState = {
     playButton.inputEnabled = true;
     playButton.input.enabled=false;
     playButton.events.onInputDown.add(this.resume,this);
-
-    progressBar = game.add.sprite(400,40,'progressBar');
-    progressBar.scale.setTo(0.5,0.5);
 
     randomIndex = Math.floor(Math.random() * 5);
     randomStudent = arrayStudents[randomIndex];

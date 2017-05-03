@@ -24,6 +24,9 @@ var loadState = {
     game.load.image('student5-active', 'assets/images/student5-active.png');
 
 
+    game.load.spritesheet('mummy', 'assets/images/Teacher graphic.png', 150, 354);
+    game.load.image('table', 'assets/images/table.png');
+
 
     game.load.image('arrow', 'assets/images/blackarrow.png');
     game.load.image('tail', 'assets/images/black.png');
