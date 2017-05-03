@@ -132,6 +132,7 @@ var playState = {
     ballsTimer = game.time.events.loop(50, this.updateBalls, this);
     this.initiateTargetStudentTimer();
     this.initiateTimer();
+    playState.play();
 
     collisionSound = game.add.audio('collisionSound');
 
@@ -244,7 +245,6 @@ var playState = {
       analog.alpha = 0;
   },
   launchBall : function () {
-      console.log("launch ball")
       var arrowLengthX = arrow.x - origin.x;
       var arrowLengthY = arrow.y - origin.y;
       if(Math.abs(arrowLengthY) > 3){
@@ -258,6 +258,7 @@ var playState = {
           ballInSlingshot = playState.createBall();
       }
       playState.hideArrow();
+      console.log("launch ball", arrowLengthX)
   },
   updateBalls : function () {
       for (i=0; i< ballsInMotion.length ; i++){
@@ -458,6 +459,10 @@ render :  function () {
   },
 
 update :  function () {
+    if(ballsInMotion[0])
+    {
+      console.log(ballsInMotion[0].body.x);
+    }
      // update the control arrow
      if (game.input.activePointer.isDown){
          var dist = game.physics.arcade.distanceToPointer(origin);
