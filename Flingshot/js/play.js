@@ -145,7 +145,6 @@ var playState = {
   },
 
   initiateTimer: function(){
-    console.log('timer init')
     timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, this.endTimer);
     timer.start();
     playState.updateTimeToChangeTarget();
@@ -162,7 +161,6 @@ var playState = {
   levelUpResume: function(){
     scoreDisplay.text ="Score : " + score + '/' + totalGoal;
     this.reIniTimer();
-    this.initiateTargetStudentTimer();
     currentLevel=currentLevel+1;
     pauseButton.inputEnabled = true;
     levelupPopup.alpha=0;
@@ -187,7 +185,6 @@ var playState = {
   },
 
   createBall : function() {
-    console.log('ball created')
     var newBall = game.add.sprite(ballinitx, ballinity, 'ball');
     game.physics.p2.enable(newBall);
     newBall.scale.setTo(0.15,0.15);
@@ -213,7 +210,6 @@ var playState = {
   },
 
   holdBall : function() {
-      console.log('hold ball')
       playState.showArrow();
       ballInSlingshot.body.static = true;
   },
@@ -296,18 +292,20 @@ var playState = {
   },
 
   ballHit : function(body1, body2) {
-      console.log("--->ballHit");
+      //
       ballCollided = true;
       if (body1.x == randomStudent.x && body1.y == randomStudent.y){
           playState.studentHit(body2.x, body2.y);
           studentnum = randomIndex+1;
           game.time.events.add(Phaser.Timer.SECOND * 10000, randomStudent.loadTexture('student'+studentnum, 0), this);
           playState.chooseStudent();
+          score += rightHitPoints;
       }
       else{
         playState.showScoreTween("lose", body2.x, body2.y);
+        score -= wrongHitPoints;
       }
-      body2.sprite.body.setCollisionGroup(inactiveCollisionGroup);
+      body2.sprite.body.setCollisionGroup(inactiveCollisionGroup); //
   },
 
 
@@ -327,7 +325,6 @@ var playState = {
         });
     game.time.events.add(1000, function(){
       text.destroy();
-      score+= deltaScore;
     });
 
   },
@@ -401,7 +398,6 @@ endTimer : function() {
 },
 
 chooseStudent : function (){
-  console.log('choose student')
   randomStudent.alpha = 0.5;
   var num = Math.floor((Math.random() * 5));
   while(num==randomIndex)
@@ -418,7 +414,6 @@ chooseStudent : function (){
 
 studentHit: function (ballX, ballY){
     collisionSound.play();
-    // score+= rightHitPoints;
     randomStudent.alpha = 0.5;
     playState.showScoreTween("add", ballX, ballY);
 },
@@ -464,7 +459,6 @@ update :  function () {
        }
 
       if (!gamePaused && game.time.now >= timeToChangeTarget){
-        console.log('student chosen in update for some reason??!')
         playState.chooseStudent();
       }
    },
@@ -473,7 +467,6 @@ update :  function () {
       var changeFactor = Array(currentLevel+2, currentLevel+1, currentLevel+1, currentLevel, currentLevel,currentLevel,currentLevel,currentLevel)[Math.floor(Math.random()*8)];
       var deltaTime = 4000 - 2000*Math.log(changeFactor)/Math.log(10) //shorten interval with higher level. level 10 at 1s
       timeToChangeTarget = game.time.now + deltaTime;
-       console.log("update time to ",timeToChangeTarget ," to change target at ", game.time.now)
    },
 
 }
