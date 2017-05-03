@@ -34,7 +34,7 @@ var playState = {
     bground.inputEnabled = true;
 
 
-    var teacher = game.add.sprite(390, -65, 'mummy');
+    teacher = game.add.sprite(390, -65, 'mummy');
     teacher.alpha = 1;
     var walk = teacher.animations.add('walk');
     teacher.animations.play('walk', 3, true);
@@ -329,14 +329,19 @@ var playState = {
   },
 
 pause :  function (){
-     game.physics.p2.pause();
-     game.time.events.pause([ballsTimer]);
-     timer.pause();
-     bground.inputEnabled = false;
+     playState.pausedState();
      playButton.alpha=1;
      playButton.input.enabled=true;
-     gamePaused = true;
  },
+
+pausedState: function(){
+  game.physics.p2.pause();
+  game.time.events.pause([ballsTimer]);
+  timer.pause();
+  teacher.animations.paused = true;
+  bground.inputEnabled = false;
+  gamePaused = true;
+},
 
 play :  function(){
    game.physics.p2.resume();
@@ -346,6 +351,7 @@ play :  function(){
    gamePaused = false;
    playButton.alpha=0;
    playButton.input.enabled=false;
+   playState.updateTimeToChangeTarget();
    gamePaused = false;
  },
 
@@ -361,11 +367,7 @@ play :  function(){
  },
 
   checkPointLimit : function(level){
-   timer.pause();
-   game.physics.p2.pause();
-   game.time.events.pause([ballsTimer]);
-   gamePaused = true;
-   bground.inputEnabled = false;
+   playState.pausedState();
    if (score<totalGoal)
    {  
      game.state.start('win');
