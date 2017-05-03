@@ -1,6 +1,7 @@
-var winState = {
+var loseState = {
   create : function(){
-    var winPage = game.add.sprite(0,0,'winPage');
+    var gradeF = game.add.sprite(game.world.centerX, game.world.centerY,'gradeF');
+    gradeF.scale.setTo(0.8,0.8);
     var resetButton = game.add.sprite(game.world.centerX, game.world.centerY+50,'resetButton');
     resetButton.scale.setTo(0.5,0.5);
     resetButton.inputEnabled  = true;
@@ -9,5 +10,4 @@ var winState = {
   restartGame : function() {
     game.state.start('play');
   }
-
 }
