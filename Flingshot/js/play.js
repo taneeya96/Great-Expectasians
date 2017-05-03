@@ -173,6 +173,7 @@ var playState = {
   levelUpResume: function(){
     scoreDisplay.text ="Score : " + score + '/' + totalGoal;
     this.reIniTimer();
+    this.initiateTargetStudentTimer();
     currentLevel=currentLevel+1;
     pauseButton.inputEnabled = true;
     levelupPopup.alpha=0;
