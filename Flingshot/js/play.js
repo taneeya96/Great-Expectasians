@@ -291,7 +291,6 @@ var playState = {
   },
 
   ballHit : function(body1, body2) {
-      //
       ballCollided = true;
       if (body1.x == randomStudent.x && body1.y == randomStudent.y){
           playState.studentHit(body2.x, body2.y);
@@ -392,11 +391,6 @@ formatTime :  function(s) {
    return minutes.substr(-2) + ":" + seconds.substr(-2);
   },
 
-// endTimer : function() {
-//   timer.pause();
-//   playState.checkPointLimit(currentLevel);
-// },
-
 chooseStudent : function (){
   randomStudent.alpha = 0.5;
   studentnum = randomIndex+1;
@@ -434,34 +428,47 @@ render :  function () {
 
 update :  function () {
      // update the control arrow
-     if (game.input.activePointer.isDown){
-         var dist = game.physics.arcade.distanceToPointer(origin);
-         var angle = game.physics.arcade.angleToPointer(origin);
+      this.updateArrow();
 
-         if (Math.abs(angle) <= 0.05){
-             arrow.rotation = 3.14;
-         } else{
-             arrow.rotation =  angle + 3.14;
-         }
-         tail.rotation = angle - 3.14/2;
-         analog.rotation = angle - 3.14/2;
-
-         tail.height = 0.5*dist;
-         analog.height = dist;
-         arrow.x = origin.x -  0.5*dist*Math.cos(angle);
-         arrow.y = origin.y - 0.5*dist*Math.sin(angle);
-         }
-
-       timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
-       this.flashTimerDisplay();
+      this.updateTimerDisplay();
 
        if (score>=totalGoal){
          this.checkPointLimit();
        }
 
+      this.updateTargetStudent();
+
+   },
+
+   updateTargetStudent: function() {
       if (!gamePaused && game.time.now >= timeToChangeTarget){
         playState.chooseStudent();
       }
+   },
+
+   updateArrow: function(){
+    if (game.input.activePointer.isDown){
+     var dist = game.physics.arcade.distanceToPointer(origin);
+     var angle = game.physics.arcade.angleToPointer(origin);
+
+     if (Math.abs(angle) <= 0.05){
+         arrow.rotation = 3.14;
+     } else{
+         arrow.rotation =  angle + 3.14;
+     }
+     tail.rotation = angle - 3.14/2;
+     analog.rotation = angle - 3.14/2;
+
+     tail.height = 0.5*dist;
+     analog.height = dist;
+     arrow.x = origin.x -  0.5*dist*Math.cos(angle);
+     arrow.y = origin.y - 0.5*dist*Math.sin(angle);
+     }
+   },
+
+   updateTimerDisplay: function(){
+    timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
+    playState.flashTimerDisplay();
    },
 
    updateTimeToChangeTarget: function(){
