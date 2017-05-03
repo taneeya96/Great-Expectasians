@@ -121,7 +121,7 @@ var playState = {
     playButton.alpha=0;
     playButton.inputEnabled = true;
     playButton.input.enabled=false;
-    playButton.events.onInputDown.add(this.resume,this);
+    playButton.events.onInputDown.add(this.play,this);
 
     randomIndex = Math.floor(Math.random() * 5);
     randomStudent = arrayStudents[randomIndex];
@@ -337,18 +337,12 @@ pause :  function (){
      gamePaused = true;
  },
 
-play :  function (){
+play :  function(){
    game.physics.p2.resume();
    bground.inputEnabled = true;
    game.time.events.resume([ballsTimer]);
    timer.resume();
    gamePaused = false;
- },
-
- resume :  function(){
-   console.log("--->resume");
-   this.play();
-   game.time.events.resume();
    playButton.alpha=0;
    playButton.input.enabled=false;
    gamePaused = false;
