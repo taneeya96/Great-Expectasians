@@ -373,7 +373,7 @@ play :  function (){
    gamePaused = true;
    bground.inputEnabled = false;
    if (score<totalGoal)
-   {
+   {  
      game.state.start('win');
    } else
    {
@@ -469,4 +469,7 @@ update :  function () {
       timeToChangeTarget = game.time.now + deltaTime;
    },
 
+   getCurrentScore: function(){
+    return score;
+   }
 }
