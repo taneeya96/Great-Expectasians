@@ -3,7 +3,7 @@ var playState = {
 
   create : function(){
     timer = game.time.create();
-    timerConstant = 10;
+    timerConstant = 30;
     timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, this.endTimer);
     targetInitialTimeInterval = 4;
     targetStudentTimer = game.time.events.add(Phaser.Timer.SECOND * targetInitialTimeInterval, this.chooseStudent, this);
