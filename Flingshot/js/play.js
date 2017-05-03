@@ -5,7 +5,6 @@ var playState = {
     timer = game.time.create();
     timerConstant = 30;
     timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, this.endTimer);
-    targetInitialTimeInterval = 4;
     timeToChangeTarget = game.time.now + 4000;
 
     gamePaused = false;
@@ -181,7 +180,7 @@ var playState = {
 
     game.physics.p2.resume();
     game.time.events.resume();
-    gamePaused = true;
+    gamePaused = false;
   },
 
   createBall : function() {
@@ -344,7 +343,7 @@ play :  function (){
    bground.inputEnabled = true;
    game.time.events.resume([ballsTimer]);
    timer.resume();
-   gamePaused = true;
+   gamePaused = false;
  },
 
  resume :  function(){
@@ -353,7 +352,7 @@ play :  function (){
    game.time.events.resume();
    playButton.alpha=0;
    playButton.input.enabled=false;
-   gamePaused = true;
+   gamePaused = false;
  },
 
 
@@ -399,6 +398,8 @@ endTimer : function() {
 
 chooseStudent : function (){
   randomStudent.alpha = 0.5;
+  studentnum = randomIndex+1;
+  game.time.events.add(Phaser.Timer.SECOND * 10000, randomStudent.loadTexture('student'+studentnum, 0), this);
   var num = Math.floor((Math.random() * 5));
   while(num==randomIndex)
   {
@@ -464,8 +465,8 @@ update :  function () {
    },
 
    updateTimeToChangeTarget: function(){
-      var changeFactor = Array(currentLevel+2, currentLevel+1, currentLevel+1, currentLevel, currentLevel,currentLevel,currentLevel,currentLevel)[Math.floor(Math.random()*8)];
-      var deltaTime = 4000 - 2000*Math.log(changeFactor)/Math.log(10) //shorten interval with higher level. level 10 at 1s
+      var changeFactor = Array( currentLevel+1, currentLevel+1, currentLevel, currentLevel,currentLevel,currentLevel,currentLevel)[Math.floor(Math.random()*7)];
+      var deltaTime = 4000 - 3500*(0.5*changeFactor)/4 //shorten interval with higher level. level 10 at 0.5s
       timeToChangeTarget = game.time.now + deltaTime;
    },
 
