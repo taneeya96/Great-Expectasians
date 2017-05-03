@@ -47,7 +47,7 @@ var playState = {
 
     collisionSound = game.add.audio('collisionSound');
 
-    timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50});
+    timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
     scoreDisplay = game.add.text(500, 16, '', { fill: '#ffffff' , fontSize: 50});
     goalDisplay = game.add.text(700,16,'',{fill: '#ffffff', fontSize:50 });
     levelDisplay = game.add.text(1000,16,'',{fill: '#ffffff', fontSize:40 });
@@ -166,6 +166,7 @@ var playState = {
     LevelUpButton.input.enabled=false;
     bground.inputEnabled = true;
     timerDisplay.fontSize = 50;
+    timerDisplay.strokeThickness = 2;
 
     for(var i =0; i<ballsInMotion.length; i++){
         ballsInMotion[i].destroy();
