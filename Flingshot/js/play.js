@@ -3,7 +3,7 @@ var playState = {
 
   create : function(){
     timer = game.time.create();
-    timerConstant = 10;
+    timerConstant = 30;
     timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, this.endTimer);
     targetInitialTimeInterval = 4;
     timeToChangeTarget = game.time.now + 4000;
@@ -162,6 +162,7 @@ var playState = {
   levelUpResume: function(){
     scoreDisplay.text ="Score : " + score + '/' + totalGoal;
     this.reIniTimer();
+    this.initiateTargetStudentTimer();
     currentLevel=currentLevel+1;
     pauseButton.inputEnabled = true;
     levelupPopup.alpha=0;
