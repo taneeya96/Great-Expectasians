@@ -23,7 +23,7 @@ var menuState = {
   },
   displayStartInstructions: function()
   {
-    game.state.start('instructionsPage');
+    game.state.start('instructions');
   }
 
 }
