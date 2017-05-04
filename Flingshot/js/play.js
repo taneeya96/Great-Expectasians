@@ -2,11 +2,11 @@ var playState = {
 
 
   create : function(){
-    timer = game.time.create();
-    timerConstant = 30;
-    timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, this.checkPointLimit);
+    timer = game.time.create(); //timer for levels
+    timerConstant = 30; //each level is 30 seconds long
+    timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, this.checkLevelGoal); //a timer for each level
     timeToChangeTarget = game.time.now + 4000;
-    ballsTimer = game.time.events.loop(50, this.updateBalls, this);
+    ballsTimer = game.time.events.loop(50, this.updateBalls, this); //timer to create depth effects
 
     gamePaused = false;
 
@@ -24,8 +24,8 @@ var playState = {
 
     currentLevel = 1;
     score = 0;
-    levelGoal=[0,130,160,180,200,230,260,280,300,320,340];
-    totalGoal = 80;
+    levelGoalIncrement=[0,130,160,180,200,230,260,280,300,320,340];
+    levelGoal = 80;
     wrongHitPoints = 5;
     rightHitPoints = 10;
 
@@ -142,46 +142,52 @@ var playState = {
 
   initiateTimer: function(){
     timer = game.time.create();
-    timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, this.checkPointLimit);
+    timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, playState.checkLevelGoal);
     timer.start();
     playState.updateTimeToChangeTarget();
   },
 
-  reIniTimer: function(){
+  reinitiateTimer: function(){
     timer.stop();
     timer.destroy();
-    this.initiateTimer();
+    playState.initiateTimer();
     timerDisplay.addColor("#ffffff",0);
     timerDisplay.stroke = "#ffffff";
   },
 
   levelUpResume: function(){
-    totalGoal += levelGoal[currentLevel];
-    scoreDisplay.text ="Score : " + score + '/' + totalGoal;
-    this.reIniTimer();
+    levelGoal += levelGoalIncrement[currentLevel];
+    scoreDisplay.text ="Score : " + score + '/' + levelGoal;
+    timerDisplay.fontSize = 50;
+    timerDisplay.strokeThickness = 2;
+
+    playState.reinitiateTimer();
     currentLevel=currentLevel+1;
+
     pauseButton.inputEnabled = true;
+
     levelupPopup.alpha=0;
     levelupPopup.input.enabled=false;
     LevelUpButton.input.enabled=false;
     bground.inputEnabled = true;
-    timerDisplay.fontSize = 50;
-    timerDisplay.strokeThickness = 2;
 
     for(var i =0; i<ballsInMotion.length; i++){
         ballsInMotion[i].destroy();
     }
+    ballsInMotion = [];
+    balballInSlingshot = playState.createBall();
+    
+    //reset students graphics
     for(var i = 0; i<3; i++)
     {
       studNum = i+1
       arrayStudents[i].loadTexture('student'+studNum,0);
     }
-    ballsInMotion = [];
-    balballInSlingshot = playState.createBall();
 
     game.physics.p2.resume();
     game.time.events.resume();
     gamePaused = false;
+    teacher.animations.paused = false;
   },
 
   createBall : function() {
@@ -206,7 +212,7 @@ var playState = {
       game.physics.p2.enable(student);
       student.anchor.set(0.5,0.5);
       student.body.static = true;
-      return(student)
+      return(student);
   },
 
   holdBall : function() {
@@ -257,7 +263,7 @@ var playState = {
 
   updateBalls : function () {
       for (i=0; i< ballsInMotion.length ; i++){
-          if (ballsInMotion[i].timesHitFloor > 4){
+          if (ballsInMotion[i].timesHitFloor > 4){ 
               ballsInMotion[i].kill();
               ballsInMotion.splice(i, 1);
           } else{
@@ -268,10 +274,10 @@ var playState = {
 
   updateBallSize : function(ball){
     if(!ball.hitFloor){
-      if (ball.body.z >= WALL_Z){
+      if (ball.body.z >= WALL_Z){ //ball hits back wall
         ball.body.velocity.x = 0;
         ball.floor = WALL_FLOOR;
-      }else{
+      }else{ //update ball size based on z-position
         ball.body.z += ball.body.velocity.z;
         var size = 0.15/(1 + ball.body.z*0.003);
         ball.scale.setTo(size,size);
@@ -291,20 +297,20 @@ var playState = {
     ball.hitFloor = true;
   },
 
-  ballHit : function(body1, body2) {
+  ballHit : function(student, ball) {
       ballCollided = true;
-      if (body1.x == randomStudent.x && body1.y == randomStudent.y){
-          playState.studentHit(body2.x, body2.y);
+      if (student.x == randomStudent.x && student.y == randomStudent.y){
+          playState.studentHit(ball.x, ball.y);
           studentnum = randomIndex+1;
           game.time.events.add(Phaser.Timer.SECOND * 10000, randomStudent.loadTexture('student'+studentnum, 0), this);
           playState.chooseStudent();
           score += rightHitPoints;
       }
       else{
-        playState.showScoreTween("lose", body2.x, body2.y);
+        playState.showScoreTween("lose", ball.x, ball.y);
         score -= wrongHitPoints;
       }
-      body2.sprite.body.setCollisionGroup(inactiveCollisionGroup); //
+      ball.sprite.body.setCollisionGroup(inactiveCollisionGroup); //
   },
 
 
@@ -316,11 +322,12 @@ var playState = {
       var text = game.add.text(x,y,'-'+ wrongHitPoints,{fill: '#ff0000', fontWeight: 'bold' , fontSize: 60});
       var deltaScore= -wrongHitPoints;
     }
+    //source: html5gamedevs.com
     game.time.events.add(
         300,
         function() {
-            game.add.tween(text).to({x: 550, y: 16}, 600, Phaser.Easing.Linear.None, true);
-            game.add.tween(text).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+            game.add.tween(text).to({x: 550, y: 16}, 600, Phaser.Easing.Linear.None, true); //text moves to x,y positions
+            game.add.tween(text).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);//text disappears
         });
     game.time.events.add(1000, function(){
       text.destroy();
@@ -348,10 +355,10 @@ play :  function(){
    bground.inputEnabled = true;
    game.time.events.resume([ballsTimer]);
    timer.resume();
-   gamePaused = false;
    playButton.alpha=0;
    playButton.input.enabled=false;
    playState.updateTimeToChangeTarget();
+   teacher.animations.paused = false;
    gamePaused = false;
  },
 
@@ -366,13 +373,16 @@ play :  function(){
    }
  },
 
-  checkPointLimit : function(level){
+  checkLevelGoal : function(level){
    playState.pausedState();
-   if (score<totalGoal)
+   if (score<levelGoal)
    {  
-     game.state.start('win');
+     game.state.start('lose');
    } else
    {
+     if(currentLevel == 7){
+      game.state.start('win');
+     }
      levelDisplay.text="Level: "+currentLevel;
      levelupPopup.alpha=1;
      levelupPopup.input.enabled=true;
@@ -381,12 +391,6 @@ play :  function(){
      playState.hideArrow();
    }
  },
-
-formatTime :  function(s) {
-   var minutes = "0" + Math.floor(s / 60);
-   var seconds = "0" + (s - minutes * 60);
-   return minutes.substr(-2) + ":" + seconds.substr(-2);
-  },
 
 chooseStudent : function (){
   randomStudent.alpha = 0.5;
@@ -413,9 +417,9 @@ studentHit: function (ballX, ballY){
 
 render :  function () {
     levelDisplay.text="Level: "+currentLevel;
-    scoreDisplay.text ="Score : " + score + '/' + totalGoal;
+    scoreDisplay.text ="Score : " + score + '/' + levelGoal;
     timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
-    if(score < totalGoal){
+    if(score < levelGoal){
       scoreDisplay.addColor("#ff0000", 0); //red
     }
     else {
@@ -424,14 +428,20 @@ render :  function () {
 
   },
 
+formatTime :  function(s) {
+   var minutes = "0" + Math.floor(s / 60);
+   var seconds = "0" + (s - minutes * 60);
+   return minutes.substr(-2) + ":" + seconds.substr(-2);
+  },
+
+
 update :  function () {
-     // update the control arrow
       this.updateArrow();
 
       this.flashTimerDisplay();;
 
-       if (score>=totalGoal){
-         this.checkPointLimit();
+       if (score>=levelGoal){
+         this.checkLevelGoal();
        }
 
       this.updateTargetStudent();
@@ -445,6 +455,7 @@ update :  function () {
    },
 
    updateArrow: function(){
+    //source: phaser.io/examples
     if (game.input.activePointer.isDown){
      var dist = game.physics.arcade.distanceToPointer(origin);
      var angle = game.physics.arcade.angleToPointer(origin);

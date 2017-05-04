@@ -1,9 +1,18 @@
 var loadState = {
   preload : function(){
     game.load.image('Menu','assets/images/MainMenu.png');
-    game.load.image('MenuButton','assets/images/MenuPlay.png');
     game.load.image('StartInstructions','assets/images/InstructionsPage3.png');
+    game.load.image('winPage','assets/images/winPage.png');
+    game.load.image('losePage', 'assets/images/GameOver.png');
+
+    game.load.image('MenuButton','assets/images/MenuPlay.png');
     game.load.image('BackButton','assets/images/BackButton.png');
+    game.load.image('pauseButton','assets/images/PauseButton2.png');
+    game.load.image('resetButton','assets/images/MenuReset.png')
+    game.load.image('playButton', 'assets/images/PlayButton.png');
+    game.load.image('pausePopup','assets/images/overwatch.png');
+
+   
     game.load.image('background','assets/images/Background1.png');
     game.load.image('ball', 'assets/images/paperBall.png');
     game.load.image('slingshot', 'assets/images/CatapultSprite.png')
@@ -33,9 +42,6 @@ var loadState = {
     game.load.image('origin', 'assets/images/blackdot.png');
     game.load.image('analog','assets/images/grey.png');
 
-    game.load.image('pauseButton','assets/images/PauseButton2.png');
-    game.load.image('resetButton','assets/images/ResetButton.png')
-    game.load.image('playButton', 'assets/images/PlayButton.png');
 
     game.load.physics('physicsData1', 'assets/physics/studenthead-1.json');
     game.load.physics('physicsData2', 'assets/physics/studenthead-2.json');
@@ -45,14 +51,12 @@ var loadState = {
 
     game.load.image('gradeF','assets/images/gradeF.png');
 
-    game.load.image('pausePopup','assets/images/overwatch.png');
-
     //sound effects
     game.load.audio('collisionSound', 'assets/audio/collisionSound.mp3');
 
     game.load.image('progressBar','assets/images/progressBar.png');
 
-    game.load.image('winPage','assets/images/winPage.png')
+    
 
   },
   create : function() {
