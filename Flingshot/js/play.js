@@ -414,6 +414,7 @@ studentHit: function (ballX, ballY){
 render :  function () {
     levelDisplay.text="Level: "+currentLevel;
     scoreDisplay.text ="Score : " + score + '/' + totalGoal;
+    timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
     if(score < totalGoal){
       scoreDisplay.addColor("#ff0000", 0); //red
     }
@@ -427,7 +428,7 @@ update :  function () {
      // update the control arrow
       this.updateArrow();
 
-      this.updateTimerDisplay();
+      this.flashTimerDisplay();;
 
        if (score>=totalGoal){
          this.checkPointLimit();
@@ -461,11 +462,6 @@ update :  function () {
      arrow.x = origin.x -  0.5*dist*Math.cos(angle);
      arrow.y = origin.y - 0.5*dist*Math.sin(angle);
      }
-   },
-
-   updateTimerDisplay: function(){
-    timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
-    playState.flashTimerDisplay();
    },
 
    updateTimeToChangeTarget: function(){
