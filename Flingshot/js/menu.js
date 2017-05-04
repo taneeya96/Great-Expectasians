@@ -5,7 +5,7 @@ var menuState = {
     // draw a rectangle
     playRect.lineStyle(2, 0x0000FF, 0.5);
     playRect.beginFill(0xFF8080, 1);
-    playRect.drawRect(this.world.centerX+280, this.world.centerY + 20, 160, 160);
+    playRect.drawRect(this.world.centerX+320, this.world.centerY + 20, 160, 160);
     playRect.endFill();
     playRect.inputEnabled = true;
     playRect.events.onInputDown.add(this.displayStartInstructions,this);
