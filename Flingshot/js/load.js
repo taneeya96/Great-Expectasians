@@ -32,6 +32,12 @@ var loadState = {
     game.load.image('student5-hit', 'assets/images/student5-hit.png');
     game.load.image('student5-active', 'assets/images/student5-active.png');
 
+    game.load.image('ProgressBar-0', 'assets/images/ProgressBar-0.png');
+    game.load.image('ProgressBar-1', 'assets/images/ProgressBar-1.png');
+    game.load.image('ProgressBar-2', 'assets/images/ProgressBar-2.png');
+    game.load.image('ProgressBar-3', 'assets/images/ProgressBar-3.png');
+    game.load.image('ProgressBar-4', 'assets/images/ProgressBar-4.png');
+
 
     game.load.spritesheet('mummy', 'assets/images/Teacher graphic.png', 150, 354);
     game.load.image('table', 'assets/images/table.png');

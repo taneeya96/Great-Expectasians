@@ -38,6 +38,10 @@ var playState = {
     teacher.alpha = 1;
     var walk = teacher.animations.add('walk');
     teacher.animations.play('walk', 3, true);
+
+    progressBar = game.add.sprite(950, 15, 'ProgressBar-0');
+    progressBar.scale.setTo(0.1,0.1);
+    progressBar.alpha = 1;
    
     var table = game.add.sprite(475, 135, 'table');
     table.alpha = 1;
@@ -446,7 +450,20 @@ update :  function () {
 
       this.updateTargetStudent();
 
+        if(score < levelGoal * 0.25){
+        progressBar.loadTexture('ProgressBar-0', 0);
+      } else if(score >= levelGoal*0.25 && score < levelGoal*0.5){
+        progressBar.loadTexture('ProgressBar-1', 0);
+      } else if(score >= levelGoal*0.5 && score < levelGoal*0.75 ){
+        progressBar.loadTexture('ProgressBar-2', 0);
+      } else if(score >= levelGoal*0.75){
+        progressBar.loadTexture('ProgressBar-3', 0);
+      } else if(score == levelGoal){
+        progressBar.loadTexture('ProgressBar-4', 0);
+      }
+
    },
+
 
    updateTargetStudent: function() {
       if (!gamePaused && game.time.now >= timeToChangeTarget){
