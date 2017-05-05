@@ -19,7 +19,7 @@ The game works for both Android and Apple devices. It is compatiable with most b
 
 ![image](https://github.com/taneeya96/Great-Expectasians/blob/master/Flingshot/assets/images/READMEinstructionpage.JPG?raw=true "Instruction Page")
 
-Users can drag anywhere in the screen to shoot paper balls at only students who raise their hands. Users get 10 points for hitting the right student, and lose 5 points for hitting the wrong one. The student raising their hand will change at random, and this change will happen at quicker at higher level. Each level lasts 30 seconds (shown by a timer in the top left corner) and a score goal users need to meet to progress to the next level. There are seven levels in this game with increasing difficulties. 
+Users can drag anywhere from the screen to shoot paper balls at only students who raise their hands. Users get 10 points for hitting the right student, and lose 5 points for hitting the wrong one. The student raising their hand will change at random, and this change will happen at quicker at higher level. Each level lasts 30 seconds (shown by a timer in the top left corner) and a score goal users need to meet to progress to the next level. There are seven levels in this game with increasing difficulties. 
 
 **FAQ**
 
@@ -44,7 +44,7 @@ Developer Documentation
 
 This is a working version of the game. To clone the latest version, please visit https://github.com/taneeya96/Great-Expectasians. 
 
-This game was written with JavaScript and used Phaser as the game engine. Please visit https://phaser.io/ to install the game engine and check out their tutorials/documentations. Additionally, polylines for collision objects in this game were created using PhysicsEditor, though any similar software would work. After cloning or downloading the project, run it using your local server.
+This game was written with JavaScript and used Phaser as the game engine. It requires Phaser 2.7.7 or later, and HTML5 or later. Please visit https://phaser.io/ to install the game engine and check out their tutorials/documentations. Additionally, polylines for collision objects in this game were created using PhysicsEditor, though any similar software would work. After cloning or downloading the project, run it using your local server. 
 
 Contacts
 --------
