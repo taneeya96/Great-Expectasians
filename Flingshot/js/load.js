@@ -40,6 +40,8 @@ var loadState = {
 
 
     game.load.spritesheet('mummy', 'assets/images/Teacher graphic.png', 150, 354);
+    game.load.spritesheet('instruction', 'assets/images/instruction.png', 270, 579);
+
     game.load.image('table', 'assets/images/table.png');
 
 
