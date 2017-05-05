@@ -400,7 +400,7 @@ play :  function(){
      game.state.start('lose');
    } else
    {
-     if(currentLevel == 8){
+     if(currentLevel == 7){
       game.state.start('win');
      }
      levelDisplay.text="Level: "+currentLevel;
