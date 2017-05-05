@@ -24,7 +24,8 @@ var playState = {
 
     currentLevel = 1;
     score = 0;
-    levelGoalIncrement=[0,130,160,180,200,230,260,280,300,320,340];
+    levelGoalIncrement=[80,130,160,180,200,230,260];
+    levelsGoals = [80,210,370,550,750,980,1240];
     levelGoal = 80;
     wrongHitPoints = 5;
     rightHitPoints = 10;
@@ -160,8 +161,8 @@ var playState = {
   },
 
   levelUpResume: function(){
-    levelGoal += levelGoalIncrement[currentLevel];
-    scoreDisplay.text ="Score : " + score + '/' + levelGoal;
+    levelGoal = levelsGoals[currentLevel];
+    scoreDisplay.text ="Score : " + score ;
     timerDisplay.fontSize = 50;
     timerDisplay.strokeThickness = 2;
 
@@ -454,12 +455,11 @@ update :  function () {
    },
 
    updateLevelProgressBar: function() {
+      var goal = levelGoalIncrement[currentLevel-1] ;
       if (currentLevel == 1){
-        var goal = levelGoal;
         var levelScore = score;
       }else{
-        var goal = levelGoalIncrement[(currentLevel-1)];
-        var levelScore = score - (levelGoalIncrement[(currentLevel-2)] + 80);
+        var levelScore = score - levelsGoals[currentLevel-2];
       }
       
       if(levelScore < goal * 0.25){
@@ -473,6 +473,10 @@ update :  function () {
       } else if(levelScore >= goal){
         progressBar.loadTexture('ProgressBar-4', 0);
       }
+   },
+
+   add : function(a,b){
+    return (a+b);
    },
 
 
