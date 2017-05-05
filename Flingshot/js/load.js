@@ -60,10 +60,6 @@ var loadState = {
     //sound effects
     game.load.audio('collisionSound', 'assets/audio/collisionSound.mp3');
 
-    game.load.image('progressBar','assets/images/progressBar.png');
-
-    
-
   },
   create : function() {
     game.state.start('menu');

@@ -52,7 +52,7 @@ var playState = {
     collisionSound = game.add.audio('collisionSound');
 
     timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
-    scoreDisplay = game.add.text(500, 16, '', { fill: '#ffffff' , fontSize: 50});
+    scoreDisplay = game.add.text(550, 16, '', { fill: '#ffffff' , fontSize: 50});
     goalDisplay = game.add.text(700,16,'',{fill: '#ffffff', fontSize:50 });
     levelDisplay = game.add.text(1000,16,'',{fill: '#ffffff', fontSize:40 });
 
@@ -421,7 +421,7 @@ studentHit: function (ballX, ballY){
 
 render :  function () {
     levelDisplay.text="Level: "+currentLevel;
-    scoreDisplay.text ="Score : " + score + '/' + levelGoal;
+    scoreDisplay.text ="Score : " + score;
     timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
     if(score < levelGoal){
       scoreDisplay.addColor("#ff0000", 0); //red
@@ -442,26 +442,37 @@ formatTime :  function(s) {
 update :  function () {
       this.updateArrow();
 
-      this.flashTimerDisplay();;
+      this.flashTimerDisplay();
+
+      this.updateLevelProgressBar();
 
        if (score>=levelGoal){
          this.checkLevelGoal();
        }
 
       this.updateTargetStudent();
+   },
 
-        if(score < levelGoal * 0.25){
+   updateLevelProgressBar: function() {
+      if (currentLevel == 1){
+        var goal = levelGoal;
+        var levelScore = score;
+      }else{
+        var goal = levelGoalIncrement[(currentLevel-1)];
+        var levelScore = score - (levelGoalIncrement[(currentLevel-2)] + 80);
+      }
+      
+      if(levelScore < goal * 0.25){
         progressBar.loadTexture('ProgressBar-0', 0);
-      } else if(score >= levelGoal*0.25 && score < levelGoal*0.5){
+      } else if(levelScore >= goal*0.25 && levelScore < goal*0.5){
         progressBar.loadTexture('ProgressBar-1', 0);
-      } else if(score >= levelGoal*0.5 && score < levelGoal*0.75 ){
+      } else if(levelScore >= goal*0.5 && levelScore < goal*0.75 ){
         progressBar.loadTexture('ProgressBar-2', 0);
-      } else if(score >= levelGoal*0.75){
+      } else if(levelScore >= goal*0.75 && levelScore < goal){
         progressBar.loadTexture('ProgressBar-3', 0);
-      } else if(score == levelGoal){
+      } else if(levelScore >= goal){
         progressBar.loadTexture('ProgressBar-4', 0);
       }
-
    },
 
 
