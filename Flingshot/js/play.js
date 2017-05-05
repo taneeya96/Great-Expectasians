@@ -24,8 +24,8 @@ var playState = {
 
     currentLevel = 1;
     score = 0;
-    levelGoalIncrement=[80,130,160,180,200,230,260];
-    levelsGoals = [80,210,370,550,750,980,1240];
+    levelGoalIncrement=[80,130,160,180,200,230,230,260];
+    levelsGoals = [80,210,370,550,750,980,1210,1470];
     levelGoal = 80;
     wrongHitPoints = 5;
     rightHitPoints = 10;
@@ -53,7 +53,7 @@ var playState = {
     collisionSound = game.add.audio('collisionSound');
 
     timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
-    scoreDisplay = game.add.text(550, 16, '', { fill: '#ffffff' , fontSize: 50});
+    scoreDisplay = game.add.text(500, 16, '', { fill: '#ffffff' , fontSize: 50});
     goalDisplay = game.add.text(700,16,'',{fill: '#ffffff', fontSize:50 });
     levelDisplay = game.add.text(995,20,'',{fill: '#ffffff', fontSize:40 });
 
@@ -170,7 +170,7 @@ var playState = {
 
   levelUpResume: function(){
     levelGoal = levelsGoals[currentLevel];
-    scoreDisplay.text ="Score : " + score ;
+    scoreDisplay.text ="Score : " + score + '/'+ levelsGoals[currentLevel-1];
     timerDisplay.fontSize = 50;
     timerDisplay.strokeThickness = 2;
 
@@ -400,7 +400,7 @@ play :  function(){
      game.state.start('lose');
    } else
    {
-     if(currentLevel == 7){
+     if(currentLevel == 8){
       game.state.start('win');
      }
      levelDisplay.text="Level: "+currentLevel;
@@ -437,7 +437,7 @@ studentHit: function (ballX, ballY){
 
 render :  function () {
     levelDisplay.text="Level: "+currentLevel;
-    scoreDisplay.text ="Score : " + score;
+    scoreDisplay.text ="Score : " + score + '/' + levelsGoals[currentLevel-1];
     timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
     if(score < levelGoal){
       scoreDisplay.addColor("#ff0000", 0); //red
@@ -523,8 +523,11 @@ update :  function () {
    },
 
    updateTimeToChangeTarget: function(){
-      var changeFactor = Array( currentLevel+1, currentLevel+1, currentLevel, currentLevel,currentLevel,currentLevel,currentLevel)[Math.floor(Math.random()*7)];
-      var deltaTime = 4000 - 3500*(0.5*changeFactor)/4 //shorten interval with higher level. level 10 at 0.5s
+      if(currentLevel < 7){
+        var factor = currentLevel;
+      }else{var factor = 7};
+      var changeFactor = Array( factor+3, factor+2, factor+3, factor+1, factor+1, factor, factor,factor,factor,factor)[Math.floor(Math.random()*10)];
+      var deltaTime = 4000 - 3600*(changeFactor)/10 //shorten interval with higher level. level 10 at 0.8s
       timeToChangeTarget = game.time.now + deltaTime;
    },
 
