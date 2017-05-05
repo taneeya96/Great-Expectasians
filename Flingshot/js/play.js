@@ -413,7 +413,7 @@ play :  function(){
  },
 
 chooseStudent : function (){
-  randomStudent.alpha = 0.5;
+  randomStudent.alpha = 0.25;
   studentnum = randomIndex+1;
   game.time.events.add(Phaser.Timer.SECOND * 10000, randomStudent.loadTexture('student'+studentnum, 0), this);
   var num = Math.floor((Math.random() * 5));
@@ -431,7 +431,7 @@ chooseStudent : function (){
 
 studentHit: function (ballX, ballY){
     collisionSound.play();
-    randomStudent.alpha = 0.5;
+    randomStudent.alpha = 0.25;
     playState.showScoreTween("add", ballX, ballY);
 },
 
