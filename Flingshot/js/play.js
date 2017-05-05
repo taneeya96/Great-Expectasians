@@ -120,7 +120,7 @@ var playState = {
     LevelUpButton.events.onInputDown.add(this.levelUpResume,this);
     levelupPopup.addChild(LevelUpButton);
 
-    playButton = game.add.sprite(game.world.centerX+10,game.world.centerY, 'MenuButton');
+    playButton = game.add.sprite(game.world.centerX-200,game.world.centerY+40, 'MenuButton');
     playButton.anchor.set(0.5,0.5);
     playButton.scale.setTo(0.1,0.1);
     playButton.alpha=0;
@@ -128,7 +128,7 @@ var playState = {
     playButton.input.enabled=false;
     playButton.events.onInputDown.add(this.play,this);
 
-    restartButton = game.add.sprite(game.world.centerX-120, game.world.centerY+100,'resetButton');
+    restartButton = game.add.sprite(game.world.centerX+120, game.world.centerY-10,'resetButton');
     restartButton.scale.setTo(0.1,0.1);
     restartButton.inputEnabled  = true;
     restartButton.input.enabled = false;
