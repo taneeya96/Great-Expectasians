@@ -24,7 +24,8 @@ var playState = {
 
     currentLevel = 1;
     score = 0;
-    levelGoalIncrement=[0,130,160,180,200,230,260,280,300,320,340];
+    levelGoalIncrement=[80,130,160,180,200,230,230,260];
+    levelsGoals = [80,210,370,550,750,980,1210,1470];
     levelGoal = 80;
     wrongHitPoints = 5;
     rightHitPoints = 10;
@@ -42,7 +43,7 @@ var playState = {
     progressBar = game.add.sprite(950, 15, 'ProgressBar-0');
     progressBar.scale.setTo(0.1,0.1);
     progressBar.alpha = 1;
-   
+
     var table = game.add.sprite(475, 135, 'table');
     table.alpha = 1;
 
@@ -52,7 +53,7 @@ var playState = {
     collisionSound = game.add.audio('collisionSound');
 
     timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
-    scoreDisplay = game.add.text(550, 16, '', { fill: '#ffffff' , fontSize: 50});
+    scoreDisplay = game.add.text(500, 16, '', { fill: '#ffffff' , fontSize: 50});
     goalDisplay = game.add.text(700,16,'',{fill: '#ffffff', fontSize:50 });
     levelDisplay = game.add.text(995,20,'',{fill: '#ffffff', fontSize:40 });
 
@@ -119,13 +120,21 @@ var playState = {
     LevelUpButton.events.onInputDown.add(this.levelUpResume,this);
     levelupPopup.addChild(LevelUpButton);
 
-    playButton = game.add.sprite(game.world.centerX,game.world.centerY, 'MenuButton');
+    playButton = game.add.sprite(game.world.centerX+10,game.world.centerY, 'MenuButton');
     playButton.anchor.set(0.5,0.5);
     playButton.scale.setTo(0.1,0.1);
     playButton.alpha=0;
     playButton.inputEnabled = true;
     playButton.input.enabled=false;
     playButton.events.onInputDown.add(this.play,this);
+
+    restartButton = game.add.sprite(game.world.centerX-120, game.world.centerY+100,'resetButton');
+    restartButton.scale.setTo(0.1,0.1);
+    restartButton.inputEnabled  = true;
+    restartButton.input.enabled = false;
+    restartButton.alpha =0;
+    restartButton.events.onInputDown.add(this.restart,this);
+
 
     randomIndex = Math.floor(Math.random() * 5);
     randomStudent = arrayStudents[randomIndex];
@@ -138,7 +147,7 @@ var playState = {
     randomStudent.alpha = 1;
 
     ballInSlingshot = this.createBall();
-    
+
     this.initiateTimer();
     playState.play();
 
@@ -160,8 +169,8 @@ var playState = {
   },
 
   levelUpResume: function(){
-    levelGoal += levelGoalIncrement[currentLevel];
-    scoreDisplay.text ="Score : " + score + '/' + levelGoal;
+    levelGoal = levelsGoals[currentLevel];
+    scoreDisplay.text ="Score : " + score + '/'+ levelsGoals[currentLevel-1];
     timerDisplay.fontSize = 50;
     timerDisplay.strokeThickness = 2;
 
@@ -180,7 +189,7 @@ var playState = {
     }
     ballsInMotion = [];
     balballInSlingshot = playState.createBall();
-    
+
     //reset students graphics
     for(var i = 0; i<3; i++)
     {
@@ -267,7 +276,7 @@ var playState = {
 
   updateBalls : function () {
       for (i=0; i< ballsInMotion.length ; i++){
-          if (ballsInMotion[i].timesHitFloor > 4){ 
+          if (ballsInMotion[i].timesHitFloor > 4){
               ballsInMotion[i].kill();
               ballsInMotion.splice(i, 1);
           } else{
@@ -340,9 +349,13 @@ var playState = {
   },
 
 pause :  function (){
-     playState.pausedState();
-     playButton.alpha=1;
-     playButton.input.enabled=true;
+  pauseButton.alpha =0;
+  playState.pausedState();
+  playButton.alpha=1;
+  playButton.input.enabled=true;
+
+  restartButton.alpha = 1;
+  restartButton.input.enabled = true;
  },
 
 pausedState: function(){
@@ -355,12 +368,15 @@ pausedState: function(){
 },
 
 play :  function(){
+   pauseButton.alpha = 1;
    game.physics.p2.resume();
    bground.inputEnabled = true;
    game.time.events.resume([ballsTimer]);
    timer.resume();
    playButton.alpha=0;
    playButton.input.enabled=false;
+   restartButton.alpha =0;
+   restartButton.input.enabled = false;
    playState.updateTimeToChangeTarget();
    teacher.animations.paused = false;
    gamePaused = false;
@@ -380,7 +396,7 @@ play :  function(){
   checkLevelGoal : function(level){
    playState.pausedState();
    if (score<levelGoal)
-   {  
+   {
      game.state.start('lose');
    } else
    {
@@ -421,7 +437,7 @@ studentHit: function (ballX, ballY){
 
 render :  function () {
     levelDisplay.text="Level: "+currentLevel;
-    scoreDisplay.text ="Score : " + score;
+    scoreDisplay.text ="Score : " + score + '/' + levelsGoals[currentLevel-1];
     timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
     if(score < levelGoal){
       scoreDisplay.addColor("#ff0000", 0); //red
@@ -454,14 +470,13 @@ update :  function () {
    },
 
    updateLevelProgressBar: function() {
+      var goal = levelGoalIncrement[currentLevel-1] ;
       if (currentLevel == 1){
-        var goal = levelGoal;
         var levelScore = score;
       }else{
-        var goal = levelGoalIncrement[(currentLevel-1)];
-        var levelScore = score - (levelGoalIncrement[(currentLevel-2)] + 80);
+        var levelScore = score - levelsGoals[currentLevel-2];
       }
-      
+
       if(levelScore < goal * 0.25){
         progressBar.loadTexture('ProgressBar-0', 0);
       } else if(levelScore >= goal*0.25 && levelScore < goal*0.5){
@@ -473,6 +488,10 @@ update :  function () {
       } else if(levelScore >= goal){
         progressBar.loadTexture('ProgressBar-4', 0);
       }
+   },
+
+   add : function(a,b){
+    return (a+b);
    },
 
 
@@ -504,12 +523,18 @@ update :  function () {
    },
 
    updateTimeToChangeTarget: function(){
-      var changeFactor = Array( currentLevel+1, currentLevel+1, currentLevel, currentLevel,currentLevel,currentLevel,currentLevel)[Math.floor(Math.random()*7)];
-      var deltaTime = 4000 - 3500*(0.5*changeFactor)/4 //shorten interval with higher level. level 10 at 0.5s
+      if(currentLevel < 7){
+        var factor = currentLevel;
+      }else{var factor = 7};
+      var changeFactor = Array( factor+3, factor+2, factor+3, factor+1, factor+1, factor, factor,factor,factor,factor)[Math.floor(Math.random()*10)];
+      var deltaTime = 4000 - 3600*(changeFactor)/10 //shorten interval with higher level. level 10 at 0.8s
       timeToChangeTarget = game.time.now + deltaTime;
    },
 
    getCurrentScore: function(){
     return score;
+  },
+   restart : function() {
+     game.state.start('play');
    }
 }

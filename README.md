@@ -9,7 +9,7 @@ Flingshot uses Phaser, a phsyics engine, to simulate a game where you can hit st
 The Latest Version
 ------------------
 
-This is a working version of the game. For the latest version, please visit https://github.com/taneeya96/Great-Expectasians/. 
+This is a working version of the game. For the latest version, please visit https://github.com/taneeya96/Great-Expectasians/Flingshot. 
 
 Installation
 ------------
@@ -22,7 +22,3 @@ Contacts
 --------
 
 o Flingshot is created by Great-Expectasians. Our team includes Jack Chen, Nguyen Phuc, Taneeya Rele, Ali Mahad.
-
-o Email: jchen2@macalester.edu
-
-o Phone: 651-756-9102
