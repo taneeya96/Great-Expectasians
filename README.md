@@ -22,7 +22,3 @@ Contacts
 --------
 
 o Flingshot is created by Great-Expectasians. Our team includes Jack Chen, Nguyen Phuc, Taneeya Rele, Ali Mahad.
-
-o Email: jchen2@macalester.edu
-
-o Phone: 651-756-9102
