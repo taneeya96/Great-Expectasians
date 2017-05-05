@@ -43,7 +43,7 @@ var playState = {
     progressBar = game.add.sprite(950, 15, 'ProgressBar-0');
     progressBar.scale.setTo(0.1,0.1);
     progressBar.alpha = 1;
-   
+
     var table = game.add.sprite(475, 135, 'table');
     table.alpha = 1;
 
@@ -120,13 +120,21 @@ var playState = {
     LevelUpButton.events.onInputDown.add(this.levelUpResume,this);
     levelupPopup.addChild(LevelUpButton);
 
-    playButton = game.add.sprite(game.world.centerX,game.world.centerY, 'MenuButton');
+    playButton = game.add.sprite(game.world.centerX+10,game.world.centerY, 'MenuButton');
     playButton.anchor.set(0.5,0.5);
     playButton.scale.setTo(0.1,0.1);
     playButton.alpha=0;
     playButton.inputEnabled = true;
     playButton.input.enabled=false;
     playButton.events.onInputDown.add(this.play,this);
+
+    restartButton = game.add.sprite(game.world.centerX-120, game.world.centerY+100,'resetButton');
+    restartButton.scale.setTo(0.1,0.1);
+    restartButton.inputEnabled  = true;
+    restartButton.input.enabled = false;
+    restartButton.alpha =0;
+    restartButton.events.onInputDown.add(this.restart,this);
+
 
     randomIndex = Math.floor(Math.random() * 5);
     randomStudent = arrayStudents[randomIndex];
@@ -139,7 +147,7 @@ var playState = {
     randomStudent.alpha = 1;
 
     ballInSlingshot = this.createBall();
-    
+
     this.initiateTimer();
     playState.play();
 
@@ -181,7 +189,7 @@ var playState = {
     }
     ballsInMotion = [];
     balballInSlingshot = playState.createBall();
-    
+
     //reset students graphics
     for(var i = 0; i<3; i++)
     {
@@ -268,7 +276,7 @@ var playState = {
 
   updateBalls : function () {
       for (i=0; i< ballsInMotion.length ; i++){
-          if (ballsInMotion[i].timesHitFloor > 4){ 
+          if (ballsInMotion[i].timesHitFloor > 4){
               ballsInMotion[i].kill();
               ballsInMotion.splice(i, 1);
           } else{
@@ -341,9 +349,13 @@ var playState = {
   },
 
 pause :  function (){
-     playState.pausedState();
-     playButton.alpha=1;
-     playButton.input.enabled=true;
+  pauseButton.alpha =0;
+  playState.pausedState();
+  playButton.alpha=1;
+  playButton.input.enabled=true;
+
+  restartButton.alpha = 1;
+  restartButton.input.enabled = true;
  },
 
 pausedState: function(){
@@ -356,12 +368,15 @@ pausedState: function(){
 },
 
 play :  function(){
+   pauseButton.alpha = 1;
    game.physics.p2.resume();
    bground.inputEnabled = true;
    game.time.events.resume([ballsTimer]);
    timer.resume();
    playButton.alpha=0;
    playButton.input.enabled=false;
+   restartButton.alpha =0;
+   restartButton.input.enabled = false;
    playState.updateTimeToChangeTarget();
    teacher.animations.paused = false;
    gamePaused = false;
@@ -381,7 +396,7 @@ play :  function(){
   checkLevelGoal : function(level){
    playState.pausedState();
    if (score<levelGoal)
-   {  
+   {
      game.state.start('lose');
    } else
    {
@@ -461,7 +476,7 @@ update :  function () {
       }else{
         var levelScore = score - levelsGoals[currentLevel-2];
       }
-      
+
       if(levelScore < goal * 0.25){
         progressBar.loadTexture('ProgressBar-0', 0);
       } else if(levelScore >= goal*0.25 && levelScore < goal*0.5){
@@ -515,5 +530,8 @@ update :  function () {
 
    getCurrentScore: function(){
     return score;
+  },
+   restart : function() {
+     game.state.start('play');
    }
 }
