@@ -11,14 +11,15 @@ User Documentation
 
 **Installation**
 
-No hardware installation necessary. Please visit http://taneeya96.github.io/Great-Expectasians/Flingshot/ and enjoy the game.
+No hardware installation is necessary. Please visit http://taneeya96.github.io/Great-Expectasians/Flingshot/ and enjoy the game.
+
 The game works for both Android and Apple devices. It is compatiable with most browsers (i.e.: Chrome, Firefox, Safari, IE, Opera.) This game is best experienced on a mobile, touch-screen device.
 
 **Instruction**
 
-![image](https://github.com/taneeya96/Great-Expectasians/Flingshot/assets/images/READMEinstructionpage.JPG?raw=true "Instruction Page")
+![image](https://github.com/taneeya96/Great-Expectasians/blob/master/Flingshot/assets/images/READMEinstructionpage.JPG?raw=true "Instruction Page")
 
-Users can drag anywhere in the screen to shoot paper balls at only students who raise their hands. There are seven levels in this game with increasing difficulties. Each level lasts 30 seconds (shown by a timer in the top left corner) and a score goal users need to meet to progress to the next level. The student raising their hand will change at random, and this change will happen at quicker at higher level. Users get 10 points for hitting the right student, and lose 5 points for hitting the wrong one.
+Users can drag anywhere in the screen to shoot paper balls at only students who raise their hands. Users get 10 points for hitting the right student, and lose 5 points for hitting the wrong one. The student raising their hand will change at random, and this change will happen at quicker at higher level. Each level lasts 30 seconds (shown by a timer in the top left corner) and a score goal users need to meet to progress to the next level. There are seven levels in this game with increasing difficulties. 
 
 **FAQ**
 
