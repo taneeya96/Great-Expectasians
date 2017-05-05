@@ -54,7 +54,7 @@ var playState = {
     timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
     scoreDisplay = game.add.text(550, 16, '', { fill: '#ffffff' , fontSize: 50});
     goalDisplay = game.add.text(700,16,'',{fill: '#ffffff', fontSize:50 });
-    levelDisplay = game.add.text(1000,16,'',{fill: '#ffffff', fontSize:40 });
+    levelDisplay = game.add.text(995,20,'',{fill: '#ffffff', fontSize:40 });
 
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -133,7 +133,7 @@ var playState = {
     randomStudent.loadTexture('student'+studentNumber+'-active', 0);
     for( var i=0; i< arrayStudents.length; i++)
     {
-      arrayStudents[i].alpha = 0.50;
+      arrayStudents[i].alpha = 0.25;
     }
     randomStudent.alpha = 1;
 
