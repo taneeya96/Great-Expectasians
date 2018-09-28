@@ -50,7 +50,14 @@ var playState = {
     bground.events.onInputDown.add(this.holdBall);
     bground.events.onInputUp.add(this.launchBall);
 
+    //adding in the sound effects
     collisionSound = game.add.audio('collisionSound');
+    pain1male = game.add.audio('pain1male');
+    pain2male = game.add.audio('pain2male');
+    pain3fem = game.add.audio('pain3fem');
+    pain4fem = game.add.audio('pain4fem');
+    pain5male = game.add.audio('pain5male');
+
 
     timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
     scoreDisplay = game.add.text(500, 16, '', { fill: '#ffffff' , fontSize: 50});
@@ -430,7 +437,23 @@ chooseStudent : function (){
 },
 
 studentHit: function (ballX, ballY){
-    collisionSound.play();
+      studentnum = randomIndex+1
+    if (studentnum==1){
+        pain1male.play();
+    }
+    else if (studentnum==2){
+        pain2male.play();
+    }
+    else if(studentnum==3){
+        pain3fem.play();
+    }
+    else if(studentnum==4){
+        pain4fem.play();
+    }
+    else if(studentnum==5){
+        pain5male.play();
+    }
+    //collisionSound.play();
     randomStudent.alpha = 0.25;
     playState.showScoreTween("add", ballX, ballY);
 },
