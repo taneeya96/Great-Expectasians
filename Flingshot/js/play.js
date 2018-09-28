@@ -1,3 +1,13 @@
+//import HealthBar from 'phaser-percent-bar';
+
+var timerColor = "#374f77";
+var scoreColor = "rgba(255,255,255,0.7)";
+var levelColor = "#68D81D";
+var scoreFont = "Georgia, cursive";
+var scoreBarColor = 0xbe011f;
+var scoreBarOutlineColor = 0xFFFFFF;
+var timerBarColor = 0x5A6351;
+
 var playState = {
 
 
@@ -21,7 +31,7 @@ var playState = {
     buttonYPos = 115;
     WALL_Z = 300;
     WALL_FLOOR = 260;
-
+//    Scoring for game and levels
     currentLevel = 1;
     score = 0;
     levelGoalIncrement=[80,130,160,180,200,230,230,260];
@@ -40,9 +50,14 @@ var playState = {
     var walk = teacher.animations.add('walk');
     teacher.animations.play('walk', 3, true);
 
-    progressBar = game.add.sprite(950, 15, 'ProgressBar-0');
-    progressBar.scale.setTo(0.1,0.1);
-    progressBar.alpha = 1;
+//    progressBar = game.add.sprite(950, 15, 'ProgressBar-0');
+//    progressBar.scale.setTo(0.1,0.1);
+//    progressBar.alpha = 1;
+
+
+
+    // moves from world stage to group as a child
+    // create an instance of graphics, then add it to a group
 
     var table = game.add.sprite(475, 135, 'table');
     table.alpha = 1;
@@ -52,10 +67,11 @@ var playState = {
 
     collisionSound = game.add.audio('collisionSound');
 
-    timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
-    scoreDisplay = game.add.text(500, 16, '', { fill: '#ffffff' , fontSize: 50});
+    timerDisplay = game.add.text(40,16,'',{fill: timerColor , fontSize: 50, stroke: timerColor, strokeThickness: 2});
+
+    scoreDisplay = game.add.text(650, 16, '', {fill: scoreColor , fontSize: 40, font: scoreFont});
     goalDisplay = game.add.text(700,16,'',{fill: '#ffffff', fontSize:50 });
-    levelDisplay = game.add.text(995,20,'',{fill: '#ffffff', fontSize:40 });
+    levelDisplay = game.add.text(995,20,'',{fill: levelColor, fontSize:40 });
 
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -110,7 +126,7 @@ var playState = {
     levelupPopup.input.enabled=false;
 
 
-    LevelUpButton = game.make.sprite(0,0, 'playButton');
+    LevelUpButton = game.make.sprite(0,200, 'playButton');
     LevelUpButton.anchor.set(0.5,0.5);
     LevelUpButton.scale.setTo(0.19,0.19);
     LevelUpButton.alpha=1;
@@ -136,6 +152,11 @@ var playState = {
     restartButton.events.onInputDown.add(this.restart,this);
 
 
+
+
+
+
+
     randomIndex = Math.floor(Math.random() * 5);
     randomStudent = arrayStudents[randomIndex];
     var studentNumber = randomIndex+1;
@@ -159,20 +180,23 @@ var playState = {
     timer.start();
     playState.updateTimeToChangeTarget();
   },
-
+//Timer color
   reinitiateTimer: function(){
     timer.stop();
     timer.destroy();
     playState.initiateTimer();
-    timerDisplay.addColor("#ffffff",0);
-    timerDisplay.stroke = "#ffffff";
+    timerDisplay.addColor(timerColor,50);
+    timerDisplay.stroke = timerColor;
   },
 
   levelUpResume: function(){
     levelGoal = levelsGoals[currentLevel];
-    scoreDisplay.text ="Score : " + score + '/'+ levelsGoals[currentLevel-1];
+
+//    scoreDisplay.text = "Score : " + score;
+//    scoreDisplay.text ="Score : " + score + '/'+ levelsGoals[currentLevel-1];
     timerDisplay.fontSize = 50;
     timerDisplay.strokeThickness = 2;
+
 
     playState.reinitiateTimer();
     currentLevel=currentLevel+1;
@@ -203,6 +227,7 @@ var playState = {
     teacher.animations.paused = false;
   },
 
+
   createBall : function() {
     var newBall = game.add.sprite(ballinitx, ballinity, 'ball');
     game.physics.p2.enable(newBall);
@@ -218,6 +243,42 @@ var playState = {
     newBall.floor = -1000;
     newBall.timesHitFloor =0;
     return newBall;
+  },
+  createScoreBar : function(){
+  // ScoreBar
+
+          let group = this.add.group();
+          // created on the world
+          var ScoreBar = game.add.graphics(); // adds to the world stage
+          ScoreBar.lineStyle(2, scoreBarColor, 1);
+          ScoreBar.beginFill(scoreBarColor, 1);
+          ScoreBar.drawRect(300, 650,score , 25);
+          ScoreBar.endFill();
+          group.add(ScoreBar);
+          // ScoreBar Outline
+          let scoreBarOutline = this.game.add.graphics();
+          scoreBarOutline.lineStyle(2,scoreBarOutlineColor,1);
+          scoreBarOutline.drawRect(300,650,700,25);
+          group.add(scoreBarOutline);
+          return(ScoreBar);
+
+
+  },
+  createTimerBar: function(){
+  // TimerBar
+            let group = this.add.group();
+            var timerBar = game.add.graphics();
+            timerBar.lineStyle(2,timerBarColor, 1 );
+            timerBar.beginFill(timerBarColor, 1);
+            timerBar.drawRect(300,675,700,25);
+            timerBar.endFill();
+            group.add(timerBar);
+            //TimerBar Outline
+            let timerBarOutline = this.game.add.graphics();
+            timerBarOutline.lineStyle(2,scoreBarOutlineColor,1);
+            timerBarOutline.drawRect(300,675, 700,25);
+            group.add(timerBarOutline);
+            return(timerBar);
   },
 
   addStudent : function(image, x, y){
@@ -326,7 +387,7 @@ var playState = {
       ball.sprite.body.setCollisionGroup(inactiveCollisionGroup); //
   },
 
-
+//Points flashing after a hit
   showScoreTween : function (action, x, y){
     if (action == "add"){
       var text = game.add.text(x,y,'+'+ rightHitPoints,{fill: '#00ff00', fontWeight: 'bold' , fontSize: 60});
@@ -383,6 +444,7 @@ play :  function(){
  },
 
 
+
  flashTimerDisplay : function (){
    var currentTime = Math.round((timerEvent.delay - timer.ms) / 100)/10
    if ( currentTime <6){
@@ -437,13 +499,15 @@ studentHit: function (ballX, ballY){
 
 render :  function () {
     levelDisplay.text="Level: "+currentLevel;
-    scoreDisplay.text ="Score : " + score + '/' + levelsGoals[currentLevel-1];
+    scoreDisplay.text = score;
+
+;
     timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
     if(score < levelGoal){
-      scoreDisplay.addColor("#ff0000", 0); //red
+      scoreDisplay.addColor(scoreColor, 0); //red
     }
     else {
-      scoreDisplay.addColor("#00ff00", 0); //green
+      scoreDisplay.addColor(scoreColor, 0); //green
     }
 
   },
@@ -459,6 +523,9 @@ update :  function () {
       this.updateArrow();
 
       this.flashTimerDisplay();
+      this.createTimerBar();
+      this.createScoreBar();
+
 
       this.updateLevelProgressBar();
 
@@ -477,17 +544,17 @@ update :  function () {
         var levelScore = score - levelsGoals[currentLevel-2];
       }
 
-      if(levelScore < goal * 0.25){
-        progressBar.loadTexture('ProgressBar-0', 0);
-      } else if(levelScore >= goal*0.25 && levelScore < goal*0.5){
-        progressBar.loadTexture('ProgressBar-1', 0);
-      } else if(levelScore >= goal*0.5 && levelScore < goal*0.75 ){
-        progressBar.loadTexture('ProgressBar-2', 0);
-      } else if(levelScore >= goal*0.75 && levelScore < goal){
-        progressBar.loadTexture('ProgressBar-3', 0);
-      } else if(levelScore >= goal){
-        progressBar.loadTexture('ProgressBar-4', 0);
-      }
+//      if(levelScore < goal * 0.25){
+//        progressBar.loadTexture('ProgressBar-0', 0);
+//      } else if(levelScore >= goal*0.25 && levelScore < goal*0.5){
+//        progressBar.loadTexture('ProgressBar-1', 0);
+//      } else if(levelScore >= goal*0.5 && levelScore < goal*0.75 ){
+//        progressBar.loadTexture('ProgressBar-2', 0);
+//      } else if(levelScore >= goal*0.75 && levelScore < goal){
+//        progressBar.loadTexture('ProgressBar-3', 0);
+//      } else if(levelScore >= goal){
+//        progressBar.loadTexture('ProgressBar-4', 0);
+//      }
    },
 
    add : function(a,b){
@@ -537,4 +604,7 @@ update :  function () {
    restart : function() {
      game.state.start('play');
    }
+   // Trying to put in a progress bar
+
+
 }
