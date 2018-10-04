@@ -54,7 +54,7 @@ var playState = {
     pain3fem = game.add.audio('pain3fem');
     pain4fem = game.add.audio('pain4fem');
     pain5male = game.add.audio('pain5male');
-    schoolbell = game.add.audio('schoolbell');
+    // schoolbell = game.add.audio('schoolbell');
 
 
     timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
@@ -162,7 +162,7 @@ var playState = {
 
     timerLevel = game.time.create(); //timer for levels
     timerLevelConstant = 5; //each break between levels is 5 seconds long
-    timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * timerLevelConstant, this.checkEndofTimer()); //a timer for each level
+    timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * timerLevelConstant, this.levelUpResume); //a timer for each level
 
     this.initiateTimer();
     this.initiateTimerLevel()
@@ -188,16 +188,15 @@ var playState = {
 
   initiateTimerLevel: function(){
     timerLevel = game.time.create();
-    timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * timerLevelConstant, this.checkEndofTimer());
+    timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * timerLevelConstant, this.levelUpResume);
     timerLevel.pause();
     timerLevelDisplay.visible = false;
   },
 
   destroyTimerLevel: function(){
-    timerLevelDisplay.visible = false;
     timerLevel.stop();
     timerLevel.destroy();
-  // playState.updateTimeToChangeTarget();
+    playState.initiateTimerLevel()
   },
 
   createBall : function() {
@@ -401,21 +400,11 @@ play :  function(){
    }
  },
 
-
- checkEndofTimer : function (){
-     var levelTime = Math.round((timerEvent.delay - timer.ms) / 100)/10
-     if (levelTime <=0){
-         this.levelUpResume()
-     }
- },
-
-
-
   checkLevelGoal : function(level){
    playState.changeState();
    if (score<levelGoal)
    {
-       schoolbell.play();
+       // schoolbell.play();
      game.state.start('lose');
    } else
    {
@@ -440,7 +429,7 @@ play :  function(){
    timerDisplay.fontSize = 50;
    timerDisplay.strokeThickness = 2;
 
-   playState.destroyTimerLevel()
+   playState.destroyTimerLevel();
    playState.reinitiateTimer();
    currentLevel=currentLevel+1;
 
