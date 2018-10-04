@@ -388,6 +388,7 @@ changeState: function(){
   // teacher.animations.paused = true;
   bground.inputEnabled = false;
   gamePaused = true;
+  randomStudent.alpha = 0.25
 },
 
 play :  function(){
@@ -468,6 +469,7 @@ play :  function(){
      studNum = i+1
      arrayStudents[i].loadTexture('student'+studNum,0);
    }
+   randomStudent.alpha = 1;
 
    game.physics.p2.resume();
    game.input.enabled = true;
