@@ -18,12 +18,12 @@ var playState = {
 
     currentLevel = 1;
     score = 0;
-    // levelGoalIncrement=[80,130,160,180,200,230,230,260];
-    // levelsGoals = [80,210,370,550,750,980,1210,1470];
-    // levelGoal = 80;
-    levelGoalIncrement=[10,130,160,180,200,230,230,260]; //for testing
-    levelsGoals = [10,20,40,80,750,980,1210,1470];  //for testing
-    levelGoal = 10; //for testing
+    levelGoalIncrement=[80,130,160,180,200,230,230,260];
+    levelsGoals = [80,210,370,550,750,980,1210,1470];
+    levelGoal = 80;
+    // levelGoalIncrement=[10,130,160,180,200,230,230,260]; //for testing
+    // levelsGoals = [10,20,40,80,750,980,1210,1470];  //for testing
+    // levelGoal = 10; //for testing
     wrongHitPoints = 5;
     rightHitPoints = 10;
 
@@ -161,7 +161,7 @@ var playState = {
     ballsTimer = game.time.events.loop(50, this.updateBalls, this); //timer to create depth effects
 
     timerLevel = game.time.create(); //timer for levels
-    timerLevelConstant = 5; //each break between levels is 5 seconds long
+    timerLevelConstant = 3; //each break between levels is 3 seconds long
     timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * timerLevelConstant, this.levelUpResume); //a timer for each level
 
     this.initiateTimer();
@@ -425,6 +425,7 @@ play :  function(){
    } else
    {
      if(currentLevel == 7){
+      game.input.enabled = false;
       game.state.start('win');
      }
      levelDisplay.text="Level: "+currentLevel;
@@ -434,7 +435,6 @@ play :  function(){
      pauseButton.inputEnabled = false;
      playState.hideArrow();
 
-     timerLevelDisplay.visible = true;
      timerLevel.start()
    }
  },

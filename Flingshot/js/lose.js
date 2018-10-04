@@ -9,7 +9,7 @@ var loseState = {
     resetButton.events.onInputDown.add(loseState.restartGame,this);
   },
   restartGame : function() {
-    schoolbell.pause();
+    // schoolbell.pause();
     game.state.start('play');
   }
 }
