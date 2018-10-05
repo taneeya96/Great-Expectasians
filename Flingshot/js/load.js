@@ -59,6 +59,10 @@ var loadState = {
 
     game.load.image('gradeF','assets/images/gradeF.png');
 
+
+    //spit bubble
+    game.load.image('bubble', 'assets/images/bubble.png');
+
     //sound effects
     game.load.audio('collisionSound', 'assets/audio/collisionSound.mp3');
     game.load.audio('pain1male','assets/audio/pain1male.mp3');
@@ -66,7 +70,7 @@ var loadState = {
     game.load.audio('pain3fem','assets/audio/pain3fem.mp3');
     game.load.audio('pain4fem','assets/audio/pain4fem.mp3');
     game.load.audio('pain5male','assets/audio/pain5male.mp3');
-    // game.load.audio('schoolbell','assets/audio/schoolbell.mp3');
+    game.load.audio('schoolbell','assets/audio/schoolbell.mp3');
 
   },
   create : function() {
