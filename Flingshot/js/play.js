@@ -4,9 +4,15 @@ var timerColor = "#374f77";
 var scoreColor = "rgba(255,255,255,0.7)";
 var levelColor = "#68D81D";
 var scoreFont = "Georgia, cursive";
-var scoreBarColor = 0xbe011f;
+var scoreBarColor = "be011f";
 var scoreBarOutlineColor = 0xFFFFFF;
-var timerBarColor = 0x5A6351;
+var timerBarColor = '#5A6351';
+var scoreBar;
+var bmd;
+var spriteScore;
+var timeRect;
+var spriteTime;
+
 
 var playState = {
 
@@ -78,7 +84,7 @@ var playState = {
 
     scoreDisplay = game.add.text(650, 16, '', {fill: scoreColor , fontSize: 40, font: scoreFont});
     goalDisplay = game.add.text(700,16,'',{fill: '#ffffff', fontSize:50 });
-    levelDisplay = game.add.text(995,20,'',{fill: levelColor, fontSize:40 });
+    levelDisplay = game.add.text(995,20,'',{fill: levelColor, fontSize:40, font:scoreFont });
 
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -143,6 +149,7 @@ var playState = {
     LevelUpButton.events.onInputDown.add(this.levelUpResume,this);
     levelupPopup.addChild(LevelUpButton);
 
+
     playButton = game.add.sprite(game.world.centerX-200,game.world.centerY+40, 'MenuButton');
     playButton.anchor.set(0.5,0.5);
     playButton.scale.setTo(0.1,0.1);
@@ -157,6 +164,36 @@ var playState = {
     restartButton.input.enabled = false;
     restartButton.alpha =0;
     restartButton.events.onInputDown.add(this.restart,this);
+
+    //ScoreBar
+    bmd= game.add.bitmapData(700 ,128);
+    bmd.ctx.beginPath();
+    bmd.ctx.rect(0,0,700,25);
+    bmd.ctx.fillStyle = '#ff0000';
+    bmd.ctx.fill();
+    spriteScore = game.add.sprite(300, 650, bmd);
+    // use the bitmap data as the texture for the sprite
+    let group = this.add.group();
+    let scoreBarOutline = this.game.add.graphics();
+    let timerBarOutline = this.game.add.graphics();
+    timerBarOutline.lineStyle(2,scoreBarOutlineColor,1);
+    timerBarOutline.drawRect(300,675, 700,25);
+    group.add(timerBarOutline);
+
+    //Score Bar Outline
+    scoreBarOutline.lineStyle(2, scoreBarOutlineColor, 1);
+    scoreBarOutline.drawRect(300, 650, 700, 25);
+    group.add(scoreBarOutline);
+
+    timeRect = game.add.bitmapData(700,128);
+    timeRect.ctx.beginPath();
+    timeRect.ctx.rect(0,0,700,23);
+    timeRect.ctx.fillStyle = timerBarColor;
+    timeRect.ctx.fill();
+    spriteTime = game.add.sprite(300,675,timeRect);
+
+
+
 
 
 
@@ -199,8 +236,7 @@ var playState = {
   levelUpResume: function(){
     levelGoal = levelsGoals[currentLevel];
 
-//    scoreDisplay.text = "Score : " + score;
-//    scoreDisplay.text ="Score : " + score + '/'+ levelsGoals[currentLevel-1];
+
     timerDisplay.fontSize = 50;
     timerDisplay.strokeThickness = 2;
 
@@ -251,42 +287,47 @@ var playState = {
     newBall.timesHitFloor =0;
     return newBall;
   },
-  createScoreBar : function(){
-  // ScoreBar
+  updateScoreBar : function(){
+    spriteScore.width = score*8.75
+    if (score == 80){
+    spriteScore.width = 0;
+    }
+    else if (score> 80){
+    spriteScore.width = (score-80) * 5.384}
+    if (score == 210){
+    spriteScore.width =0 }
+    else if (score > 210){
+    spriteScore.width = (score-210)*4.375}
+    if (score == 370){
+    spriteScore.width =0}
+    else if(score > 370){
+    spriteScore.width = (score-370)* 3.888889}
+    if (score == 550){
+    spriteScore.width =0}
+    else if(score > 550){
+    spriteScore.width = (score -550)* 3.5}
+    if (score == 750){
+    spriteScore.width = 0}
+    else if (score > 750){
+    spriteScore.width = (score - 750) *3.04347826087 }
+    if (score == 980){
+    spriteScore.width =0}
+    else if (score > 980){
+    spriteScore.width = (score-980)*3.04347826087}
+    if (score == 1210){
+    spriteScore.width = 0}
+    else if (score>1210){
+    spriteScore.width = (score-1210)*2.69230769231}
+    if (score == 1470){
+    spriteScore.width = 700}
 
-          let group = this.add.group();
-          // created on the world
-          var ScoreBar = game.add.graphics(); // adds to the world stage
-          ScoreBar.lineStyle(2, scoreBarColor, 1);
-          ScoreBar.beginFill(scoreBarColor, 1);
-          ScoreBar.drawRect(300, 650,score , 25);
-          ScoreBar.endFill();
-          group.add(ScoreBar);
-          // ScoreBar Outline
-          let scoreBarOutline = this.game.add.graphics();
-          scoreBarOutline.lineStyle(2,scoreBarOutlineColor,1);
-          scoreBarOutline.drawRect(300,650,700,25);
-          group.add(scoreBarOutline);
-          return(ScoreBar);
+   },
+   updateTimerBar : function(){
+    spriteTime.width = (timer.ms/30000)*700
+   },
 
 
-  },
-  createTimerBar: function(){
-  // TimerBar
-            let group = this.add.group();
-            var timerBar = game.add.graphics();
-            timerBar.lineStyle(2,timerBarColor, 1 );
-            timerBar.beginFill(timerBarColor, 1);
-            timerBar.drawRect(300,675,700,25);
-            timerBar.endFill();
-            group.add(timerBar);
-            //TimerBar Outline
-            let timerBarOutline = this.game.add.graphics();
-            timerBarOutline.lineStyle(2,scoreBarOutlineColor,1);
-            timerBarOutline.drawRect(300,675, 700,25);
-            group.add(timerBarOutline);
-            return(timerBar);
-  },
+
 
   addStudent : function(image, x, y){
       var student = game.add.sprite(x,y, image);
@@ -525,7 +566,7 @@ render :  function () {
     scoreDisplay.text = score;
 
 ;
-    timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
+//    timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
     if(score < levelGoal){
       scoreDisplay.addColor(scoreColor, 0); //red
     }
@@ -546,8 +587,9 @@ update :  function () {
       this.updateArrow();
 
       this.flashTimerDisplay();
-      this.createTimerBar();
-      this.createScoreBar();
+//      this.createTimerBar();
+      this.updateScoreBar();
+      this.updateTimerBar();
 
 
       this.updateLevelProgressBar();
@@ -555,6 +597,8 @@ update :  function () {
        if (score>=levelGoal){
          this.checkLevelGoal();
        }
+
+
 
       this.updateTargetStudent();
    },
@@ -567,17 +611,7 @@ update :  function () {
         var levelScore = score - levelsGoals[currentLevel-2];
       }
 
-//      if(levelScore < goal * 0.25){
-//        progressBar.loadTexture('ProgressBar-0', 0);
-//      } else if(levelScore >= goal*0.25 && levelScore < goal*0.5){
-//        progressBar.loadTexture('ProgressBar-1', 0);
-//      } else if(levelScore >= goal*0.5 && levelScore < goal*0.75 ){
-//        progressBar.loadTexture('ProgressBar-2', 0);
-//      } else if(levelScore >= goal*0.75 && levelScore < goal){
-//        progressBar.loadTexture('ProgressBar-3', 0);
-//      } else if(levelScore >= goal){
-//        progressBar.loadTexture('ProgressBar-4', 0);
-//      }
+
    },
 
    add : function(a,b){
