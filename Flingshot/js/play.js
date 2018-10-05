@@ -75,12 +75,12 @@ var playState = {
     pain3fem = game.add.audio('pain3fem');
     pain4fem = game.add.audio('pain4fem');
     pain5male = game.add.audio('pain5male');
-     schoolbell = game.add.audio('schoolbell');
+    schoolbell = game.add.audio('schoolbell');
 
 
     timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
     timerLevelDisplay = game.add.text(500,450,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
-    scoreDisplay = game.add.text(650, 16, '', { fill: '#ffffff' , fontSize: 50, font: scoreFont});
+    scoreDisplay = game.add.text(500, 16, '', { fill: '#ffffff' , fontSize: 50});
     goalDisplay = game.add.text(500,50,'',{fill: '#ffffff', fontSize:50 });
     levelDisplay = game.add.text(995,20,'',{fill: '#ffffff', fontSize:40 });
 
@@ -211,7 +211,7 @@ var playState = {
     ballInSlingshot = this.createBall();
 
     timer = game.time.create(); //timer for levels
-    timerConstant =  30; //each level is 30 seconds long
+    timerConstant = 30; //each level is 30 seconds long
     timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, this.checkLevelGoal); //a timer for each level
     timeToChangeTarget = game.time.now + 4000;
     ballsTimer = game.time.events.loop(50, this.updateBalls, this); //timer to create depth effects
@@ -465,7 +465,7 @@ displayInvisible: function(){
   timerDisplay.alpha = 0;
   scoreDisplay.alpha = 0;
   levelDisplay.alpha = 0;
-//  progressBar.alpha = 0;
+  progressBar.alpha = 0;
 },
 
 displayVisible: function(){
@@ -473,7 +473,7 @@ displayVisible: function(){
   timerDisplay.alpha = 1;
   scoreDisplay.alpha = 1;
   levelDisplay.alpha = 1;
-//  progressBar.alpha = 1;
+  progressBar.alpha = 1;
 },
 
 changeState: function(){
@@ -519,7 +519,7 @@ play :  function(){
    playState.changeState();
    if (score<levelGoal)
    {
-        schoolbell.play();
+       schoolbell.play();
      game.state.start('lose');
    } else
    {
