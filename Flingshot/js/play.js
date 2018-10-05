@@ -75,7 +75,7 @@ var playState = {
     pain3fem = game.add.audio('pain3fem');
     pain4fem = game.add.audio('pain4fem');
     pain5male = game.add.audio('pain5male');
-    // schoolbell = game.add.audio('schoolbell');
+    schoolbell = game.add.audio('schoolbell');
 
 
     timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
@@ -519,7 +519,7 @@ play :  function(){
    playState.changeState();
    if (score<levelGoal)
    {
-       // schoolbell.play();
+       schoolbell.play();
      game.state.start('lose');
    } else
    {
