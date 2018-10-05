@@ -18,12 +18,6 @@ var playState = {
 
 
   create : function(){
-    timer = game.time.create(); //timer for levels
-    timerConstant = 30; //each level is 30 seconds long
-    timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, this.checkLevelGoal); //a timer for each level
-    timeToChangeTarget = game.time.now + 4000;
-    ballsTimer = game.time.events.loop(50, this.updateBalls, this); //timer to create depth effects
-
     gamePaused = false;
 
     slingshotX = 450;
@@ -43,6 +37,9 @@ var playState = {
     levelGoalIncrement=[80,130,160,180,200,230,230,260];
     levelsGoals = [80,210,370,550,750,980,1210,1470];
     levelGoal = 80;
+    // levelGoalIncrement=[10,130,160,180,200,230,230,260]; //for testing
+    // levelsGoals = [10,20,40,80,750,980,1210,1470];  //for testing
+    // levelGoal = 10; //for testing
     wrongHitPoints = 5;
     rightHitPoints = 10;
 
@@ -78,13 +75,14 @@ var playState = {
     pain3fem = game.add.audio('pain3fem');
     pain4fem = game.add.audio('pain4fem');
     pain5male = game.add.audio('pain5male');
+    // schoolbell = game.add.audio('schoolbell');
 
 
-    timerDisplay = game.add.text(40,16,'',{fill: timerColor , fontSize: 50, stroke: timerColor, strokeThickness: 2});
-
-    scoreDisplay = game.add.text(650, 16, '', {fill: scoreColor , fontSize: 40, font: scoreFont});
-    goalDisplay = game.add.text(700,16,'',{fill: '#ffffff', fontSize:50 });
-    levelDisplay = game.add.text(995,20,'',{fill: levelColor, fontSize:40, font:scoreFont });
+    timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
+    timerLevelDisplay = game.add.text(500,450,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
+    scoreDisplay = game.add.text(500, 16, '', { fill: '#ffffff' , fontSize: 50});
+    goalDisplay = game.add.text(500,50,'',{fill: '#ffffff', fontSize:50 });
+    levelDisplay = game.add.text(995,20,'',{fill: '#ffffff', fontSize:40 });
 
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -139,16 +137,15 @@ var playState = {
     levelupPopup.input.enabled=false;
 
 
-    LevelUpButton = game.make.sprite(0,200, 'playButton');
-    LevelUpButton.anchor.set(0.5,0.5);
-    LevelUpButton.scale.setTo(0.19,0.19);
-    LevelUpButton.alpha=1;
-    LevelUpButton.inputEnabled = true;
-    LevelUpButton.input.enabled=false;
-    LevelUpButton.input.priorityID=1;
-    LevelUpButton.events.onInputDown.add(this.levelUpResume,this);
-    levelupPopup.addChild(LevelUpButton);
-
+    // LevelUpButton = game.make.sprite(0,200, 'playButton');
+    // LevelUpButton.anchor.set(0.5,0.5);
+    // LevelUpButton.scale.setTo(0.19,0.19);
+    // LevelUpButton.alpha=1;
+    // LevelUpButton.inputEnabled = true;
+    // LevelUpButton.input.enabled=false;
+    // LevelUpButton.input.priorityID=1;
+    // LevelUpButton.events.onInputDown.add(this.levelUpResume,this);
+    // levelupPopup.addChild(LevelUpButton);
 
     playButton = game.add.sprite(game.world.centerX-200,game.world.centerY+40, 'MenuButton');
     playButton.anchor.set(0.5,0.5);
@@ -213,7 +210,19 @@ var playState = {
 
     ballInSlingshot = this.createBall();
 
+    timer = game.time.create(); //timer for levels
+    timerConstant = 30; //each level is 30 seconds long
+    timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, this.checkLevelGoal); //a timer for each level
+    timeToChangeTarget = game.time.now + 4000;
+    ballsTimer = game.time.events.loop(50, this.updateBalls, this); //timer to create depth effects
+
+    timerLevel = game.time.create(); //timer for levels
+    timerLevelConstant = 3; //each break between levels is 3 seconds long
+    timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * timerLevelConstant, this.levelUpResume); //a timer for each level
+
     this.initiateTimer();
+    this.initiateTimerLevel()
+
     playState.play();
 
   },
@@ -233,43 +242,18 @@ var playState = {
     timerDisplay.stroke = timerColor;
   },
 
-  levelUpResume: function(){
-    levelGoal = levelsGoals[currentLevel];
-
-
-    timerDisplay.fontSize = 50;
-    timerDisplay.strokeThickness = 2;
-
-
-    playState.reinitiateTimer();
-    currentLevel=currentLevel+1;
-
-    pauseButton.inputEnabled = true;
-
-    levelupPopup.alpha=0;
-    levelupPopup.input.enabled=false;
-    LevelUpButton.input.enabled=false;
-    bground.inputEnabled = true;
-
-    for(var i =0; i<ballsInMotion.length; i++){
-        ballsInMotion[i].destroy();
-    }
-    ballsInMotion = [];
-    balballInSlingshot = playState.createBall();
-
-    //reset students graphics
-    for(var i = 0; i<3; i++)
-    {
-      studNum = i+1
-      arrayStudents[i].loadTexture('student'+studNum,0);
-    }
-
-    game.physics.p2.resume();
-    game.time.events.resume();
-    gamePaused = false;
-    teacher.animations.paused = false;
+  initiateTimerLevel: function(){
+    timerLevel = game.time.create();
+    timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * timerLevelConstant, this.levelUpResume);
+    timerLevel.pause();
+    timerLevelDisplay.visible = false;
   },
 
+  destroyTimerLevel: function(){
+    timerLevel.stop();
+    timerLevel.destroy();
+    playState.initiateTimerLevel()
+  },
 
   createBall : function() {
     var newBall = game.add.sprite(ballinitx, ballinity, 'ball');
@@ -476,6 +460,34 @@ pausedState: function(){
   gamePaused = true;
 },
 
+displayInvisible: function(){
+  pauseButton.alpha = 0;
+  timerDisplay.alpha = 0;
+  scoreDisplay.alpha = 0;
+  levelDisplay.alpha = 0;
+  progressBar.alpha = 0;
+},
+
+displayVisible: function(){
+  pauseButton.alpha = 1;
+  timerDisplay.alpha = 1;
+  scoreDisplay.alpha = 1;
+  levelDisplay.alpha = 1;
+  progressBar.alpha = 1;
+},
+
+changeState: function(){
+  game.input.enabled = false; //Allows us to pause physics and keep the running feel going
+  playState.displayInvisible();
+  // game.physics.p2.pause();
+  // game.time.events.pause([ballsTimer]);
+  timer.pause();
+  // teacher.animations.paused = true;
+  bground.inputEnabled = false;
+  gamePaused = true;
+  randomStudent.alpha = 0.25
+},
+
 play :  function(){
    pauseButton.alpha = 1;
    game.physics.p2.resume();
@@ -504,23 +516,67 @@ play :  function(){
  },
 
   checkLevelGoal : function(level){
-   playState.pausedState();
+   playState.changeState();
    if (score<levelGoal)
    {
+       // schoolbell.play();
      game.state.start('lose');
    } else
    {
      if(currentLevel == 7){
+      game.input.enabled = false;
       game.state.start('win');
      }
      levelDisplay.text="Level: "+currentLevel;
      levelupPopup.alpha=1;
      levelupPopup.input.enabled=true;
-     LevelUpButton.input.enabled=true;
+     // LevelUpButton.input.enabled=true;
      pauseButton.inputEnabled = false;
      playState.hideArrow();
+
+     timerLevel.start()
    }
  },
+
+ levelUpResume: function(){
+   levelGoal = levelsGoals[currentLevel];
+   scoreDisplay.text ="Score : " + score + '/'+ levelsGoals[currentLevel-1];
+   timerDisplay.fontSize = 50;
+   timerDisplay.strokeThickness = 2;
+
+   playState.destroyTimerLevel();
+   playState.reinitiateTimer();
+   currentLevel=currentLevel+1;
+
+   pauseButton.inputEnabled = true;
+
+   levelupPopup.alpha=0;
+   levelupPopup.input.enabled=false;
+   // LevelUpButton.input.enabled=false;
+   bground.inputEnabled = true;
+
+   for(var i =0; i<ballsInMotion.length; i++){
+            ballsInMotion[i].destroy();
+   }
+   ballsInMotion = [];
+   balballInSlingshot = playState.createBall();
+
+   //reset students graphics
+   for(var i = 0; i<3; i++)
+   {
+     studNum = i+1
+     arrayStudents[i].loadTexture('student'+studNum,0);
+   }
+   randomStudent.alpha = 1;
+
+   game.physics.p2.resume();
+   game.input.enabled = true;
+   game.time.events.resume();
+   playState.displayVisible();
+   gamePaused = false;
+   teacher.animations.paused = false;
+ },
+
 
 chooseStudent : function (){
   randomStudent.alpha = 0.25;
@@ -567,6 +623,7 @@ render :  function () {
 
 ;
 //    timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
+    timerLevelDisplay.text= this.formatTime(Math.round((timerLevelEvent.delay - timerLevel.ms) / 1000));
     if(score < levelGoal){
       scoreDisplay.addColor(scoreColor, 0); //red
     }
@@ -597,8 +654,6 @@ update :  function () {
        if (score>=levelGoal){
          this.checkLevelGoal();
        }
-
-
 
       this.updateTargetStudent();
    },

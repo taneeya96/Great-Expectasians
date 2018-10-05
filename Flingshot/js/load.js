@@ -66,6 +66,7 @@ var loadState = {
     game.load.audio('pain3fem','assets/audio/pain3fem.mp3');
     game.load.audio('pain4fem','assets/audio/pain4fem.mp3');
     game.load.audio('pain5male','assets/audio/pain5male.mp3');
+    // game.load.audio('schoolbell','assets/audio/schoolbell.mp3');
 
   },
   create : function() {
