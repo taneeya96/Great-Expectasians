@@ -170,9 +170,9 @@ var playState = {
     bmd.ctx.fill();
     spriteScore = game.add.sprite(300, 650, bmd);
     // use the bitmap data as the texture for the sprite
-    let group = this.add.group();
-    let scoreBarOutline = this.game.add.graphics();
-    let timerBarOutline = this.game.add.graphics();
+    group = this.add.group();
+    scoreBarOutline = this.game.add.graphics();
+    timerBarOutline = this.game.add.graphics();
     timerBarOutline.lineStyle(2,scoreBarOutlineColor,1);
     timerBarOutline.drawRect(300,675, 700,25);
     group.add(timerBarOutline);
@@ -461,20 +461,25 @@ pausedState: function(){
 },
 
 displayInvisible: function(){
-  pauseButton.alpha = 0;
-  timerDisplay.alpha = 0;
-  scoreDisplay.alpha = 0;
-  levelDisplay.alpha = 0;
-  progressBar.alpha = 0;
+    pauseButton.alpha = 0;
+    timerDisplay.alpha = 0;
+    scoreDisplay.alpha = 0;
+    levelDisplay.alpha = 0;
+    timerBarOutline.alpha = 0;
+    scoreBarOutline.alpha = 0;
+    spriteScore.alpha = 0;
+    spriteTime.alpha = 0;
 },
 
 displayVisible: function(){
-  pauseButton.alpha = 1;
-  timerDisplay.alpha = 1;
-  scoreDisplay.alpha = 1;
-  levelDisplay.alpha = 1;
-  progressBar.alpha = 1;
-},
+    pauseButton.alpha = 1;
+    timerDisplay.alpha = 1;
+    scoreDisplay.alpha = 1;
+    levelDisplay.alpha = 1;
+    timerBarOutline.alpha = 1;
+    scoreBarOutline.alpha = 1;
+    spriteScore.alpha = 1;
+    spriteTime.alpha = 1;},
 
 changeState: function(){
   game.input.enabled = false; //Allows us to pause physics and keep the running feel going
