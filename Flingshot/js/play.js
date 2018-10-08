@@ -521,7 +521,6 @@ play :  function(){
  },
 
   checkLevelGoal : function(level){
-   playState.changeState();
    if (score<levelGoal)
    {
        schoolbell.play();
@@ -532,6 +531,7 @@ play :  function(){
       game.input.enabled = false;
       game.state.start('win');
      }
+     playState.changeState();
      levelDisplay.text="Level: "+currentLevel;
      levelupPopup.alpha=1;
      levelupPopup.input.enabled=true;
