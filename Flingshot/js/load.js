@@ -62,6 +62,8 @@ var loadState = {
 
     //spit bubble
     game.load.image('bubble', 'assets/images/bubble.png');
+    game.load.image('bluespit', 'assets/images/bluespitbubble.png');
+    game.load.image('bluecircle', 'assets/images/bluecircle.png');
 
     //sound effects
     game.load.audio('collisionSound', 'assets/audio/collisionSound.mp3');
