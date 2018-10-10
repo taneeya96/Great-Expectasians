@@ -84,12 +84,12 @@ var playState = {
     goalDisplay = game.add.text(500,50,'',{fill: '#ffffff', fontSize:50 });
     levelDisplay = game.add.text(995,20,'',{fill: '#ffffff', fontSize:40 });
 
-      game.physics.startSystem(Phaser.Physics.ARCADE);
-      emitter = game.add.emitter(0,0,100);
-      emitter.makeParticles('bluecircle');
-      emitter.minParticleScale = 0.008;
-      emitter.maxParticleScale = 0.010;
-      emitter.gravity = 200;
+
+    emitter = game.add.emitter(0,0,100);
+    emitter.makeParticles('drop');
+    emitter.minParticleScale = 0.008;
+    emitter.maxParticleScale = 0.010;
+    emitter.gravity = 200;
 
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -223,7 +223,7 @@ var playState = {
 
     this.initiateTimer();
     this.initiateTimerLevel()
-      
+
     playState.play();
 
   },
@@ -231,7 +231,7 @@ var playState = {
   spitBurst: function(ballX, ballY){
       emitter.x = ballX;
       emitter.y = ballY;
-      emitter.start(true,2000,null,10);
+      emitter.start(true,750,null,7);
   },
 
   initiateTimer: function(){
