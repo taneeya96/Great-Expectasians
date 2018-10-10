@@ -86,10 +86,13 @@ var playState = {
 
 
     emitter = game.add.emitter(0,0,100);
-    emitter.makeParticles('drop');
-    emitter.minParticleScale = 0.008;
-    emitter.maxParticleScale = 0.010;
-    emitter.gravity = 200;
+    emitter.makeParticles('bluecircle');
+    emitter.minParticleScale = 0.018;
+    emitter.maxParticleScale = 0.020;
+    var spitSpeed = 800;
+    emitter.minParticleSpeed = { x: -spitSpeed/2, y: -spitSpeed/2 };
+    emitter.maxParticleSpeed = { x:  spitSpeed/4, y:  spitSpeed };
+    emitter.gravity = 1000;
 
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -231,7 +234,7 @@ var playState = {
   spitBurst: function(ballX, ballY){
       emitter.x = ballX;
       emitter.y = ballY;
-      emitter.start(true,750,null,7);
+      emitter.start(true,150,null,10);
   },
 
   initiateTimer: function(){
@@ -533,6 +536,7 @@ play :  function(){
    if (score<levelGoal)
    {
        schoolbell.play();
+       emitter.destroy();
      game.state.start('lose');
    } else
    {
