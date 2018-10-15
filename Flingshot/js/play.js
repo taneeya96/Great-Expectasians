@@ -84,6 +84,16 @@ var playState = {
     goalDisplay = game.add.text(500,50,'',{fill: '#ffffff', fontSize:50 });
     levelDisplay = game.add.text(995,20,'',{fill: '#ffffff', fontSize:40 });
 
+
+    emitter = game.add.emitter(0,0,100);
+    emitter.makeParticles('bluecircle');
+    emitter.minParticleScale = 0.018;
+    emitter.maxParticleScale = 0.020;
+    var spitSpeed = 800;
+    emitter.minParticleSpeed = { x: -spitSpeed/2, y: -spitSpeed/2 };
+    emitter.maxParticleSpeed = { x:  spitSpeed/4, y:  spitSpeed };
+    emitter.gravity = 1000;
+
     studentCollisionGroup = game.physics.p2.createCollisionGroup();
     ballCollisionGroup = game.physics.p2.createCollisionGroup();
     inactiveCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -162,6 +172,7 @@ var playState = {
     restartButton.alpha =0;
     restartButton.events.onInputDown.add(this.restart,this);
 
+
     //ScoreBar
     bmd= game.add.bitmapData(700 ,128);
     bmd.ctx.beginPath();
@@ -170,9 +181,9 @@ var playState = {
     bmd.ctx.fill();
     spriteScore = game.add.sprite(300, 650, bmd);
     // use the bitmap data as the texture for the sprite
-    let group = this.add.group();
-    let scoreBarOutline = this.game.add.graphics();
-    let timerBarOutline = this.game.add.graphics();
+    group = this.add.group();
+    scoreBarOutline = this.game.add.graphics();
+    timerBarOutline = this.game.add.graphics();
     timerBarOutline.lineStyle(2,scoreBarOutlineColor,1);
     timerBarOutline.drawRect(300,675, 700,25);
     group.add(timerBarOutline);
@@ -188,13 +199,6 @@ var playState = {
     timeRect.ctx.fillStyle = timerBarColor;
     timeRect.ctx.fill();
     spriteTime = game.add.sprite(300,675,timeRect);
-
-
-
-
-
-
-
 
 
 
@@ -225,6 +229,12 @@ var playState = {
 
     playState.play();
 
+  },
+
+  spitBurst: function(ballX, ballY){
+      emitter.x = ballX;
+      emitter.y = ballY;
+      emitter.start(true,150,null,10);
   },
 
   initiateTimer: function(){
@@ -271,6 +281,7 @@ var playState = {
     newBall.timesHitFloor =0;
     return newBall;
   },
+
   updateScoreBar : function(){
     spriteScore.width = score*8.75
     if (score == 80){
@@ -419,6 +430,7 @@ var playState = {
       ball.sprite.body.setCollisionGroup(inactiveCollisionGroup); //
   },
 
+
 //Points flashing after a hit
   showScoreTween : function (action, x, y){
     if (action == "add"){
@@ -461,20 +473,25 @@ pausedState: function(){
 },
 
 displayInvisible: function(){
-  pauseButton.alpha = 0;
-  timerDisplay.alpha = 0;
-  scoreDisplay.alpha = 0;
-  levelDisplay.alpha = 0;
-  progressBar.alpha = 0;
+    pauseButton.alpha = 0;
+    timerDisplay.alpha = 0;
+    scoreDisplay.alpha = 0;
+    levelDisplay.alpha = 0;
+    timerBarOutline.alpha = 0;
+    scoreBarOutline.alpha = 0;
+    spriteScore.alpha = 0;
+    spriteTime.alpha = 0;
 },
 
 displayVisible: function(){
-  pauseButton.alpha = 1;
-  timerDisplay.alpha = 1;
-  scoreDisplay.alpha = 1;
-  levelDisplay.alpha = 1;
-  progressBar.alpha = 1;
-},
+    pauseButton.alpha = 1;
+    timerDisplay.alpha = 1;
+    scoreDisplay.alpha = 1;
+    levelDisplay.alpha = 1;
+    timerBarOutline.alpha = 1;
+    scoreBarOutline.alpha = 1;
+    spriteScore.alpha = 1;
+    spriteTime.alpha = 1;},
 
 changeState: function(){
   game.input.enabled = false; //Allows us to pause physics and keep the running feel going
@@ -516,10 +533,10 @@ play :  function(){
  },
 
   checkLevelGoal : function(level){
-   playState.changeState();
    if (score<levelGoal)
    {
        schoolbell.play();
+       emitter.destroy();
      game.state.start('lose');
    } else
    {
@@ -527,6 +544,7 @@ play :  function(){
       game.input.enabled = false;
       game.state.start('win');
      }
+     playState.changeState();
      levelDisplay.text="Level: "+currentLevel;
      levelupPopup.alpha=1;
      levelupPopup.input.enabled=true;
@@ -614,12 +632,16 @@ studentHit: function (ballX, ballY){
     }
     //collisionSound.play();
     randomStudent.alpha = 0.25;
+    playState.spitBurst(ballX,ballY);
     playState.showScoreTween("add", ballX, ballY);
 },
+
+
 
 render :  function () {
     levelDisplay.text="Level: "+currentLevel;
     scoreDisplay.text = score;
+
 
 ;
 //    timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
@@ -640,7 +662,7 @@ formatTime :  function(s) {
   },
 
 
-update :  function () {
+update : function () {
       this.updateArrow();
 
       this.flashTimerDisplay();
