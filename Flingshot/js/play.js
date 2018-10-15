@@ -1,17 +1,18 @@
 //import HealthBar from 'phaser-percent-bar';
 
-var timerColor = "#374f77";
+var timerColor = "#00ff00";
 var scoreColor = "rgba(255,255,255,0.7)";
 var levelColor = "#68D81D";
 var scoreFont = "Georgia, cursive";
 var scoreBarColor = "be011f";
 var scoreBarOutlineColor = 0xFFFFFF;
-var timerBarColor = '#5A6351';
+var timerBarColor = '#00ff00';
 var scoreBar;
 var bmd;
 var spriteScore;
 var timeRect;
 var spriteTime;
+var finalWarningOn = true;
 
 
 var playState = {
@@ -70,6 +71,7 @@ var playState = {
 
     //adding in the sound effects
     collisionSound = game.add.audio('collisionSound');
+    ticTok = game.add.audio('tic')
     pain1male = game.add.audio('pain1male');
     pain2male = game.add.audio('pain2male');
     pain3fem = game.add.audio('pain3fem');
@@ -77,12 +79,24 @@ var playState = {
     pain5male = game.add.audio('pain5male');
     schoolbell = game.add.audio('schoolbell');
 
+     //Fonts
+        this.game.load.bitmapFont('myfont', 'assets/fonts/font.png', 'assets/fonts/font.fnt');
+        this.game.load.bitmapFont('LF','assets/fonts/level.png','assets/fonts/level.fnt')
+        this.game.load.bitmapFont('WHF','assets/fonts/wrong.png','assets/fonts/wrong.fnt')
+
+
+
 
     timerDisplay = game.add.text(40,16,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
     timerLevelDisplay = game.add.text(500,450,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
-    scoreDisplay = game.add.text(500, 16, '', { fill: '#ffffff' , fontSize: 50});
+    scoreDisplay = game.add.text(650, 16, '', { fill: '#ffffff' , fontSize: 50, font: scoreFont});
+//    scoreTest = game.add.bitmapText(game.world.centerX,50,'myfont','0',128);
+    scoreTest = game.add.bitmapText(650,16,'myfont','0',50);
+    levelFont = game.add.bitmapText(995,20,'LF','Level:',50)
+
     goalDisplay = game.add.text(500,50,'',{fill: '#ffffff', fontSize:50 });
-    levelDisplay = game.add.text(995,20,'',{fill: '#ffffff', fontSize:40 });
+//    levelDisplay = game.add.text(995,20,'',{fill: '#ffffff', fontSize:40 });
+
 
 
     emitter = game.add.emitter(0,0,100);
@@ -172,12 +186,11 @@ var playState = {
     restartButton.alpha =0;
     restartButton.events.onInputDown.add(this.restart,this);
 
-
     //ScoreBar
     bmd= game.add.bitmapData(700 ,128);
     bmd.ctx.beginPath();
     bmd.ctx.rect(0,0,700,25);
-    bmd.ctx.fillStyle = '#ff0000';
+    bmd.ctx.fillStyle = '#be011f';
     bmd.ctx.fill();
     spriteScore = game.add.sprite(300, 650, bmd);
     // use the bitmap data as the texture for the sprite
@@ -198,7 +211,14 @@ var playState = {
     timeRect.ctx.rect(0,0,700,23);
     timeRect.ctx.fillStyle = timerBarColor;
     timeRect.ctx.fill();
-    spriteTime = game.add.sprite(300,675,timeRect);
+    spriteTime = game.add.sprite(300,676,timeRect);
+
+
+
+
+
+
+
 
 
 
@@ -242,6 +262,7 @@ var playState = {
     timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, playState.checkLevelGoal);
     timer.start();
     playState.updateTimeToChangeTarget();
+
   },
 //Timer color
   reinitiateTimer: function(){
@@ -250,6 +271,8 @@ var playState = {
     playState.initiateTimer();
     timerDisplay.addColor(timerColor,50);
     timerDisplay.stroke = timerColor;
+    finalWarningOn = true;
+
   },
 
   initiateTimerLevel: function(){
@@ -281,9 +304,14 @@ var playState = {
     newBall.timesHitFloor =0;
     return newBall;
   },
+  updateLevelUp: function(){
+    levelFont.text = "Level: "+currentLevel;
 
+  },
   updateScoreBar : function(){
     spriteScore.width = score*8.75
+    if (score<0){
+    spriteScore.width =0}
     if (score == 80){
     spriteScore.width = 0;
     }
@@ -319,6 +347,27 @@ var playState = {
    },
    updateTimerBar : function(){
     spriteTime.width = (timer.ms/30000)*700
+    var endTime = 10;
+    var timerOver = 29.9
+    if(timer.ms/1000 > timerConstant - endTime && timer.ms/1000 < (timerConstant - endTime + .01)   && finalWarningOn ){
+       finalWarningOn == false;
+       ticTok.play();
+
+
+
+
+        //sound go off with 10 secs left
+
+
+        //color changes with ten secs left
+        spriteTime.tint = 0xFFFFF;
+
+    }
+
+
+
+
+
    },
 
 
@@ -430,14 +479,15 @@ var playState = {
       ball.sprite.body.setCollisionGroup(inactiveCollisionGroup); //
   },
 
-
 //Points flashing after a hit
   showScoreTween : function (action, x, y){
     if (action == "add"){
-      var text = game.add.text(x,y,'+'+ rightHitPoints,{fill: '#00ff00', fontWeight: 'bold' , fontSize: 60});
+//      var text = game.add.text(x,y,'+'+ rightHitPoints,{fill: '#00ff00', fontWeight: 'bold' , fontSize: 60});
+      var text = game.add.bitmapText(x,y,'LF','+' + rightHitPoints,60);
       var deltaScore = rightHitPoints;
     } else{
-      var text = game.add.text(x,y,'-'+ wrongHitPoints,{fill: '#ff0000', fontWeight: 'bold' , fontSize: 60});
+//      var text = game.add.text(x,y,'-'+ wrongHitPoints,{fill: '#ff0000', fontWeight: 'bold' , fontSize: 60});
+      var text = game.add.bitmapText(x,y,'WHF','-'+ wrongHitPoints,60);
       var deltaScore= -wrongHitPoints;
     }
     //source: html5gamedevs.com
@@ -473,25 +523,29 @@ pausedState: function(){
 },
 
 displayInvisible: function(){
-    pauseButton.alpha = 0;
-    timerDisplay.alpha = 0;
-    scoreDisplay.alpha = 0;
-    levelDisplay.alpha = 0;
-    timerBarOutline.alpha = 0;
-    scoreBarOutline.alpha = 0;
-    spriteScore.alpha = 0;
-    spriteTime.alpha = 0;
+  pauseButton.alpha = 0;
+  timerDisplay.alpha = 0;
+  scoreDisplay.alpha = 0;
+//  levelDisplay.alpha = 0;
+//  progressBar.alpha = 0;
+   timerBarOutline.alpha = 0;
+   scoreBarOutline.alpha = 0;
+   spriteScore.alpha = 0;
+   spriteTime.alpha = 0;
 },
 
 displayVisible: function(){
-    pauseButton.alpha = 1;
-    timerDisplay.alpha = 1;
-    scoreDisplay.alpha = 1;
-    levelDisplay.alpha = 1;
-    timerBarOutline.alpha = 1;
-    scoreBarOutline.alpha = 1;
-    spriteScore.alpha = 1;
-    spriteTime.alpha = 1;},
+  pauseButton.alpha = 1;
+  timerDisplay.alpha = 1;
+  scoreDisplay.alpha = 1;
+//  levelDisplay.alpha = 1;
+//  progressBar.alpha = 1;
+  timerBarOutline.alpha = 1;
+  scoreBarOutline.alpha = 1;
+  spriteScore.alpha = 1;
+  spriteTime.alpha = 1;
+},
+
 
 changeState: function(){
   game.input.enabled = false; //Allows us to pause physics and keep the running feel going
@@ -535,8 +589,10 @@ play :  function(){
   checkLevelGoal : function(level){
    if (score<levelGoal)
    {
+       ticTok.pause();
        schoolbell.play();
        emitter.destroy();
+
      game.state.start('lose');
    } else
    {
@@ -545,7 +601,7 @@ play :  function(){
       game.state.start('win');
      }
      playState.changeState();
-     levelDisplay.text="Level: "+currentLevel;
+//     levelDisplay.text="Level: "+currentLevel;
      levelupPopup.alpha=1;
      levelupPopup.input.enabled=true;
      // LevelUpButton.input.enabled=true;
@@ -558,7 +614,6 @@ play :  function(){
 
  levelUpResume: function(){
    levelGoal = levelsGoals[currentLevel];
-   scoreDisplay.text ="Score : " + score + '/'+ levelsGoals[currentLevel-1];
    timerDisplay.fontSize = 50;
    timerDisplay.strokeThickness = 2;
 
@@ -636,11 +691,9 @@ studentHit: function (ballX, ballY){
     playState.showScoreTween("add", ballX, ballY);
 },
 
-
-
 render :  function () {
-    levelDisplay.text="Level: "+currentLevel;
-    scoreDisplay.text = score;
+//    scoreDisplay.text = score;
+     scoreTest.text = score ;
 
 
 ;
@@ -662,7 +715,7 @@ formatTime :  function(s) {
   },
 
 
-update : function () {
+update :  function () {
       this.updateArrow();
 
       this.flashTimerDisplay();
@@ -678,6 +731,7 @@ update : function () {
        }
 
       this.updateTargetStudent();
+      this.updateLevelUp();
    },
 
    updateLevelProgressBar: function() {

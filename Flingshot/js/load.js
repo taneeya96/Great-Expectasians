@@ -69,6 +69,8 @@ var loadState = {
 
 
     //sound effects
+    game.load.audio('tic', 'assets/audio/TicTok.mp3');
+
     game.load.audio('collisionSound', 'assets/audio/collisionSound.mp3');
     game.load.audio('pain1male','assets/audio/pain1male.mp3');
     game.load.audio('pain2male','assets/audio/pain2male.mp3');
@@ -76,6 +78,10 @@ var loadState = {
     game.load.audio('pain4fem','assets/audio/pain4fem.mp3');
     game.load.audio('pain5male','assets/audio/pain5male.mp3');
     game.load.audio('schoolbell','assets/audio/schoolbell.mp3');
+    //Fonts
+    game.load.bitmapFont('myfont', 'assets/fonts/font.png','assets/fonts/font.fnt')
+    game.load.bitmapFont('LF','assets/fonts/level.png','assets/fonts/level.fnt')
+    game.load.bitmapFont('WHF','assets/fonts/wrong.png','assets/fonts/wrong.fnt')
 
   },
   create : function() {
