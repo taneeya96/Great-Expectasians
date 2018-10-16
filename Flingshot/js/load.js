@@ -70,6 +70,8 @@ var loadState = {
 
     //sound effects
     game.load.audio('tic', 'assets/audio/TicTok.mp3');
+    game.load.audio('background','assets/audio/backgroundMusic.mp3');
+    game.load.audio('classroom','assets/audio/classroomChatter.mp3');
 
     game.load.audio('collisionSound', 'assets/audio/collisionSound.mp3');
     game.load.audio('pain1male','assets/audio/pain1male.mp3');

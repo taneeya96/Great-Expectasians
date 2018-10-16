@@ -13,6 +13,7 @@ var spriteScore;
 var timeRect;
 var spriteTime;
 var finalWarningOn = true;
+var playMusic = true;
 
 
 var playState = {
@@ -70,6 +71,8 @@ var playState = {
     bground.events.onInputUp.add(this.launchBall);
 
     //adding in the sound effects
+    backgroundMusic = game.add.audio('background');
+    classroom = game.add.audio('classroom');
     collisionSound = game.add.audio('collisionSound');
     ticTok = game.add.audio('tic')
     pain1male = game.add.audio('pain1male');
@@ -344,31 +347,31 @@ var playState = {
     if (score == 1470){
     spriteScore.width = 700}
 
-   },
-   updateTimerBar : function(){
+  },
+  updateTimerBar : function(){
     spriteTime.width = (timer.ms/30000)*700
     var endTime = 10;
     var timerOver = 29.9
     if(timer.ms/1000 > timerConstant - endTime && timer.ms/1000 < (timerConstant - endTime + .01)   && finalWarningOn ){
        finalWarningOn == false;
        ticTok.play();
-
-
-
-
-        //sound go off with 10 secs left
-
-
-        //color changes with ten secs left
-        spriteTime.tint = 0xFFFFF;
-
+       timerBarColor = "#FFFFF"
     }
+  },
+  updateMusic : function(){
+      var startMusic = 0.1
+      if(playMusic == true && timer.ms/1000 < startMusic){
+        playMusic==false;
+        backgroundMusic.loopFull();
+        classroom.loopFull();
+      }
+  },
 
 
 
 
 
-   },
+
 
 
 
@@ -511,6 +514,8 @@ pause :  function (){
 
   restartButton.alpha = 1;
   restartButton.input.enabled = true;
+  ticTok.pause();
+
  },
 
 pausedState: function(){
@@ -572,6 +577,7 @@ play :  function(){
    playState.updateTimeToChangeTarget();
    teacher.animations.paused = false;
    gamePaused = false;
+
  },
 
 
@@ -599,6 +605,9 @@ play :  function(){
      if(currentLevel == 7){
       game.input.enabled = false;
       game.state.start('win');
+      ticTok.pause();
+      backgroundMusic.pause();
+      classroom.pause();
      }
      playState.changeState();
 //     levelDisplay.text="Level: "+currentLevel;
@@ -696,6 +705,7 @@ render :  function () {
      scoreTest.text = score ;
 
 
+
 ;
 //    timerDisplay.text= this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000));
     timerLevelDisplay.text= this.formatTime(Math.round((timerLevelEvent.delay - timerLevel.ms) / 1000));
@@ -717,6 +727,7 @@ formatTime :  function(s) {
 
 update :  function () {
       this.updateArrow();
+      this.updateMusic();
 
       this.flashTimerDisplay();
 //      this.createTimerBar();
