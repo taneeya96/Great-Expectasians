@@ -47,11 +47,22 @@ var playState = {
     bground.alpha = 1.0;
     bground.inputEnabled = true;
 
+    studentCollisionGroup = game.physics.p2.createCollisionGroup();
+    ballCollisionGroup = game.physics.p2.createCollisionGroup();
+    teacherCollisionGroup = game.physics.p2.createCollisionGroup();
+    inactiveCollisionGroup = game.physics.p2.createCollisionGroup();
 
-    teacher = game.add.sprite(390, -65, 'mummy');
+    teacher = game.add.sprite(465, 112, 'teacher');
+    game.physics.p2.enable(teacher);
+    teacher.body.clearShapes();
+    teacher.body.loadPolygon('physicsDataTeacher','Teacher graphic');
+    teacher.body.static = true;
+    //teacher hand animations
     teacher.alpha = 1;
     var walk = teacher.animations.add('walk');
     teacher.animations.play('walk', 3, true);
+    teacher.body.setCollisionGroup(teacherCollisionGroup);
+    teacher.body.collides(ballCollisionGroup,this.teacherHit,this);
 
 //    progressBar = game.add.sprite(950, 15, 'ProgressBar-0');
 //    progressBar.scale.setTo(0.1,0.1);
@@ -94,9 +105,7 @@ var playState = {
     emitter.maxParticleSpeed = { x:  spitSpeed/4, y:  spitSpeed };
     emitter.gravity = 1000;
 
-    studentCollisionGroup = game.physics.p2.createCollisionGroup();
-    ballCollisionGroup = game.physics.p2.createCollisionGroup();
-    inactiveCollisionGroup = game.physics.p2.createCollisionGroup();
+
 
     studentXs = [320,610,915,175,1095];
     studentYs = [280,280,280,525,525];
@@ -252,13 +261,14 @@ var playState = {
     timerDisplay.stroke = timerColor;
   },
 
+    //timer between levels
   initiateTimerLevel: function(){
     timerLevel = game.time.create();
     timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * timerLevelConstant, this.levelUpResume);
     timerLevel.pause();
     timerLevelDisplay.visible = false;
   },
-
+//end of timer between levels
   destroyTimerLevel: function(){
     timerLevel.stop();
     timerLevel.destroy();
@@ -274,6 +284,7 @@ var playState = {
     newBall.body.static = true;
     newBall.body.setCollisionGroup(ballCollisionGroup);
     newBall.body.collides(studentCollisionGroup);
+    newBall.body.collides(teacherCollisionGroup);
     newBall.body.z =0;
     newBall.body.velocity.z = 0;
     newBall.hitFloor = false;
@@ -430,7 +441,7 @@ var playState = {
       ball.sprite.body.setCollisionGroup(inactiveCollisionGroup); //
   },
 
-
+//#00ff00'
 //Points flashing after a hit
   showScoreTween : function (action, x, y){
     if (action == "add"){
@@ -472,6 +483,7 @@ pausedState: function(){
   gamePaused = true;
 },
 
+    //during level up phase
 displayInvisible: function(){
     pauseButton.alpha = 0;
     timerDisplay.alpha = 0;
@@ -482,7 +494,7 @@ displayInvisible: function(){
     spriteScore.alpha = 0;
     spriteTime.alpha = 0;
 },
-
+//after level up pause
 displayVisible: function(){
     pauseButton.alpha = 1;
     timerDisplay.alpha = 1;
@@ -521,7 +533,7 @@ play :  function(){
  },
 
 
-
+//removed
  flashTimerDisplay : function (){
    var currentTime = Math.round((timerEvent.delay - timer.ms) / 100)/10
    if ( currentTime <6){
@@ -613,6 +625,7 @@ chooseStudent : function (){
   playState.updateTimeToChangeTarget();
 },
 
+
 studentHit: function (ballX, ballY){
       studentnum = randomIndex+1
     if (studentnum==1){
@@ -636,6 +649,14 @@ studentHit: function (ballX, ballY){
     playState.showScoreTween("add", ballX, ballY);
 },
 
+teacherHit: function(ball){
+    game.physics.arcade.collide(ball, teacher, this.screenshake(), null, this);
+
+},
+
+screenshake: function(){
+    this.camera.shake(0.01, 1000, true, Phaser.Camera.SHAKE_BOTH, true);
+},
 
 
 render :  function () {
@@ -671,7 +692,7 @@ update : function () {
       this.updateTimerBar();
 
 
-      this.updateLevelProgressBar();
+     // this.updateLevelProgressBar();
 
        if (score>=levelGoal){
          this.checkLevelGoal();
@@ -680,16 +701,18 @@ update : function () {
       this.updateTargetStudent();
    },
 
-   updateLevelProgressBar: function() {
-      var goal = levelGoalIncrement[currentLevel-1] ;
-      if (currentLevel == 1){
-        var levelScore = score;
-      }else{
-        var levelScore = score - levelsGoals[currentLevel-2];
-      }
 
-
-   },
+   //
+   // updateLevelProgressBar: function() {
+   //    var goal = levelGoalIncrement[currentLevel-1] ;
+   //    if (currentLevel == 1){
+   //      var levelScore = score;
+   //    }else{
+   //      var levelScore = score - levelsGoals[currentLevel-2];
+   //    }
+   //
+   //
+   // },
 
    add : function(a,b){
     return (a+b);
