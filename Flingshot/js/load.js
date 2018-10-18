@@ -52,10 +52,10 @@ var loadState = {
 
 
       //spit bubble
-      game.load.image('bubble', 'assets/images/bubble.png');
-      game.load.image('bluespit', 'assets/images/bluespitbubble.png');
-      game.load.image('bluecircle', 'assets/images/bluecircle.png');
-      game.load.image('drop','assets/images/drop.png');
+    game.load.image('bubble', 'assets/images/bubble.png');
+    game.load.image('bluespit', 'assets/images/bluespitbubble.png');
+    game.load.image('bluecircle', 'assets/images/bluecircle.png');
+    game.load.image('drop','assets/images/drop.png');
 
     game.load.physics('physicsData1', 'assets/physics/studenthead-1.json');
     game.load.physics('physicsData2', 'assets/physics/studenthead-2.json');
@@ -72,7 +72,6 @@ var loadState = {
     game.load.audio('tic', 'assets/audio/TicTok.mp3');
     game.load.audio('background','assets/audio/backgroundMusic.mp3');
     game.load.audio('classroom','assets/audio/classroomChatter.mp3');
-
     game.load.audio('collisionSound', 'assets/audio/collisionSound.mp3');
     game.load.audio('pain1male','assets/audio/pain1male.mp3');
     game.load.audio('pain2male','assets/audio/pain2male.mp3');
