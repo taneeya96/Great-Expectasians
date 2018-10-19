@@ -115,9 +115,9 @@ var playState = {
     emitter.makeParticles('bluecircle');
     emitter.minParticleScale = 0.018;
     emitter.maxParticleScale = 0.020;
-    var spitSpeed = 800;
-    emitter.minParticleSpeed = { x: -spitSpeed/2, y: -spitSpeed/2 };
-    emitter.maxParticleSpeed = { x:  spitSpeed/4, y:  spitSpeed };
+    var spitGrouping = 500;
+    emitter.minParticleSpeed = { x: -spitGrouping/2, y: -spitGrouping/2 };
+    emitter.maxParticleSpeed = { x:  spitGrouping/4, y:  spitGrouping };
     emitter.gravity = 1000;
 
 
@@ -254,7 +254,7 @@ var playState = {
   spitBurst: function(ballX, ballY){
       emitter.x = ballX;
       emitter.y = ballY;
-      emitter.start(true,150,null,10);
+      emitter.start(true,350,null,10);
   },
 
   initiateTimer: function(){
@@ -521,6 +521,8 @@ pause :  function (){
   restartButton.alpha = 1;
   restartButton.input.enabled = true;
   ticTok.pause();
+  classroom.pause();
+  backgroundMusic.pause();
 
  },
 
@@ -576,6 +578,8 @@ play :  function(){
    playState.updateTimeToChangeTarget();
    teacher.animations.paused = false;
    gamePaused = false;
+   classroom.resume();
+   backgroundMusic.resume();
 
  },
 
