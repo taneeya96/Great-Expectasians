@@ -365,7 +365,7 @@ var playState = {
     }
   },
   updateMusic : function(){
-      var startMusic = 0.1
+      var startMusic = 0.02
       if(playMusic == true && timer.ms/1000 < startMusic){
         playMusic==false;
         backgroundMusic.loopFull();
