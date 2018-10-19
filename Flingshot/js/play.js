@@ -49,11 +49,24 @@ var playState = {
     bground.alpha = 1.0;
     bground.inputEnabled = true;
 
+    //Collisions Groups
+    studentCollisionGroup = game.physics.p2.createCollisionGroup();
+    ballCollisionGroup = game.physics.p2.createCollisionGroup();
+    teacherCollisionGroup = game.physics.p2.createCollisionGroup();
+    inactiveCollisionGroup = game.physics.p2.createCollisionGroup();
 
-    teacher = game.add.sprite(390, -65, 'mummy');
-    teacher.alpha = 1;
-    var walk = teacher.animations.add('walk');
-    teacher.animations.play('walk', 3, true);
+
+   teacher = game.add.sprite(465, 112, 'teacher');
+   game.physics.p2.enable(teacher);
+   teacher.body.clearShapes();
+   teacher.body.loadPolygon('physicsDataTeacher','Teacher graphic');
+   teacher.body.static = true;
+   //teacher hand animations
+   teacher.alpha = 1;
+   var walk = teacher.animations.add('walk');
+   teacher.animations.play('walk', 3, true);
+   teacher.body.setCollisionGroup(teacherCollisionGroup);
+   teacher.body.collides(ballCollisionGroup,this.teacherHit,this);
 
 
 
@@ -107,9 +120,7 @@ var playState = {
     emitter.maxParticleSpeed = { x:  spitSpeed/4, y:  spitSpeed };
     emitter.gravity = 1000;
 
-    studentCollisionGroup = game.physics.p2.createCollisionGroup();
-    ballCollisionGroup = game.physics.p2.createCollisionGroup();
-    inactiveCollisionGroup = game.physics.p2.createCollisionGroup();
+
 
     //Students locations on the canvas
     studentXs = [320,610,915,175,1095];
@@ -283,6 +294,7 @@ var playState = {
     newBall.body.setCircle(30); //for collision
     newBall.body.static = true;
     newBall.body.setCollisionGroup(ballCollisionGroup);
+    newBall.body.collides(teacherCollisionGroup);
     newBall.body.collides(studentCollisionGroup);
     newBall.body.z =0;
     newBall.body.velocity.z = 0;
@@ -304,9 +316,6 @@ var playState = {
     else if (score == 1330){
         timer.resume();
     }
-
-
-
 
   },
   updateScoreBar : function(){ //updates width of the ScoreBarRectangle so that it reflects progress through the level
@@ -680,6 +689,15 @@ studentHit: function (ballX, ballY){
     randomStudent.alpha = 0.25;
     playState.spitBurst(ballX,ballY);
     playState.showScoreTween("add", ballX, ballY);
+},
+
+teacherHit: function(ball){
+   game.physics.arcade.collide(ball, teacher, this.screenshake(), null, this);
+
+},
+
+screenshake: function(){
+   this.camera.shake(0.01, 1000, true, Phaser.Camera.SHAKE_BOTH, true);
 },
 
 render :  function () {

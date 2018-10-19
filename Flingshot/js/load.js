@@ -39,7 +39,7 @@ var loadState = {
     game.load.image('ProgressBar-4', 'assets/images/ProgressBar-4.png');
 
 
-    game.load.spritesheet('mummy', 'assets/images/Teacher graphic.png', 150, 354);
+    game.load.spritesheet('teacher', 'assets/images/Teacher graphic.png', 150, 354);
     game.load.spritesheet('instruction', 'assets/images/instruction.png', 270, 579);
 
     game.load.image('table', 'assets/images/table.png');
@@ -56,12 +56,13 @@ var loadState = {
     game.load.image('bluespit', 'assets/images/bluespitbubble.png');
     game.load.image('bluecircle', 'assets/images/bluecircle.png');
     game.load.image('drop','assets/images/drop.png');
-
+    //physics loaded
     game.load.physics('physicsData1', 'assets/physics/studenthead-1.json');
     game.load.physics('physicsData2', 'assets/physics/studenthead-2.json');
     game.load.physics('physicsData3', 'assets/physics/studenthead-3.json');
     game.load.physics('physicsData4', 'assets/physics/studenthead-4.json');
     game.load.physics('physicsData5', 'assets/physics/studenthead-5.json');
+    game.load.physics('physicsDataTeacher','assets/physics/teacher-collision2.json');
 
     game.load.image('gradeF','assets/images/gradeF.png');
 
