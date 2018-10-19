@@ -231,6 +231,8 @@ var playState = {
     timerLevelConstant = 3; //each break between levels is 3 seconds long
     timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * timerLevelConstant, this.levelUpResume); //a timer for each level
 
+
+
     this.initiateTimer();
     this.initiateTimerLevel()
 
@@ -293,10 +295,19 @@ var playState = {
     levelFont.text = "Level: "+currentLevel;
 
   },
+  //Gives you additional time for the final level
   updateBonusTime: function(){
-    if(score == 1000){
-    timer.ms = timer.ms - 5000;
+    var secs = 0;
+    if(score == 1300){
+        timer.pause();
     }
+    else if (score == 1330){
+        timer.resume();
+    }
+
+
+
+
   },
   updateScoreBar : function(){ //updates width of the ScoreBarRectangle so that it reflects progress through the level
     spriteScore.width = score*8.75
@@ -342,7 +353,6 @@ var playState = {
     if(timer.ms/1000 > timerConstant - endTime && timer.ms/1000 < (timerConstant - endTime + .01)   && finalWarningOn ){
        finalWarningOn == false;
        ticTok.play();
-       timerBarColor = "#FFFFF"
     }
   },
   updateMusic : function(){
