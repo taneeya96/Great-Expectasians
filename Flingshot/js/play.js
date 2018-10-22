@@ -201,13 +201,18 @@ var playState = {
     group = this.add.group();
     scoreBarOutline = this.game.add.graphics();
     timerBarOutline = this.game.add.graphics();
-    timerBarOutline.lineStyle(2,scoreBarOutlineColor,1);
+    timerBarOutline.beginFill(0x000000,.3);
     timerBarOutline.drawRect(300,675, 700,25);
+    timerBarOutline.endFill();
     group.add(timerBarOutline);
 
+
+
+
     //Score Bar Outline
-    scoreBarOutline.lineStyle(2, scoreBarOutlineColor, 1);
+    scoreBarOutline.beginFill(0x000000,.3)
     scoreBarOutline.drawRect(300, 650, 700, 25);
+    scoreBarOutline.endFill();
     group.add(scoreBarOutline);
 
     //Creates the rectangle for us to later change the width of
@@ -365,11 +370,18 @@ var playState = {
     }
   },
   updateMusic : function(){
-      var startMusic = 0.02
-      if(playMusic == true && timer.ms/1000 < startMusic){
-        playMusic==false;
+      var startMusic = 0.1
+      if(currentLevel == 1 && timer.ms/1000 < startMusic){
         backgroundMusic.loopFull();
         classroom.loopFull();
+      }
+      if(gamePaused == true){
+        backgroundMusic.pause();
+        classroom.pause();
+      }
+      if(gamePaused == false && classroom.pause){
+        classroom.resume();
+        backgroundMusic.resume();
       }
   },
 
@@ -521,8 +533,6 @@ pause :  function (){
   restartButton.alpha = 1;
   restartButton.input.enabled = true;
   ticTok.pause();
-  classroom.pause();
-  backgroundMusic.pause();
 
  },
 
@@ -533,6 +543,7 @@ pausedState: function(){
   teacher.animations.paused = true;
   bground.inputEnabled = false;
   gamePaused = true;
+
 },
 
 displayInvisible: function(){
@@ -578,8 +589,7 @@ play :  function(){
    playState.updateTimeToChangeTarget();
    teacher.animations.paused = false;
    gamePaused = false;
-   classroom.resume();
-   backgroundMusic.resume();
+
 
  },
 
@@ -617,6 +627,7 @@ play :  function(){
      timerLevel.start()
    }
  },
+
 
  levelUpResume: function(){
    levelGoal = levelsGoals[currentLevel];
