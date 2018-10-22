@@ -6,7 +6,7 @@ var instructionsState = {
     var walk = instruct.animations.add('walk');
     instruct.animations.play('walk', 7, true);
 
-    startInstructions.scale.setTo(1,1);
+    startInstructions.scale.setTo(0.45,0.65);
     startInstructions.events.onInputDown.add(this.startGame,this);
     startInstructions.alpha = 1;
     startInstructions.inputEnabled = true;
