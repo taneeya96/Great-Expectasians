@@ -75,4 +75,4 @@ We would like to add more levels and vary the difficulty and predictability of t
 Contacts
 --------
 
-o Flingshot is created by Great-Expectasians. Our team includes Jack Chen, Nguyen Phuc, Taneeya Rele, Ali Mahad.
+o Flingshot is created by Great-Expectasians. Our team includes Jack Chen, Nguyen Phuc, Taneeya Rele, Ali Mahad, Kiante Miles and Zain Mahmood.

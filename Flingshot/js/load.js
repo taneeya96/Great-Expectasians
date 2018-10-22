@@ -52,24 +52,27 @@ var loadState = {
 
 
       //spit bubble
-      game.load.image('bubble', 'assets/images/bubble.png');
-      game.load.image('bluespit', 'assets/images/bluespitbubble.png');
-      game.load.image('bluecircle', 'assets/images/bluecircle.png');
-      game.load.image('drop','assets/images/drop.png');
-
+    game.load.image('bubble', 'assets/images/bubble.png');
+    game.load.image('bluespit', 'assets/images/bluespitbubble.png');
+    game.load.image('bluecircle', 'assets/images/bluecircle.png');
+    game.load.image('drop','assets/images/drop.png');
+    //physics loaded
     game.load.physics('physicsData1', 'assets/physics/studenthead-1.json');
     game.load.physics('physicsData2', 'assets/physics/studenthead-2.json');
     game.load.physics('physicsData3', 'assets/physics/studenthead-3.json');
     game.load.physics('physicsData4', 'assets/physics/studenthead-4.json');
     game.load.physics('physicsData5', 'assets/physics/studenthead-5.json');
-    // game.load.physics('physicsDataTeacher','assets/physics/teacher-hit.json');
-    game.load.physics('physicsDataTeacher','assets/physics/teacher-collision.json');
+    game.load.physics('physicsDataTeacher','assets/physics/teacher-collision2.json');
+
     game.load.image('gradeF','assets/images/gradeF.png');
 
 
 
 
     //sound effects
+    game.load.audio('tic', 'assets/audio/TicTok.mp3');
+    game.load.audio('background','assets/audio/backgroundMusic.mp3');
+    game.load.audio('classroom','assets/audio/classroomChatter.mp3');
     game.load.audio('collisionSound', 'assets/audio/collisionSound.mp3');
     game.load.audio('pain1male','assets/audio/pain1male.mp3');
     game.load.audio('pain2male','assets/audio/pain2male.mp3');
@@ -77,6 +80,10 @@ var loadState = {
     game.load.audio('pain4fem','assets/audio/pain4fem.mp3');
     game.load.audio('pain5male','assets/audio/pain5male.mp3');
     game.load.audio('schoolbell','assets/audio/schoolbell.mp3');
+    //Fonts
+    game.load.bitmapFont('myfont', 'assets/fonts/font.png','assets/fonts/font.fnt')
+    game.load.bitmapFont('LF','assets/fonts/level.png','assets/fonts/level.fnt')
+    game.load.bitmapFont('WHF','assets/fonts/wrong.png','assets/fonts/wrong.fnt')
 
   },
   create : function() {
