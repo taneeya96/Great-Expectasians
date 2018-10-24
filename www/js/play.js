@@ -589,7 +589,7 @@ var playState = {
         playState.updateTimeToChangeTarget();
         teacher.animations.paused = false;
         gamePaused = false;
-
+        ticTok.resume();
 
     },
 
