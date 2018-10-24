@@ -1,7 +1,7 @@
 var loadState = {
   preload : function(){
     game.load.image('Menu','assets/images/MainMenu.png');
-    game.load.image('StartInstructions','assets/images/InstructionsPage3.png');
+    game.load.image('StartInstructions','assets/images/instructionBackground.png');
     game.load.image('winPage','assets/images/winPage.png');
     game.load.image('losePage', 'assets/images/GameOver.png');
 

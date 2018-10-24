@@ -196,13 +196,13 @@ var playState = {
     scoreBarRectangle.ctx.fillStyle = '#be011f';
     scoreBarRectangle.ctx.fill();
     //Turns our bitmap rectangle into a sprite
-    spriteScore = game.add.sprite(300, 650, scoreBarRectangle);
+    spriteScore = game.add.sprite(300, 646, scoreBarRectangle);
     // Creates outlines to both the scoreBar along with the timerbar
     group = this.add.group();
     scoreBarOutline = this.game.add.graphics();
     timerBarOutline = this.game.add.graphics();
     timerBarOutline.beginFill(0x000000,.3);
-    timerBarOutline.drawRect(300,675, 700,25);
+    timerBarOutline.drawRect(300,675, 700,24);
     timerBarOutline.endFill();
     group.add(timerBarOutline);
 
@@ -211,14 +211,14 @@ var playState = {
 
     //Score Bar Outline
     scoreBarOutline.beginFill(0x000000,.3)
-    scoreBarOutline.drawRect(300, 650, 700, 25);
+    scoreBarOutline.drawRect(300, 646, 700, 25);
     scoreBarOutline.endFill();
     group.add(scoreBarOutline);
 
     //Creates the rectangle for us to later change the width of
     timerBarRectangle = game.add.bitmapData(700,128);
     timerBarRectangle.ctx.beginPath();
-    timerBarRectangle.ctx.rect(0,0,700,23);
+    timerBarRectangle.ctx.rect(0,0,700,25);
     timerBarRectangle.ctx.fillStyle = timerBarColor;
     timerBarRectangle.ctx.fill();
     //Turns our bitmap rectangle into a sprite
@@ -370,7 +370,7 @@ var playState = {
     }
   },
   updateMusic : function(){
-      var startMusic = 0.1
+      var startMusic = 0.04
       if(currentLevel == 1 && timer.ms/1000 < startMusic){
         backgroundMusic.loopFull();
         classroom.loopFull();
