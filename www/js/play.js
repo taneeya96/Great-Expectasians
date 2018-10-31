@@ -370,7 +370,7 @@ var playState = {
         }
     },
     updateMusic : function(){
-        var startMusic = 0.04
+        var startMusic = 0.1
         if(currentLevel == 1 && timer.ms/1000 < startMusic){
             backgroundMusic.loopFull();
             classroom.loopFull();
