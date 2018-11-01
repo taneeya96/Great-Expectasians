@@ -6,6 +6,9 @@ var screenheight=720;
 var app = {
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        window.addEventListener('orientationchange', function() {
+           console.log(screen.orientation.lock('landscape'));
+        });
     },
 
     onDeviceReady: function() {
