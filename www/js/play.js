@@ -6,7 +6,7 @@ var levelColor = "#68D81D";
 var scoreFont = "Georgia, cursive";
 var scoreBarColor = "be011f";
 var scoreBarOutlineColor = 0xFFFFFF;
-var timerBarColor = '#00ff00';
+var timerBarColor = '#00cc00';
 var scoreBar;
 var scoreBarRectangle;
 var spriteScore;
@@ -193,7 +193,7 @@ var playState = {
         scoreBarRectangle= game.add.bitmapData(700 ,128);
         scoreBarRectangle.ctx.beginPath();
         scoreBarRectangle.ctx.rect(0,0,700,25);
-        scoreBarRectangle.ctx.fillStyle = '#be011f';
+        scoreBarRectangle.ctx.fillStyle = '#f10127';
         scoreBarRectangle.ctx.fill();
         //Turns our bitmap rectangle into a sprite
         spriteScore = game.add.sprite(300, 646, scoreBarRectangle);
