@@ -49,11 +49,6 @@
         <icon density="xxhdpi" src="res/icon/android/icon-144-xxhdpi.png" />
         <icon density="xxxhdpi" src="res/icon/android/icon-192-xxxhdpi.png" />
     </platform>
-    <!--
-    <platform name="webos">
-        <icon height="64" src="res/icon/webos/icon-64.png" />
-    </platform>
-    -->
     <plugin name="cordova-plugin-browsersync" spec="^1.1.0" />
     <plugin name="cordova-plugin-screen-orientation" spec="^3.0.1" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
