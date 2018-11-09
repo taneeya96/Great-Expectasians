@@ -1,6 +1,6 @@
 var instructionsState = {
     create : function(){
-        var string = 'Hit the students!';
+        var string = 'Touch anywhere to hit the students!';
         var startInstructions = game.add.sprite(0,0,'StartInstructions');
         var instruct = game.add.sprite(600,170,'instruction');
         instruct.alpha = 1;

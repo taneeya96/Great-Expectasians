@@ -795,9 +795,14 @@ var playState = {
         {
         var factor = 7
         };
-        var changeFactor = Array( factor+3, factor+2, factor+3, factor+1, factor+1, factor, factor,factor,factor,factor)[Math.floor(Math.random()*10)];
-        var deltaTime = 4000 - 3600*(changeFactor)/10 //shorten interval with higher level. level 10 at 0.8s
+//        var changeFactor = Array( factor+3, factor+2, factor+3, factor+1, factor+1, factor, factor,factor,factor,factor)[Math.floor(Math.random()*10)];
+        var deltaTime = 4000 - 3600*(factor*1.45)/10 //shorten interval with higher level. level 10 at 0.8s
         timeToChangeTarget = game.time.now + deltaTime;
+
+
+
+
+
     },
 
     getCurrentScore: function(){
